@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destination — Vistaara (Accessible)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../shared/css/base.css">
+<link rel="stylesheet" href="css/accessibility.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4 26V14C4 7.4 8.9 2 15 2C21.1 2 26 7.4 26 14V26" stroke="#7A3620" stroke-width="2.6"/>
+        <path d="M9 26V15C9 10.6 11.7 7 15 7C18.3 7 21 10.6 21 15V26" stroke="#12203A" stroke-width="2"/>
+      </svg>
+      Vistaara
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="explore.html">Explore</a>
+      <a href="index.html#features">How it helps</a>
+      <a href="index.html#destinations">Destinations</a>
+    </nav>
+    <div class="text-size-controls" id="text-size-controls" role="group" aria-label="Text size">
+      <button type="button" data-size="100%" aria-label="Default text size">A</button>
+      <button type="button" data-size="112%" aria-label="Larger text size">A+</button>
+      <button type="button" data-size="128%" aria-label="Largest text size">A++</button>
+    </div>
+    <a class="mode-switch" href="../standard/monument.html">Standard version</a>
+  </div>
+</header>
+
+<main id="main">
+  <div id="monument-detail">
+    <section class="monument-hero">
+      <div class="wrap">
+        <a class="back-link" href="index.html">&larr; Back to destinations</a>
+        <p class="eyebrow" id="monument-region"></p>
+        <h1 id="monument-name"></h1>
+      </div>
+    </section>
+
+    <section class="monument-body">
+      <div class="wrap">
+        <p id="monument-tagline"></p>
+
+        <div class="ask-box">
+          <h2>Ask about this destination</h2>
+          <form onsubmit="event.preventDefault();">
+            <label for="ask-input" class="visually-hidden">Your question</label>
+            <input type="text" id="ask-input" placeholder="e.g. What's the best time to visit?">
+            <button type="submit" class="btn btn-primary">Ask</button>
+          </form>
+          <p style="font-size:0.92rem; color:var(--ink-soft); margin-top:10px;">
+            This will connect to the multilingual Q&amp;A assistant once the backend is live.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Vistaara &middot; An SIH project</p>
+    <p>Built with data from ASI, the Indian Culture Portal, and Bhuvan</p>
+  </div>
+</footer>
+
+<script src="../shared/js/monuments-data.js"></script>
+<script src="js/accessibility.js"></script>
+</body>
+</html>

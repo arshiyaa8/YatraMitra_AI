@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vistaara — Choose how you'd like to explore</title>
+<meta name="description" content="An AI-powered multilingual guide to India's monuments, routes, and safety alerts.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="shared/css/base.css">
+<style>
+  body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+  .chooser{
+    padding: 64px 0;
+    width: 100%;
+  }
+  .chooser-head{
+    text-align: center;
+    max-width: 52ch;
+    margin: 0 auto 48px;
+  }
+  .chooser-head h1{
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin: 14px 0 12px;
+  }
+  .chooser-head p{
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    margin: 0;
+  }
+  .chooser-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 840px;
+    margin: 0 auto;
+  }
+  .chooser-card{
+    display: block;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 36px 30px;
+    transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  }
+  .chooser-card:hover, .chooser-card:focus-visible{
+    box-shadow: 0 16px 32px rgba(36, 31, 28, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--terracotta);
+  }
+  .chooser-card svg{ width: 44px; height: 44px; margin-bottom: 18px; }
+  .chooser-card h2{ font-size: 1.5rem; margin-bottom: 10px; }
+  .chooser-card p{
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    margin: 0 0 18px;
+  }
+  .chooser-card .go{
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--terracotta);
+  }
+  @media (max-width: 640px){
+    .chooser-grid{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#chooser-grid">Skip to options</a>
+
+<main class="chooser">
+  <div class="wrap">
+    <div class="chooser-head">
+      <p class="eyebrow">Vistaara</p>
+      <h1>How would you like to explore?</h1>
+      <p>Pick the experience that works best for you. You can switch at any time from the menu on either version.</p>
+    </div>
+
+    <div class="chooser-grid" id="chooser-grid">
+      <a class="chooser-card" href="standard/index.html">
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 38V20C6 11.7 13.2 5 22 5C30.8 5 38 11.7 38 20V38" stroke="#9C4A2E" stroke-width="2.6"/>
+          <path d="M13 38V22C13 16.5 17 12 22 12C27 12 31 16.5 31 22V38" stroke="#1F3A5F" stroke-width="2"/>
+        </svg>
+        <h2>Standard experience</h2>
+        <p>The full visual guide — interactive map, photo-led destination cards, and route planning.</p>
+        <span class="go">Continue &rarr;</span>
+      </a>
+
+      <a class="chooser-card" href="accessibility/index.html">
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="22" cy="10" r="4" stroke="#9C4A2E" stroke-width="2.4"/>
+          <path d="M22 16V38M22 22L10 26M22 22L34 26M22 30L14 38M22 30L30 38" stroke="#1F3A5F" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+        <h2>Accessible experience</h2>
+        <p>Large text, high contrast, and screen-reader-friendly layouts — same content, built for ease of use.</p>
+        <span class="go">Continue &rarr;</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

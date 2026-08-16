@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vistaara — Your heritage travel companion</title>
+<meta name="description" content="An AI-powered multilingual guide to India's monuments, routes, and safety alerts.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../shared/css/base.css">
+<link rel="stylesheet" href="css/standard.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4 26V14C4 7.4 8.9 2 15 2C21.1 2 26 7.4 26 14V26" stroke="#9C4A2E" stroke-width="2.4"/>
+        <path d="M9 26V15C9 10.6 11.7 7 15 7C18.3 7 21 10.6 21 15V26" stroke="#B8862B" stroke-width="1.8"/>
+      </svg>
+      Vistaara
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="explore.html">Explore</a>
+      <a href="index.html#features">How it helps</a>
+      <a href="index.html#destinations">Destinations</a>
+    </nav>
+    <a class="mode-switch" href="../accessibility/index.html">Accessible version</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">AI-powered heritage guide</p>
+        <h1>Walk through history with a guide who <em>speaks your language</em></h1>
+        <p>Vistaara narrates monuments, plans accessible routes, and warns you before the weather or the crowds do — in 22 Indian languages, even offline at remote sites.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="explore.html">Start exploring</a>
+          <a class="btn btn-ghost" href="index.html#features">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 400 L40 190 C40 110 110 50 200 50 C290 50 360 110 360 190 L360 400" fill="none" stroke="#9C4A2E" stroke-width="3"/>
+          <path d="M90 400 L90 200 C90 140 140 100 200 100 C260 100 310 140 310 200 L310 400" fill="none" stroke="#1F3A5F" stroke-width="2"/>
+          <path d="M140 400 L140 210 C140 175 165 150 200 150 C235 150 260 175 260 210 L260 400" fill="none" stroke="#B8862B" stroke-width="1.6"/>
+          <circle cx="200" cy="150" r="4" fill="#B8862B"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <p class="eyebrow">Built around four layers</p>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Guided narration</h3>
+          <p>Ask a monument anything — voice or text — and get answers grounded in verified heritage data, not guesswork.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Personalized routes</h3>
+          <p>Plans that account for accessibility needs, allergies, and how much walking you actually want to do.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Safety, as it happens</h3>
+          <p>Flood, cyclone, and landslide alerts sourced from India's national disaster alert network.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="destinations" id="destinations">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Beyond the usual list</p>
+          <h2>Underexplored destinations</h2>
+        </div>
+        <a class="view-all" href="explore.html">View all on map</a>
+      </div>
+      <div class="card-grid" id="destination-grid">
+        <p style="color:var(--ink-soft);">Loading destinations…</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="map-teaser">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow" style="color:#EFE9DD;">Plan your route</p>
+        <h2>See every site on one map</h2>
+        <p>Monuments, safety alerts, and crowd signals — layered onto OpenStreetMap so you always know where to go next.</p>
+      </div>
+      <a class="btn btn-primary" href="explore.html">Open the map</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Vistaara &middot; An SIH project</p>
+    <p>Built with data from ASI, the Indian Culture Portal, and Bhuvan</p>
+  </div>
+</footer>
+
+<script src="../shared/js/monuments-data.js"></script>
+<script src="js/standard.js"></script>
+</body>
+</html>
