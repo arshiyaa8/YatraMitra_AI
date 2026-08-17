@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "description": "Curated Indian festival calendar. Hindu/Islamic/Sikh/Jain festival dates are lunar/lunisolar and shift every year — this file must be regenerated annually (see importFestivals.js header). Fixed national holidays stay constant.",
+    "sourcedFor": 2026,
+    "sources": [
+      "https://www.indiatvnews.com/lifestyle/spirituality/hindu-calendar-2026-fasts-and-festivals-dates-2025-12-29-1023664",
+      "https://bavishyavani.in/hindu-festival-calendar-2026-vrat-tyohar-list/",
+      "https://www.festivaldates.in/p/indian-festival-calendar.html"
+    ],
+    "lastVerified": "2026-08-15"
+  },
+  "festivals": [
+    { "name": "Republic Day", "date": "2026-01-26", "type": "national", "states": ["ALL"], "touristImpact": "high", "notes": "Fixed national holiday; major parades in Delhi." },
+    { "name": "Makar Sankranti", "date": "2026-01-14", "type": "harvest", "states": ["ALL"], "touristImpact": "medium" },
+    { "name": "Pongal", "date": "2026-01-14", "endDate": "2026-01-17", "type": "harvest", "states": ["Tamil Nadu"], "touristImpact": "high" },
+    { "name": "Lohri", "date": "2026-01-13", "type": "harvest", "states": ["Punjab", "Haryana"], "touristImpact": "medium" },
+    { "name": "Magh Bihu", "date": "2026-01-14", "type": "harvest", "states": ["Assam"], "touristImpact": "medium", "notes": "Relevant to Majuli Island tourism." },
+    { "name": "Basant Panchami", "date": "2026-01-23", "type": "religious", "states": ["ALL"], "touristImpact": "low" },
+    { "name": "Maha Shivratri", "date": "2026-02-15", "type": "religious", "states": ["ALL"], "touristImpact": "high", "notes": "Major pilgrimage crowds at Shiva temples (Varanasi, Ujjain, Somnath)." },
+    { "name": "Holika Dahan", "date": "2026-03-03", "type": "religious", "states": ["ALL"], "touristImpact": "medium" },
+    { "name": "Holi", "date": "2026-03-04", "type": "religious", "states": ["ALL"], "touristImpact": "very_high", "notes": "Especially Mathura, Vrindavan, Barsana — expect very high crowds for a week around this date." },
+    { "name": "Eid-ul-Fitr", "date": "2026-03-21", "type": "religious", "states": ["ALL"], "touristImpact": "high", "notes": "Date subject to moon sighting; ±1 day." },
+    { "name": "Chaitra Navratri begins", "date": "2026-03-19", "type": "religious", "states": ["ALL"], "touristImpact": "medium" },
+    { "name": "Ram Navami", "date": "2026-03-27", "type": "religious", "states": ["ALL"], "touristImpact": "high", "notes": "Very high crowds at Ayodhya." },
+    { "name": "Baisakhi", "date": "2026-04-14", "type": "harvest", "states": ["Punjab"], "touristImpact": "medium" },
+    { "name": "Mahavir Jayanti", "date": "2026-03-31", "type": "religious", "states": ["ALL"], "touristImpact": "low" },
+    { "name": "Char Dham Yatra opens", "date": "2026-05-01", "endDate": "2026-06-30", "type": "pilgrimage", "states": ["Uttarakhand"], "touristImpact": "very_high", "notes": "May–June is peak Char Dham season per 2026 panchang guidance." },
+    { "name": "Rath Yatra", "date": "2026-06-16", "type": "religious", "states": ["Odisha"], "touristImpact": "high", "notes": "Major crowds at Puri Jagannath Temple." },
+    { "name": "Raksha Bandhan", "date": "2026-08-28", "type": "religious", "states": ["ALL"], "touristImpact": "low" },
+    { "name": "Independence Day", "date": "2026-08-15", "type": "national", "states": ["ALL"], "touristImpact": "medium" },
+    { "name": "Janmashtami", "date": "2026-09-02", "type": "religious", "states": ["ALL"], "touristImpact": "high", "notes": "Especially Mathura, Vrindavan, Dwarka." },
+    { "name": "Onam", "date": "2026-08-26", "type": "harvest", "states": ["Kerala"], "touristImpact": "high" },
+    { "name": "Ganesh Chaturthi", "date": "2026-09-14", "endDate": "2026-09-24", "type": "religious", "states": ["Maharashtra", "Goa", "Karnataka"], "touristImpact": "very_high", "notes": "Mumbai/Pune extremely crowded through visarjan processions." },
+    { "name": "Sharad Navratri begins", "date": "2026-10-09", "type": "religious", "states": ["ALL"], "touristImpact": "high" },
+    { "name": "Durga Puja", "date": "2026-10-15", "endDate": "2026-10-19", "type": "religious", "states": ["West Bengal"], "touristImpact": "very_high", "notes": "Kolkata pandal-hopping season — extreme crowds." },
+    { "name": "Dussehra", "date": "2026-10-20", "type": "religious", "states": ["ALL"], "touristImpact": "high" },
+    { "name": "Karwa Chauth", "date": "2026-10-29", "type": "religious", "states": ["North India"], "touristImpact": "low" },
+    { "name": "Dhanteras", "date": "2026-11-06", "type": "religious", "states": ["ALL"], "touristImpact": "high" },
+    { "name": "Diwali", "date": "2026-11-08", "type": "religious", "states": ["ALL"], "touristImpact": "very_high", "notes": "Falls unusually late in 2026 due to Adhik Maas (extra lunar month). Verify against current-year panchang before relying on this date long-term." },
+    { "name": "Govardhan Puja", "date": "2026-11-10", "type": "religious", "states": ["ALL"], "touristImpact": "medium" },
+    { "name": "Bhai Dooj", "date": "2026-11-11", "type": "religious", "states": ["ALL"], "touristImpact": "low" },
+    { "name": "Chhath Puja", "date": "2026-11-15", "type": "religious", "states": ["Bihar", "Jharkhand", "Uttar Pradesh"], "touristImpact": "high" },
+    { "name": "Kartik Purnima / Dev Deepawali", "date": "2026-11-24", "type": "religious", "states": ["Uttar Pradesh"], "touristImpact": "very_high", "notes": "Varanasi ghats — one of the single most crowded tourism days of the year." },
+    { "name": "Guru Nanak Jayanti", "date": "2026-11-24", "type": "religious", "states": ["Punjab"], "touristImpact": "high" },
+    { "name": "Hornbill Festival", "date": "2026-12-01", "endDate": "2026-12-10", "type": "cultural", "states": ["Nagaland"], "touristImpact": "high", "notes": "Key underexplored-region promotion opportunity per project report §1.1/§4." },
+    { "name": "Christmas", "date": "2026-12-25", "type": "religious", "states": ["ALL", "Goa"], "touristImpact": "high", "notes": "Goa sees very high tourist inflow through New Year's." },
+    { "name": "Gandhi Jayanti", "date": "2026-10-02", "type": "national", "states": ["ALL"], "touristImpact": "low" }
+  ]
+}
