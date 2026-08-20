@@ -58,18 +58,45 @@ def print_recommendations(results):
         print()
 
 
+def show_monument_details(m):
+    """Print full history and do's/don'ts for a single monument."""
+    print(f"\n{'=' * 50}")
+    print(f"{m['name']} ({m['city']})")
+    print(f"{'=' * 50}")
+    print(f"\nHistory:\n{m.get('history', 'Not available.')}")
+    print(f"\nDo's and Don'ts:")
+    for tip in m.get("dos_donts", []):
+        print(f"  - {tip}")
+    print()
+
+
+def search_and_view():
+    """
+    Menu-driven flow: ask for preference tags, show matches,
+    then let the user pick one to see its full history + dos_donts.
+    (This stands in for a 'button' until the site is wired up.)
+    """
+    raw = input("Enter preference tags, comma-separated (e.g. historical,offbeat): ")
+    prefs = [p.strip() for p in raw.split(",") if p.strip()]
+
+    access_input = input("Need wheelchair accessibility? (y/n): ").strip().lower()
+    needs_accessibility = access_input == "y"
+
+    results = recommend(prefs, needs_accessibility=needs_accessibility)
+    print_recommendations(results)
+
+    if not results:
+        return
+
+    choice = input("Enter the number of a monument to see full details (or press Enter to skip): ").strip()
+    if choice.isdigit():
+        idx = int(choice) - 1
+        if 0 <= idx < len(results):
+            _, _, _, m = results[idx]
+            show_monument_details(m)
+        else:
+            print("Invalid number.")
+
+
 if __name__ == "__main__":
-    # Example 1: broad historical + offbeat search
-    print("=== Historical & Offbeat picks ===\n")
-    matches = recommend(["historical", "offbeat"])
-    print_recommendations(matches)
-
-    # Example 2: only wheelchair-accessible religious/spiritual sites
-    print("=== Accessible religious/spiritual picks ===\n")
-    matches = recommend(["religious", "spiritual"], needs_accessibility=True)
-    print_recommendations(matches)
-
-    # Example 3: unexplored/offbeat gems
-    print("=== Unexplored gems ===\n")
-    matches = recommend(["unexplored", "offbeat"])
-    print_recommendations(matches)
+    search_and_view()
