@@ -3,9 +3,10 @@ const Monument = require("../models/Monument");
 const { ApiError, asyncHandler } = require("../utils/apiError");
 
 exports.getEstimate = asyncHandler(async (req, res) => {
-  const monument = await Monument.findOne({ slug: req.params.slug }).select("_id state");
+  const monument = await Monument.findOne({ slug: req.params.slug }).select("_id name state location");
   if (!monument) throw new ApiError(404, "Monument not found");
-  const estimate = await crowdService.estimateCrowd(monument._id, monument.state);
+
+  const estimate = await crowdService.estimateCrowd(monument, monument.state);
   res.json({ success: true, monument: req.params.slug, ...estimate });
 });
 
@@ -17,7 +18,6 @@ exports.submitReport = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: report });
 });
 
-// Intended for ASI/state e-ticketing integrations (or manual admin/data-curator entry) rather than end users
 exports.submitTicketCount = asyncHandler(async (req, res) => {
   const monument = await Monument.findOne({ slug: req.params.slug }).select("_id");
   if (!monument) throw new ApiError(404, "Monument not found");
