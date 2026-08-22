@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Monument — YatraMitra</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
@@ -30,6 +30,13 @@
                         <select id="lang-select"></select>
                         <span id="lang-tier-note" class="tier-note"></span>
                     </div>
+
+                    <div class="monument-actions">
+                        <button id="listen-btn" class="btn btn--sm btn--ghost" type="button" style="color:#fff; border-color: rgba(255,255,255,0.5);">🔊 Listen</button>
+                        <button id="trip-btn" class="btn btn--sm btn--ghost" type="button" style="color:#fff; border-color: rgba(255,255,255,0.5);"></button>
+                    </div>
+                    <p class="widget-sub" id="listen-status" style="color: rgba(255,255,255,0.75); margin-top:0.4rem;"></p>
+                    <audio id="listen-audio" hidden controls style="width:100%; margin-top:0.4rem;"></audio>
                 </div>
             </div>
 
@@ -38,6 +45,8 @@
                     <article class="panel">
                         <h2>About</h2>
                         <p id="m-description"></p>
+                        <button id="report-translation-btn" class="btn btn--sm btn--ghost" type="button" hidden>Report a translation issue</button>
+                        <p class="widget-sub" id="report-translation-status"></p>
                     </article>
 
                     <article class="panel" id="m-history-panel">
@@ -58,6 +67,31 @@
                     <article class="panel" id="m-food-panel">
                         <h2>Food nearby</h2>
                         <ul id="m-food-list" class="chip-list"></ul>
+                    </article>
+
+                    <article class="panel" id="m-archive-panel">
+                        <h2>Community heritage archive</h2>
+                        <p class="widget-sub">Oral histories and local narration contributed by travellers and guides.</p>
+                        <div id="archive-list"></div>
+
+                        <div id="archive-form-block" hidden style="margin-top:1rem; border-top:1px solid var(--line); padding-top:1rem;">
+                            <h3>Add your story</h3>
+                            <label for="archive-title">Title</label>
+                            <input type="text" id="archive-title" placeholder="e.g. A grandmother's memory of this fort" />
+                            <label for="archive-narrator">Narrator's name (optional)</label>
+                            <input type="text" id="archive-narrator" />
+                            <label for="archive-language">Language</label>
+                            <input type="text" id="archive-language" placeholder="e.g. Hindi" value="English" />
+                            <label for="archive-transcript">Transcript / story</label>
+                            <textarea id="archive-transcript" placeholder="Write the story here…"></textarea>
+                            <label for="archive-audio">Audio URL (optional)</label>
+                            <input type="text" id="archive-audio" placeholder="Link to a recording, if you have one" />
+                            <button id="archive-submit-btn" class="btn btn--primary btn--block" style="margin-top:0.8rem;">Submit story</button>
+                            <p class="form-status" id="archive-status"></p>
+                        </div>
+                        <p class="widget-sub" id="archive-login-hint" hidden>
+                            <a href="account.html">Log in</a> to contribute a story to the archive.
+                        </p>
                     </article>
                 </section>
 
@@ -90,6 +124,7 @@
                             <p class="widget-label">Crowd level</p>
                             <p id="crowd-level" class="widget-value">Checking…</p>
                             <p id="crowd-confidence" class="widget-sub"></p>
+                            <p id="crowd-basis" class="widget-note"></p>
 
                             <div id="crowd-report-block" hidden>
                                 <label for="crowd-report-select">Report what you see</label>
@@ -115,6 +150,7 @@
                         <div id="weather-widget" class="widget-block">
                             <p class="widget-value" id="weather-advice">Checking recent conditions…</p>
                             <p class="widget-sub" id="weather-stats"></p>
+                            <p class="widget-note">Based on recent conditions, not a live forecast.</p>
                         </div>
                     </article>
 
@@ -122,12 +158,21 @@
                         <h2>Accessibility</h2>
                         <ul id="m-accessibility-list" class="chip-list"></ul>
                     </article>
+
+                    <article class="panel panel--compact">
+                        <h2>Offline pack</h2>
+                        <p class="widget-sub">Save the essentials for this site (and the rest of your trip list) to view without a connection.</p>
+                        <button id="offline-pack-btn" class="btn btn--ghost btn--block btn--sm" type="button">Download offline pack</button>
+                        <p class="widget-sub" id="offline-pack-status"></p>
+                    </article>
                 </aside>
             </div>
         </div>
 
         <div id="monument-error" class="empty-state" hidden></div>
     </main>
+
+    <div id="ym-bottom-nav"></div>
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Laws &amp; Etiquette — YatraMitra</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
@@ -17,13 +17,17 @@
         <p class="lede">General dos and don'ts, local laws, and cultural etiquette for traveling in India.</p>
 
         <div class="banner banner--info">
-            This section isn't wired to live data yet — it's a placeholder waiting on the AI/data
-            layer (<code>tourism-ml</code>) to be exposed as an API. See <code>loadLawsContent()</code>
-            in <code>js/laws.js</code> for exactly what to connect once that endpoint exists.
+            This section isn't wired to live data yet — <code>tourism-ml/laws.py</code> has national and
+            statewise laws/etiquette content, but it's a Python console script with no HTTP endpoint, so
+            there's nothing for this page to call. See <code>loadLawsContent()</code> in
+            <code>js/laws.js</code> for exactly what to connect once a route exists (following the same
+            pattern <code>ai_api.py</code> already uses for the crowd model).
         </div>
 
         <div id="laws-content" class="panel"></div>
     </main>
+
+    <div id="ym-bottom-nav"></div>
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>

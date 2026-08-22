@@ -1,6 +1,7 @@
 /**
- * app.js — shared across every page: nationality gate, auth state, header,
- * and the alert/festival banners (real data from the backend).
+ * app.js — shared across every page: nationality gate, auth state, preferred
+ * language, the local "my trip" list, the header + mobile bottom nav, and the
+ * live alert/festival banners (all backed by real API calls).
  */
 
 // NOTE: YM is already declared (const) by config.js, which loads before this
@@ -11,6 +12,7 @@ const NATIONALITY_KEY = "ym_nationality"; // "indian" | "foreigner"
 const TOKEN_KEY = "ym_token";
 const USER_KEY = "ym_user";
 const LANG_KEY = "ym_lang";
+const TRIP_KEY = "ym_trip"; // array of monument slugs, this device only — see note below
 
 // ── Utilities ────────────────────────────────────────────────────────
 YM.util = {
@@ -91,53 +93,124 @@ YM.lang = {
   },
 };
 
-// ── Shared header, injected into every page's <header id="ym-header"> ─
+// ── "My trip" — a local, on-this-device-only list of monument slugs.
+// The backend has a savedDestinations field on the User model, but no route
+// reads or writes it yet, so a real cross-device "save" isn't possible without
+// a backend change. This keeps the same idea working locally and is always
+// labelled as device-only in the UI so it's never presented as synced. ──────
+YM.trip = {
+  get() {
+    try {
+      return JSON.parse(localStorage.getItem(TRIP_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  },
+  has(slug) {
+    return this.get().includes(slug);
+  },
+  add(slug) {
+    const list = this.get();
+    if (!list.includes(slug)) {
+      list.push(slug);
+      localStorage.setItem(TRIP_KEY, JSON.stringify(list));
+    }
+  },
+  remove(slug) {
+    const list = this.get().filter((s) => s !== slug);
+    localStorage.setItem(TRIP_KEY, JSON.stringify(list));
+  },
+  toggle(slug) {
+    this.has(slug) ? this.remove(slug) : this.add(slug);
+    return this.has(slug);
+  },
+  clear() {
+    localStorage.removeItem(TRIP_KEY);
+  },
+};
+
+// ── Shared header + mobile bottom nav ─────────────────────────────────
+const NAV_ITEMS = [
+  { href: "explore.html", label: "Explore", key: "explore", icon: "compass" },
+  { href: "festivals.html", label: "Festivals", key: "festivals", icon: "sparkle" },
+  { href: "alerts.html", label: "Alerts", key: "alerts", icon: "shield" },
+  { href: "laws.html", label: "Etiquette", key: "laws", icon: "book" },
+  { href: "account.html", label: "Account", key: "account", icon: "user" },
+];
+
+const ICONS = {
+  compass:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 5.8-5.8 2.2 2.2-5.8z"/></svg>',
+  sparkle:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>',
+  shield:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4.5C4 3.7 4.7 3 5.5 3H12v18H5.5c-.8 0-1.5-.7-1.5-1.5z"/><path d="M20 4.5c0-.8-.7-1.5-1.5-1.5H12v18h6.5c.8 0 1.5-.7 1.5-1.5z"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-3.6 4.3-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>',
+};
+
 YM.renderHeader = function renderHeader(activePage) {
   const host = document.getElementById("ym-header");
-  if (!host) return;
+  if (host) {
+    const user = YM.auth.getUser();
+    const natLabel = YM.nationality.label();
 
-  const user = YM.auth.getUser();
-  const natLabel = YM.nationality.label();
-
-  const navItem = (href, label, key) =>
-    `<a href="${href}" class="nav-link${activePage === key ? " nav-link--active" : ""}">${label}</a>`;
-
-  host.innerHTML = `
-    <div class="header-inner">
-      <a href="explore.html" class="brand">
-        <span class="brand-mark" aria-hidden="true"></span>
-        YatraMitra
-      </a>
-      <nav class="nav" aria-label="Primary">
-        ${navItem("explore.html", "Explore", "explore")}
-        ${navItem("laws.html", "Laws &amp; Etiquette", "laws")}
-      </nav>
-      <div class="header-right">
-        ${
-          natLabel
-            ? `<button class="badge badge--nationality badge--clickable" id="ym-nationality-badge" type="button" title="Click to change">${natLabel} · Change</button>`
-            : ""
-        }
-        ${
-          user
-            ? `<span class="header-user">Hi, ${YM.util.escapeHtml(user.name.split(" ")[0])}</span>
-               <button class="btn btn--ghost btn--sm" id="ym-logout-btn">Log out</button>`
-            : `<a href="account.html" class="btn btn--ghost btn--sm">Log in</a>`
-        }
+    host.innerHTML = `
+      <div class="header-inner">
+        <a href="explore.html" class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          YatraMitra
+        </a>
+        <nav class="nav nav--desktop" aria-label="Primary">
+          ${NAV_ITEMS.map(
+            (item) =>
+              `<a href="${item.href}" class="nav-link${activePage === item.key ? " nav-link--active" : ""}">${item.label}</a>`
+          ).join("")}
+        </nav>
+        <div class="header-right">
+          ${
+            natLabel
+              ? `<button class="badge badge--nationality badge--clickable" id="ym-nationality-badge" type="button" title="Click to change">${natLabel} · Change</button>`
+              : ""
+          }
+          ${
+            user
+              ? `<span class="header-user">Hi, ${YM.util.escapeHtml(user.name.split(" ")[0])}</span>
+                 <button class="btn btn--ghost btn--sm" id="ym-logout-btn">Log out</button>`
+              : `<a href="account.html" class="btn btn--ghost btn--sm">Log in</a>`
+          }
+        </div>
       </div>
-    </div>
-  `;
+    `;
 
-  const nationalityBadge = document.getElementById("ym-nationality-badge");
-  if (nationalityBadge) {
-    nationalityBadge.addEventListener("click", () => {
-      YM.nationality.clear();
-      window.location.href = "index.html";
-    });
+    const nationalityBadge = document.getElementById("ym-nationality-badge");
+    if (nationalityBadge) {
+      nationalityBadge.addEventListener("click", () => {
+        YM.nationality.clear();
+        window.location.href = "index.html";
+      });
+    }
+
+    const logoutBtn = document.getElementById("ym-logout-btn");
+    if (logoutBtn) logoutBtn.addEventListener("click", () => YM.auth.logout());
   }
 
-  const logoutBtn = document.getElementById("ym-logout-btn");
-  if (logoutBtn) logoutBtn.addEventListener("click", () => YM.auth.logout());
+  // Mobile bottom tab bar — primary navigation on the small screens this
+  // project is built for first. Present on every page except the gate.
+  const bottomHost = document.getElementById("ym-bottom-nav");
+  if (bottomHost) {
+    bottomHost.innerHTML = `
+      <nav class="bottom-nav" aria-label="Primary">
+        ${NAV_ITEMS.map(
+          (item) => `
+          <a href="${item.href}" class="bottom-nav-link${activePage === item.key ? " bottom-nav-link--active" : ""}">
+            <span class="bottom-nav-icon" aria-hidden="true">${ICONS[item.icon]}</span>
+            <span>${item.label}</span>
+          </a>`
+        ).join("")}
+      </nav>
+    `;
+  }
 };
 
 // ── Live safety-alert banner (real SACHET data via /api/alerts) ───────
@@ -158,6 +231,7 @@ YM.renderAlertBanner = async function renderAlertBanner(hostId, { area } = {}) {
         <strong>Safety alert${alerts.length > 1 ? `s (${alerts.length})` : ""}:</strong>
         ${YM.util.escapeHtml(top.headline)}
         ${top.sourceUrl ? `<a href="${top.sourceUrl}" target="_blank" rel="noopener">Details</a>` : ""}
+        ${alerts.length > 1 ? `<a href="alerts.html">See all</a>` : ""}
       </div>
     `;
   } catch (err) {

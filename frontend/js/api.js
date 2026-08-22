@@ -1,7 +1,10 @@
 /**
  * api.js — thin wrapper around fetch, one function per backend endpoint.
- * Every endpoint here matches an existing route in tourism-backend/src/routes/*.
- * Nothing in this file calls anything that doesn't already exist server-side.
+ *
+ * Every endpoint below matches a real route in tourism-backend/src/routes/*.
+ * Nothing in this file calls anything that doesn't already exist server-side —
+ * if a feature needs an endpoint the backend doesn't have, it's flagged in
+ * INTEGRATION-NOTES.md instead of being faked here.
  */
 
 // NOTE: YM is already declared (const) by config.js, which loads before this
@@ -28,7 +31,7 @@ YM.api = (() => {
     const res = await fetch(url, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
 
     let data;
@@ -39,14 +42,16 @@ YM.api = (() => {
     }
 
     if (!res.ok) {
-      const message = data?.message || `Request failed (${res.status})`;
-      throw new Error(message);
+      const message = data?.message || data?.errors?.[0]?.msg || `Request failed (${res.status})`;
+      const err = new Error(message);
+      err.status = res.status;
+      throw err;
     }
     return data;
   }
 
   return {
-    // ── Monuments — monumentRoutes.js ────────────────────────────
+    // ── Monuments — monumentRoutes.js ──────────────────────────────
     listMonuments: ({ state, category, underexplored, search, page, limit } = {}) =>
       request("/monuments", { query: { state, category, underexplored, search, page, limit } }),
 
@@ -54,37 +59,68 @@ YM.api = (() => {
 
     getNearby: ({ lat, lng, radiusKm } = {}) => request("/monuments/nearby", { query: { lat, lng, radiusKm } }),
 
-    // ── Translate — translateRoutes.js ───────────────────────────
+    getOfflinePackage: (slugs) => request("/monuments/offline-package", { method: "POST", body: { slugs } }),
+
+    addHeritageArchiveEntry: (slug, { title, narratorName, audioUrl, transcript, language }) =>
+      request(`/monuments/${encodeURIComponent(slug)}/heritage-archive`, {
+        method: "POST",
+        auth: true,
+        body: { title, narratorName, audioUrl, transcript, language },
+      }),
+
+    // ── Translate — translateRoutes.js ─────────────────────────────
     listLanguages: () => request("/translate/languages"),
 
     translateText: ({ text, sourceLanguage, targetLanguage }) =>
       request("/translate/text", { method: "POST", body: { text, sourceLanguage, targetLanguage } }),
 
-    // ── Weather — weatherRoutes.js ────────────────────────────────
+    speechToText: ({ audioBase64, language, audioFormat }) =>
+      request("/translate/speech-to-text", { method: "POST", body: { audioBase64, language, audioFormat } }),
+
+    textToSpeech: ({ text, language, gender }) =>
+      request("/translate/text-to-speech", { method: "POST", body: { text, language, gender } }),
+
+    characterVoice: ({ text, voiceName }) =>
+      request("/translate/character-voice", { method: "POST", auth: true, body: { text, voiceName } }),
+
+    reportBadTranslation: ({ text, language, context }) =>
+      request("/translate/feedback", { method: "POST", auth: true, body: { text, language, context } }),
+
+    // ── Weather — weatherRoutes.js ──────────────────────────────────
     getWeather: ({ lat, lng } = {}) => request("/weather", { query: { lat, lng } }),
 
     getBestTimeAdvice: ({ lat, lng, bestVisitMonths }) =>
       request("/weather/best-time", { method: "POST", body: { lat, lng, bestVisitMonths } }),
 
-    // ── Alerts — alertRoutes.js ────────────────────────────────────
+    // ── Alerts — alertRoutes.js ──────────────────────────────────────
     getAlerts: ({ area, type } = {}) => request("/alerts", { query: { area, type } }),
 
-    // ── Crowd — crowdRoutes.js ──────────────────────────────────────
+    // ── Crowd — crowdRoutes.js ────────────────────────────────────────
     getCrowdEstimate: (slug) => request(`/crowd/${encodeURIComponent(slug)}/estimate`),
 
     submitCrowdReport: (slug, level) =>
       request(`/crowd/${encodeURIComponent(slug)}/report`, { method: "POST", auth: true, body: { level } }),
 
-    // ── Festivals — festivalRoutes.js ────────────────────────────────
+    // ── Festivals — festivalRoutes.js ──────────────────────────────────
     getActiveFestivals: ({ state } = {}) => request("/festivals/active", { query: { state } }),
     getUpcomingFestivals: ({ state, days } = {}) => request("/festivals/upcoming", { query: { state, days } }),
 
-    // ── Auth — authRoutes.js ─────────────────────────────────────────
+    // ── Auth — authRoutes.js ───────────────────────────────────────────
     register: ({ name, email, password, preferredLanguage }) =>
       request("/auth/register", { method: "POST", body: { name, email, password, preferredLanguage } }),
 
     login: ({ email, password }) => request("/auth/login", { method: "POST", body: { email, password } }),
 
     getMe: () => request("/auth/me", { auth: true }),
+
+    updateMe: ({ name, preferredLanguage, preferences }) =>
+      request("/auth/me", { method: "PATCH", auth: true, body: { name, preferredLanguage, preferences } }),
+
+    // ── Health / accessibility profile — healthRoutes.js (opt-in, encrypted at rest) ──
+    getHealthProfile: () => request("/health-profile", { auth: true }),
+    setHealthProfile: ({ allergies, conditions, mobilityNeeds, notes }) =>
+      request("/health-profile", { method: "PUT", auth: true, body: { allergies, conditions, mobilityNeeds, notes } }),
+    clearHealthProfile: () => request("/health-profile", { method: "DELETE", auth: true }),
+    getRecommendationFlags: () => request("/health-profile/recommendation-flags", { auth: true }),
   };
 })();

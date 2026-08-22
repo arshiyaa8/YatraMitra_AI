@@ -1,7 +1,10 @@
 /**
  * config.js — single source of truth for backend location.
  * Matches tourism-backend/server.js: app.use("/api", routes), default PORT=5000.
- * Change API_BASE_URL when you deploy the backend (Phase 5 of the plan).
+ *
+ * IMPORTANT: change API_BASE_URL when you deploy the backend somewhere other
+ * than your own machine (e.g. a staging server). Nothing else in this
+ * frontend needs to change.
  */
 window.YM_CONFIG = {
   API_BASE_URL: "http://localhost:5000/api",

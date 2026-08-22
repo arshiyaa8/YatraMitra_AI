@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Account — YatraMitra</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
@@ -13,10 +13,58 @@
     <header id="ym-header" class="site-header"></header>
 
     <main class="page page--narrow">
-        <div id="logged-in-view" class="panel" hidden>
+        <div id="logged-in-view" hidden>
             <h1>Your account</h1>
-            <dl class="fact-list" id="account-details"></dl>
-            <button id="logout-btn" class="btn btn--ghost">Log out</button>
+
+            <article class="panel">
+                <h2>Profile</h2>
+                <dl class="fact-list" id="account-details"></dl>
+
+                <label for="profile-name">Name</label>
+                <input type="text" id="profile-name" />
+
+                <label for="profile-lang">Preferred language</label>
+                <select id="profile-lang"></select>
+
+                <label>Interests</label>
+                <div class="chip-list" id="interest-chips"></div>
+
+                <label>Accessibility needs</label>
+                <div class="chip-list" id="accessibility-chips"></div>
+
+                <button id="profile-save-btn" class="btn btn--primary btn--block" style="margin-top:1rem;">Save profile</button>
+                <p class="form-status" id="profile-status"></p>
+            </article>
+
+            <article class="panel">
+                <h2>Accessibility &amp; health profile</h2>
+                <p class="widget-sub">Strictly opt-in. Stored encrypted, used only to tailor recommendations — never shown to other users. You can clear it anytime.</p>
+
+                <label for="health-allergies">Allergies (comma-separated)</label>
+                <input type="text" id="health-allergies" placeholder="e.g. peanuts, shellfish" />
+                <label for="health-conditions">Conditions (comma-separated)</label>
+                <input type="text" id="health-conditions" placeholder="e.g. asthma" />
+                <label for="health-mobility">Mobility needs (comma-separated)</label>
+                <input type="text" id="health-mobility" placeholder="e.g. wheelchair access" />
+                <label for="health-notes">Notes</label>
+                <textarea id="health-notes"></textarea>
+
+                <div style="display:flex; gap:0.6rem; margin-top:0.8rem; flex-wrap:wrap;">
+                    <button id="health-save-btn" class="btn btn--primary">Save (opt in)</button>
+                    <button id="health-clear-btn" class="btn btn--ghost">Clear profile</button>
+                </div>
+                <p class="form-status" id="health-status"></p>
+
+                <div id="recommendation-flags" style="margin-top:0.8rem;"></div>
+            </article>
+
+            <article class="panel">
+                <h2>My trip</h2>
+                <p class="widget-sub">Saved on this device only — the backend doesn't yet have an endpoint to sync saved destinations across devices.</p>
+                <ul id="trip-list" class="chip-list"></ul>
+            </article>
+
+            <button id="logout-btn" class="btn btn--ghost btn--block">Log out</button>
         </div>
 
         <div id="auth-forms" class="auth-tabs">
@@ -31,7 +79,7 @@
                 <input type="email" id="login-email" required autocomplete="email" />
                 <label for="login-password">Password</label>
                 <input type="password" id="login-password" required autocomplete="current-password" />
-                <button type="submit" class="btn btn--primary">Log in</button>
+                <button type="submit" class="btn btn--primary btn--block" style="margin-top:1rem;">Log in</button>
                 <p class="form-status" id="login-status" role="status"></p>
             </form>
 
@@ -44,11 +92,13 @@
                 <label for="register-password">Password</label>
                 <input type="password" id="register-password" required minlength="6" autocomplete="new-password" />
                 <p class="field-hint">At least 6 characters.</p>
-                <button type="submit" class="btn btn--primary">Create account</button>
+                <button type="submit" class="btn btn--primary btn--block" style="margin-top:1rem;">Create account</button>
                 <p class="form-status" id="register-status" role="status"></p>
             </form>
         </div>
     </main>
+
+    <div id="ym-bottom-nav"></div>
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>

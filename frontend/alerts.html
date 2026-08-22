@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Safety Alerts — YatraMitra</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header id="ym-header" class="site-header"></header>
+
+    <main class="page">
+        <section class="page-hero">
+            <h1>Safety alerts</h1>
+            <p>Official disaster alerts sourced from SACHET (NDMA). For emergencies, follow local authorities and call emergency services.</p>
+            <div class="filter-row">
+                <input type="text" id="alert-area-filter" placeholder="Filter by area or state…" />
+                <select id="alert-type-filter" aria-label="Filter by type">
+                    <option value="">All types</option>
+                    <option value="flood">Flood</option>
+                    <option value="cyclone">Cyclone</option>
+                    <option value="landslide">Landslide</option>
+                    <option value="forest_fire">Forest fire</option>
+                    <option value="earthquake">Earthquake</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="alerts-list"></section>
+    </main>
+
+    <div id="ym-bottom-nav"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/alerts.js"></script>
+</body>
+
+</html>

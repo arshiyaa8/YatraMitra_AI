@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Explore Monuments — YatraMitra</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
@@ -24,11 +24,32 @@
                 <label for="search-input" class="visually-hidden">Search monuments</label>
                 <input type="search" id="search-input" placeholder="e.g. Taj Mahal, Rajasthan, forts…"
                     autocomplete="off" />
-                <select id="state-filter" aria-label="Filter by state">
-                    <option value="">All states</option>
-                </select>
+                <div class="filter-row">
+                    <select id="state-filter" aria-label="Filter by state">
+                        <option value="">All states</option>
+                    </select>
+                    <select id="category-filter" aria-label="Filter by category">
+                        <option value="">All categories</option>
+                        <option value="monument">Monument</option>
+                        <option value="temple">Temple</option>
+                        <option value="fort">Fort</option>
+                        <option value="museum">Museum</option>
+                        <option value="natural">Natural site</option>
+                        <option value="wildlife">Wildlife</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn--primary">Search</button>
             </form>
+
+            <div class="filter-row" style="margin-top: 0.75rem;">
+                <label class="toggle-row" for="underexplored-toggle" style="margin:0;">
+                    <input type="checkbox" id="underexplored-toggle" style="width:auto; min-height:auto;" />
+                    Underexplored gems only
+                </label>
+                <button type="button" class="btn btn--ghost btn--sm" id="near-me-btn">📍 Near me</button>
+            </div>
+            <p class="field-hint" id="near-me-status"></p>
         </section>
 
         <section aria-live="polite">
@@ -37,6 +58,8 @@
             <div class="pagination" id="pagination"></div>
         </section>
     </main>
+
+    <div id="ym-bottom-nav"></div>
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>

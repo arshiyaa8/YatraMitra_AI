@@ -1,8 +1,8 @@
 /* base.css — reset + design tokens
-   Palette carries over from the project's existing report branding (maroon/gold/teal),
-   giving the frontend, docs, and PDF report a consistent identity. */
+   Palette carries over from the project's existing heritage branding
+   (maroon/gold/teal), so the app, docs, and report stay one identity. */
 
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
   --maroon: #7a1f2b;
@@ -19,6 +19,8 @@
   --danger: #a12f2f;
   --danger-bg: #fbeaea;
   --info-bg: #eaf3f2;
+  --success: #1f5f3f;
+  --success-bg: #eaf3ec;
 
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
@@ -27,12 +29,17 @@
   --radius-md: 12px;
   --radius-lg: 22px;
   --shadow-card: 0 2px 10px rgba(43, 33, 28, 0.08);
-  --shadow-raised: 0 8px 28px rgba(43, 33, 28, 0.14);
+  --shadow-raised: 0 8px 28px rgba(43, 33, 28, 0.16);
+
+  /* Mobile is the primary target: a comfortable 44px+ tap target everywhere,
+     and a bottom-nav height other layout math (page padding) depends on. */
+  --tap-min: 44px;
+  --bottom-nav-h: 62px;
+  --header-h: 56px;
 }
 
 * { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
@@ -40,6 +47,9 @@ body {
   color: var(--ink);
   background: var(--ivory);
   line-height: 1.55;
+  font-size: 16px;
+  /* Room for the fixed mobile bottom nav; overridden per-page where absent. */
+  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
 }
 
 h1, h2, h3 {
@@ -47,11 +57,12 @@ h1, h2, h3 {
   font-weight: 600;
   margin: 0 0 0.4em;
   color: var(--maroon-dark);
+  line-height: 1.2;
 }
 
-h1 { font-size: clamp(1.9rem, 3vw, 2.6rem); font-weight: 700; }
-h2 { font-size: 1.3rem; }
-h3 { font-size: 1.1rem; }
+h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); font-weight: 700; }
+h2 { font-size: 1.15rem; }
+h3 { font-size: 1.02rem; }
 
 p { margin: 0 0 1em; }
 
@@ -63,6 +74,14 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
 ul { margin: 0; padding: 0; list-style: none; }
 
 img { max-width: 100%; display: block; }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--ivory-dim);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
 
 /* Visible keyboard focus everywhere — accessibility floor, not optional */
 :focus-visible {
