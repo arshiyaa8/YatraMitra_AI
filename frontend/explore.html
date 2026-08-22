@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore Monuments — YatraMitra</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header id="ym-header" class="site-header"></header>
+
+    <div id="alert-banner-host"></div>
+    <div id="festival-banner-host"></div>
+
+    <main class="page">
+        <section class="page-hero">
+            <h1>Explore heritage sites</h1>
+            <p>Search by name, state, or region. Every result comes from the live monument database.</p>
+
+            <form class="search-bar" id="search-form" role="search">
+                <label for="search-input" class="visually-hidden">Search monuments</label>
+                <input type="search" id="search-input" placeholder="e.g. Taj Mahal, Rajasthan, forts…"
+                    autocomplete="off" />
+                <select id="state-filter" aria-label="Filter by state">
+                    <option value="">All states</option>
+                </select>
+                <button type="submit" class="btn btn--primary">Search</button>
+            </form>
+        </section>
+
+        <section aria-live="polite">
+            <div id="results-status" class="results-status"></div>
+            <div id="destination-grid" class="card-grid"></div>
+            <div class="pagination" id="pagination"></div>
+        </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/explore.js"></script>
+</body>
+
+</html>

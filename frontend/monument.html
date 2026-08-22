@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monument — YatraMitra</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <header id="ym-header" class="site-header"></header>
+
+    <div id="alert-banner-host"></div>
+
+    <main class="page" id="monument-page">
+        <div id="monument-loading" class="loading-state">Loading monument…</div>
+        <div id="monument-content" class="monument-layout" hidden>
+
+            <div class="monument-hero">
+                <div class="monument-hero-arch" aria-hidden="true"></div>
+                <div class="monument-hero-text">
+                    <p class="eyebrow" id="m-location"></p>
+                    <h1 id="m-name"></h1>
+                    <p class="lede" id="m-tagline"></p>
+
+                    <div class="lang-switcher">
+                        <label for="lang-select">Read this page in</label>
+                        <select id="lang-select"></select>
+                        <span id="lang-tier-note" class="tier-note"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monument-grid">
+                <section class="monument-main">
+                    <article class="panel">
+                        <h2>About</h2>
+                        <p id="m-description"></p>
+                    </article>
+
+                    <article class="panel" id="m-history-panel">
+                        <h2>History</h2>
+                        <p id="m-history"></p>
+                    </article>
+
+                    <article class="panel" id="m-culture-panel">
+                        <h2>Cultural significance</h2>
+                        <p id="m-culture"></p>
+                    </article>
+
+                    <article class="panel" id="m-etiquette-panel">
+                        <h2>Dos &amp; don'ts at this site</h2>
+                        <ul id="m-etiquette-list" class="bullet-list"></ul>
+                    </article>
+
+                    <article class="panel" id="m-food-panel">
+                        <h2>Food nearby</h2>
+                        <ul id="m-food-list" class="chip-list"></ul>
+                    </article>
+                </section>
+
+                <aside class="monument-side">
+                    <article class="panel panel--compact">
+                        <h2>Visit details</h2>
+                        <dl class="fact-list">
+                            <div>
+                                <dt>Hours</dt>
+                                <dd id="m-hours">—</dd>
+                            </div>
+                            <div>
+                                <dt>Closed on</dt>
+                                <dd id="m-closed">—</dd>
+                            </div>
+                            <div>
+                                <dt>Best time of day</dt>
+                                <dd id="m-best-time-of-day">—</dd>
+                            </div>
+                            <div>
+                                <dt>Entry fee</dt>
+                                <dd id="m-fee">—</dd>
+                            </div>
+                        </dl>
+                    </article>
+
+                    <article class="panel panel--compact">
+                        <h2>Right now</h2>
+                        <div id="crowd-widget" class="widget-block">
+                            <p class="widget-label">Crowd level</p>
+                            <p id="crowd-level" class="widget-value">Checking…</p>
+                            <p id="crowd-confidence" class="widget-sub"></p>
+
+                            <div id="crowd-report-block" hidden>
+                                <label for="crowd-report-select">Report what you see</label>
+                                <div class="inline-form">
+                                    <select id="crowd-report-select">
+                                        <option value="low">Low</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="high">High</option>
+                                        <option value="very_high">Very high</option>
+                                    </select>
+                                    <button id="crowd-report-btn" class="btn btn--sm btn--primary">Submit</button>
+                                </div>
+                                <p id="crowd-report-status" class="widget-sub"></p>
+                            </div>
+                            <p id="crowd-login-hint" class="widget-sub" hidden>
+                                <a href="account.html">Log in</a> to report current crowd levels.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="panel panel--compact">
+                        <h2>Weather &amp; best time</h2>
+                        <div id="weather-widget" class="widget-block">
+                            <p class="widget-value" id="weather-advice">Checking recent conditions…</p>
+                            <p class="widget-sub" id="weather-stats"></p>
+                        </div>
+                    </article>
+
+                    <article class="panel panel--compact" id="m-accessibility-panel">
+                        <h2>Accessibility</h2>
+                        <ul id="m-accessibility-list" class="chip-list"></ul>
+                    </article>
+                </aside>
+            </div>
+        </div>
+
+        <div id="monument-error" class="empty-state" hidden></div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/monument.js"></script>
+</body>
+
+</html>
