@@ -186,20 +186,4 @@ Being transparent about what's still in progress:
 
 ---
 
-## 🤝 Contributing
-
-This is a team project built for SIH 2026. If you're a teammate:
-1. Create a feature branch off `main`.
-2. Keep frontend changes consistent with the existing maroon/gold/teal, Fraunces + Inter branding.
-3. Don't break existing wired-up API integrations — flag any backend/ML gap you hit instead of stubbing around it silently.
-4. Open a PR with a clear description of what you changed and why.
-
----
-
-## 📄 License
-
-Add your chosen license here (e.g. MIT) — none is currently specified for this repository.
-
----
-
 <p align="center">Made with ❤️ for Smart India Hackathon 2026</p>
