@@ -1,3 +1,10 @@
+"""
+image_fetcher.py — Wikimedia Commons Heritage Image Retrieval Utility
+
+Queries the Wikimedia Commons API to search and fetch high-resolution, open-licensed
+monument photography for local offline storage.
+"""
+
 import os
 import sys
 import json
@@ -10,7 +17,7 @@ HEADERS = {"User-Agent": "tourism-ml/1.0 (tourism image fetcher)"}
 
 
 class MonumentImageFetcher:
-    """Fetch a Wikimedia Commons image for a monument."""
+    """Fetches and downloads verified Wikimedia Commons heritage imagery."""
 
     def __init__(self, save_dir: str):
         self.save_dir = save_dir

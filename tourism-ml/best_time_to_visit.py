@@ -1,3 +1,12 @@
+"""
+best_time_to_visit.py — Climatic Suitability & Hourly Visit Window Engine
+
+Computes a Visit Suitability Index (0 - 100) combining:
+- Footfall density (empty = 100, packed = 0)
+- Thermal comfort (optimal at 18-26°C, penalized in extreme heat/cold)
+- Precipitation risk penalty (monsoon downpours)
+"""
+
 import sys
 import json
 import os
@@ -8,10 +17,9 @@ from typing import Dict, Any, List, Optional
 try:
     from crowd_predictor import CrowdPredictorEngine
 except ImportError:
-    # Handle direct directory imports
     from .crowd_predictor import CrowdPredictorEngine
 
-# Regional peak season data
+# Regional peak season climate profiles across Indian geographical zones
 REGIONAL_CLIMATE = {
     "North India": {
         "best_months": ["October", "November", "December", "January", "February", "March"],

@@ -1,17 +1,16 @@
 /**
- * monument.js — monument detail page.
- * Pulls from: GET /api/monuments/:slug, /api/translate/*, /api/crowd/:slug/*,
- * /api/weather/best-time, /api/alerts, /api/monuments/:slug/heritage-archive,
- * /api/monuments/offline-package. All fields rendered here exist on the real
- * Monument schema (tourism-backend/src/models/Monument.js) — nothing invented.
+ * monument.js — Detailed Heritage Monument View Controller
+ *
+ * Coordinates deep-dive heritage records, multi-angle photo showcase,
+ * localized text & audio guide narration (Bhashini TTS), ML crowd predictions,
+ * climatic visit recommendations, community oral archives, and offline package caching.
  */
 
 let currentMonument = null;
 let currentSlug = null;
-let currentDisplayedText = ""; // whatever's on screen right now, for the Listen button
+let currentDisplayedText = ""; // Holds rendered description for real-time Text-to-Speech playback
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (!YM.nationality.require()) return;
   YM.renderHeader("explore");
 
   const urlSlug = YM.util.qs("slug") || YM.util.qs("id");
@@ -67,9 +66,18 @@ async function setupLanguageSwitcher() {
   try {
     const res = await YM.api.listLanguages();
     const langs = res.data || {};
-    select.innerHTML = Object.entries(langs)
-      .map(([code, info]) => `<option value="${code}">${YM.util.escapeHtml(info.name)}</option>`)
-      .join("");
+    
+    const globalEntries = Object.entries(langs).filter(([_, info]) => info.region === "global" || info.region === "foreign");
+    const indianEntries = Object.entries(langs).filter(([_, info]) => info.region === "indian");
+
+    select.innerHTML = `
+      <optgroup label="Global Languages">
+        ${globalEntries.map(([code, info]) => `<option value="${code}">${YM.util.escapeHtml(info.name)}</option>`).join("")}
+      </optgroup>
+      <optgroup label="Indian Languages">
+        ${indianEntries.map(([code, info]) => `<option value="${code}">${YM.util.escapeHtml(info.name)}</option>`).join("")}
+      </optgroup>
+    `;
     select.value = YM.lang.get();
   } catch (err) {
     console.error("Could not load language list:", err);
@@ -139,14 +147,19 @@ async function renderMonument(m, translation, lang) {
 
   // Hero Backdrop Photo
   const heroBg = document.getElementById("m-hero-backdrop");
+  const defaultCategoryHero = {
+    monument: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80",
+    fort: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80",
+    temple: "https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?auto=format&fit=crop&w=1200&q=80",
+    museum: "https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=1200&q=80",
+    natural: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    wildlife: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?auto=format&fit=crop&w=1200&q=80",
+  };
   const images = m.images && m.images.length ? m.images : [];
+  const heroImage = images.length > 0 ? images[0] : (defaultCategoryHero[m.category] || defaultCategoryHero.monument);
   if (heroBg) {
-    if (images.length > 0) {
-      heroBg.style.backgroundImage = `url("${images[0]}")`;
-      heroBg.hidden = false;
-    } else {
-      heroBg.style.backgroundImage = "none";
-    }
+    heroBg.style.backgroundImage = `url("${heroImage}")`;
+    heroBg.hidden = false;
   }
 
   // Photo Showcase Gallery
@@ -159,7 +172,7 @@ async function renderMonument(m, translation, lang) {
         .map(
           (imgUrl, idx) => `
             <div style="position:relative; border-radius:var(--radius-md); overflow:hidden; box-shadow:var(--shadow-card); aspect-ratio:16/10; background:var(--ivory-dim);">
-              <img src="${YM.util.escapeHtml(imgUrl)}" alt="${YM.util.escapeHtml(m.name)} - Photo ${idx + 1}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
+              <img src="${YM.util.escapeHtml(imgUrl)}" alt="${YM.util.escapeHtml(m.name)} - Photo ${idx + 1}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s ease;" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80';" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
             </div>
           `
         )
@@ -199,10 +212,18 @@ async function renderMonument(m, translation, lang) {
   document.getElementById("m-closed").textContent = (timings.closedOn || []).join(", ") || "Open all week";
   document.getElementById("m-best-time-of-day").textContent = timings.bestVisitTimeOfDay || "Not listed";
 
-  const nationality = YM.nationality.get();
-  const fee = m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
-  document.getElementById("m-fee").textContent =
-    fee === 0 ? "Free" : fee ? `${m.entryFee.currency || "INR"} ${fee}` : "Not listed";
+  let feeText = "Not listed";
+  if (m.entryFee) {
+    if (m.entryFee.indian === 0 && (!m.entryFee.foreigner || m.entryFee.foreigner === 0)) {
+      feeText = "Free entry";
+    } else {
+      feeText = `${m.entryFee.currency || "INR"} ${m.entryFee.indian || 0}`;
+      if (m.entryFee.foreigner && m.entryFee.foreigner !== m.entryFee.indian) {
+        feeText += ` (Foreigner: ${m.entryFee.currency || "INR"} ${m.entryFee.foreigner})`;
+      }
+    }
+  }
+  document.getElementById("m-fee").textContent = feeText;
 
   // Localize labels if in Hindi
   const isHi = lang === "hi";
@@ -229,6 +250,63 @@ async function renderMonument(m, translation, lang) {
     tierNote.textContent = "No stored translation for this language yet — showing English.";
     reportBtn.hidden = true;
   }
+
+  // Render Mini Location Map
+  renderMonumentMap(m);
+}
+
+function renderMonumentMap(m) {
+  const mapEl = document.getElementById("monument-mini-map");
+  const directionsBtn = document.getElementById("m-directions-btn");
+  const panel = document.getElementById("m-location-panel");
+  if (!mapEl || typeof L === "undefined") return;
+
+  const coords = m.location?.coordinates;
+  if (!coords || coords.length < 2) {
+    if (panel) panel.hidden = true;
+    return;
+  }
+
+  if (panel) panel.hidden = false;
+  const [lng, lat] = coords;
+  if (directionsBtn) {
+    directionsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  }
+
+  if (window._monumentMiniMap) {
+    try {
+      window._monumentMiniMap.remove();
+    } catch (e) {}
+    window._monumentMiniMap = null;
+  }
+
+  setTimeout(() => {
+    try {
+      const map = L.map("monument-mini-map", {
+        center: [lat, lng],
+        zoom: 14,
+        zoomControl: false,
+        attributionControl: false,
+      });
+      window._monumentMiniMap = map;
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+      }).addTo(map);
+
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.bindPopup(`<strong>${YM.util.escapeHtml(m.name)}</strong><br/>${YM.util.escapeHtml(m.state)}`).openPopup();
+      
+      window.addEventListener("resize", () => {
+        if (window._monumentMiniMap) window._monumentMiniMap.invalidateSize();
+      });
+      window.addEventListener("orientationchange", () => {
+        if (window._monumentMiniMap) setTimeout(() => window._monumentMiniMap.invalidateSize(), 200);
+      });
+    } catch (err) {
+      console.warn("Could not init monument map:", err);
+    }
+  }, 100);
 }
 
 function togglePanel(panelId, hasContent) {

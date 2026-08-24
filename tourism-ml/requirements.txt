@@ -1,8 +1,7 @@
 Flask>=3.0,<4
-Plaintext
 numpy
 pandas
 scikit-learn
 requests
 groq
-pydub
+pydub

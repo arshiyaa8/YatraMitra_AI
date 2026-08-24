@@ -1,3 +1,13 @@
+"""
+crowd_predictor.py — Multivariable Crowd Footfall & Peak Hours Estimator
+
+Models tourist density on a normalized 1.0 - 10.0 scale using:
+- Base monument popularity index
+- Temporal multipliers (hour of day, day of week, public holidays)
+- Weather impact modifiers (extreme heat, heavy rainfall discount)
+- Image-based visual signal analysis
+"""
+
 import sys
 import json
 import os
@@ -5,7 +15,7 @@ import argparse
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-# Baseline monument database (falls back to monuments.json if available)
+# Baseline monument database (falls back to canonical monuments.json when present)
 MONUMENT_BASELINES = {
     "taj mahal": {"base_crowd": 5, "peak_hours": [10, 11, 12, 13, 14, 15], "region": "North India"},
     "qutub minar": {"base_crowd": 4, "peak_hours": [11, 12, 13, 14, 16], "region": "North India"},
@@ -17,6 +27,7 @@ MONUMENT_BASELINES = {
 
 
 def _to_bool(value):
+    """Parses boolean representation from mixed string/number input types."""
     if isinstance(value, bool):
         return value
     if value is None:
@@ -27,7 +38,7 @@ def _to_bool(value):
 
 
 class CrowdPredictorEngine:
-    """Core Crowd Prediction Engine utilizing multi-factor inputs."""
+    """Multi-factor crowd prediction engine integrating temporal, thermal, and visual signals."""
 
     def __init__(self, monuments_json_path: Optional[str] = None):
         self.baselines = MONUMENT_BASELINES

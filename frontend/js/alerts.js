@@ -1,12 +1,11 @@
 /**
- * alerts.js — GET /api/alerts with area/type filters. The alert banner on
- * other pages only ever shows the single top alert; this page is the first
- * place the full, filterable SACHET feed (already supported server-side) is
- * actually exposed to the user.
+ * alerts.js — National Safety & Disaster Early Warnings Controller
+ *
+ * Integrates live disaster alerts sourced from the NDMA SACHET network,
+ * supporting geographical area search, disaster severity badges, and safety instructions.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!YM.nationality.require()) return;
   YM.renderHeader("alerts");
 
   document.getElementById("alert-area-filter").addEventListener(

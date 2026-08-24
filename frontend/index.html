@@ -5,6 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>YatraMitra — AI Voice Heritage Assistant</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a2238" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="YatraMitra" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -15,7 +21,7 @@
   <div id="alert-banner-host"></div>
   <div id="festival-banner-host"></div>
 
-  <main class="page assistant-page" style="max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem 3rem;">
+  <main class="page assistant-page">
     <!-- Assistant Hero Header -->
     <section class="assistant-hero">
       <div class="assistant-avatar" aria-hidden="true">
@@ -24,10 +30,10 @@
           <path d="M19 17l0.9 2.6L22.5 20.5l-2.6 0.9L19 24l-0.9-2.6-2.6-0.9 2.6-0.9z" />
         </svg>
       </div>
-      <h1 style="font-family: var(--font-display); font-size: 2rem; color: var(--maroon-dark); margin: 0 0 0.4rem;">
+      <h1 class="assistant-title">
         Namaste, I am YatraMitra AI
       </h1>
-      <p style="color: var(--ink-soft); font-size: 0.95rem; margin: 0 auto; max-width: 580px;">
+      <p class="assistant-subtitle">
         Your multilingual voice-enabled heritage travel companion. Ask me anything about crowd predictions, best visiting hours, hidden gems, travel laws, or regional cuisines.
       </p>
 
@@ -44,9 +50,9 @@
         <span id="voice-status-text" class="voice-status-text">Tap microphone to speak or type below</span>
 
         <!-- Voice Persona Switcher -->
-        <div class="voice-persona-picker" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:0.6rem;">
-          <span style="font-size:0.78rem; color:var(--ink-soft); font-weight:600;">🎙️ AI Voice:</span>
-          <select id="ym-voice-speaker-select" style="background:#fff; border:1px solid var(--line); border-radius:999px; padding:0.25rem 0.6rem; font-size:0.78rem; font-weight:600; color:var(--maroon-dark); cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.06); outline:none;">
+        <div class="voice-persona-picker">
+          <label for="ym-voice-speaker-select" class="voice-persona-label">🎙️ AI Voice:</label>
+          <select id="ym-voice-speaker-select" class="voice-speaker-select" name="voice_speaker" title="Select AI Voice persona" aria-label="Select AI Voice persona">
             <option value="anushka">👩 Anushka (Warm Female)</option>
             <option value="aditya">👨 Aditya (Clear Male)</option>
             <option value="kavya">🌸 Kavya (Soft Female)</option>
@@ -91,7 +97,7 @@
         </svg>
       </button>
       <input type="text" id="chat-input" placeholder="Ask about crowd levels, best visiting hours, hidden gems…" autocomplete="off" />
-      <button type="submit" class="btn btn--primary" id="send-chat-btn" style="padding: 0.5rem 1.1rem; border-radius: 999px;">Ask AI &rarr;</button>
+      <button type="submit" class="btn btn--primary send-chat-btn" id="send-chat-btn">Ask AI &rarr;</button>
     </form>
   </main>
 

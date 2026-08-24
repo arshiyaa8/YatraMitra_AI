@@ -1,33 +1,1770 @@
 [
-  { "name": "Taj Mahal", "slug": "taj-mahal", "state": "Uttar Pradesh", "district": "Agra", "category": "monument", "isUnderexplored": false, "coordinates": [78.0421, 27.1751], "asiProtected": true, "shortDescription": "Ivory-white marble mausoleum built by Shah Jahan for Mumtaz Mahal.", "eTicketingAvailable": true },
-  { "name": "Agra Fort", "slug": "agra-fort", "state": "Uttar Pradesh", "district": "Agra", "category": "fort", "isUnderexplored": false, "coordinates": [78.0206, 27.1795], "asiProtected": true, "shortDescription": "Mughal-era red sandstone fort on the banks of the Yamuna.", "eTicketingAvailable": true },
-  { "name": "Fatehpur Sikri", "slug": "fatehpur-sikri", "state": "Uttar Pradesh", "district": "Agra", "category": "monument", "isUnderexplored": false, "coordinates": [77.6611, 27.0945], "asiProtected": true, "shortDescription": "Mughal capital city built by Akbar, now a UNESCO World Heritage ghost city.", "eTicketingAvailable": true },
-  { "name": "Qutub Minar", "slug": "qutub-minar", "state": "Delhi", "district": "South Delhi", "category": "monument", "isUnderexplored": false, "coordinates": [77.1855, 28.5245], "asiProtected": true, "shortDescription": "73-metre tall minaret of red sandstone and marble, begun in 1192.", "eTicketingAvailable": true },
-  { "name": "Red Fort", "slug": "red-fort", "state": "Delhi", "district": "Old Delhi", "category": "fort", "isUnderexplored": false, "coordinates": [77.2410, 28.6562], "asiProtected": true, "shortDescription": "Mughal fortified palace, site of the Independence Day flag hoisting.", "eTicketingAvailable": true },
-  { "name": "Humayun's Tomb", "slug": "humayuns-tomb", "state": "Delhi", "district": "Nizamuddin", "category": "monument", "isUnderexplored": false, "coordinates": [77.2507, 28.5933], "asiProtected": true, "shortDescription": "Garden tomb of Mughal Emperor Humayun, precursor to the Taj Mahal's design.", "eTicketingAvailable": true },
-  { "name": "Hawa Mahal", "slug": "hawa-mahal", "state": "Rajasthan", "district": "Jaipur", "category": "monument", "isUnderexplored": false, "coordinates": [75.8267, 26.9239], "asiProtected": false, "shortDescription": "Five-storey pink sandstone palace with 953 small windows (jharokhas).", "eTicketingAvailable": true },
-  { "name": "Amer Fort", "slug": "amer-fort", "state": "Rajasthan", "district": "Jaipur", "category": "fort", "isUnderexplored": false, "coordinates": [75.8513, 26.9855], "asiProtected": true, "shortDescription": "Hilltop fort-palace of honey-coloured sandstone and marble overlooking Maota Lake.", "eTicketingAvailable": true },
-  { "name": "Mehrangarh Fort", "slug": "mehrangarh-fort", "state": "Rajasthan", "district": "Jodhpur", "category": "fort", "isUnderexplored": false, "coordinates": [73.0186, 26.2979], "asiProtected": false, "shortDescription": "One of India's largest forts, rising 120m above Jodhpur's Blue City.", "eTicketingAvailable": true },
-  { "name": "Jaisalmer Fort", "slug": "jaisalmer-fort", "state": "Rajasthan", "district": "Jaisalmer", "category": "fort", "isUnderexplored": true, "coordinates": [70.9083, 26.9124], "asiProtected": true, "shortDescription": "A living desert fort where thousands still reside within its sandstone walls.", "eTicketingAvailable": true },
-  { "name": "Gateway of India", "slug": "gateway-of-india", "state": "Maharashtra", "district": "Mumbai", "category": "monument", "isUnderexplored": false, "coordinates": [72.8347, 18.9220], "asiProtected": false, "shortDescription": "Arch monument built to commemorate King George V's 1911 visit.", "eTicketingAvailable": false },
-  { "name": "Ajanta Caves", "slug": "ajanta-caves", "state": "Maharashtra", "district": "Aurangabad", "category": "monument", "isUnderexplored": true, "coordinates": [75.7033, 20.5519], "asiProtected": true, "shortDescription": "2nd-century BCE Buddhist rock-cut cave monuments with renowned murals.", "eTicketingAvailable": true },
-  { "name": "Ellora Caves", "slug": "ellora-caves", "state": "Maharashtra", "district": "Aurangabad", "category": "monument", "isUnderexplored": true, "coordinates": [75.1795, 20.0258], "asiProtected": true, "shortDescription": "Rock-cut Hindu, Buddhist and Jain monuments, including the Kailasa temple.", "eTicketingAvailable": true },
-  { "name": "Mysore Palace", "slug": "mysore-palace", "state": "Karnataka", "district": "Mysuru", "category": "monument", "isUnderexplored": false, "coordinates": [76.6552, 12.3052], "asiProtected": false, "shortDescription": "Indo-Saracenic royal residence of the Wadiyar dynasty.", "eTicketingAvailable": true },
-  { "name": "Hampi Group of Monuments", "slug": "hampi", "state": "Karnataka", "district": "Ballari", "category": "monument", "isUnderexplored": true, "coordinates": [76.4600, 15.3350], "asiProtected": true, "shortDescription": "Ruins of the Vijayanagara Empire capital, a UNESCO World Heritage Site.", "eTicketingAvailable": true },
-  { "name": "Meenakshi Amman Temple", "slug": "meenakshi-temple", "state": "Tamil Nadu", "district": "Madurai", "category": "temple", "isUnderexplored": false, "coordinates": [78.1198, 9.9195], "asiProtected": false, "shortDescription": "Historic Dravidian-style temple with towering, sculpture-covered gopurams.", "eTicketingAvailable": false },
-  { "name": "Brihadeeswarar Temple", "slug": "brihadeeswarar-temple", "state": "Tamil Nadu", "district": "Thanjavur", "category": "temple", "isUnderexplored": true, "coordinates": [79.1319, 10.7828], "asiProtected": true, "shortDescription": "11th-century Chola-era granite temple, a UNESCO World Heritage Site.", "eTicketingAvailable": true },
-  { "name": "Mahabalipuram Shore Temple", "slug": "mahabalipuram-shore-temple", "state": "Tamil Nadu", "district": "Chengalpattu", "category": "temple", "isUnderexplored": false, "coordinates": [80.1998, 12.6169], "asiProtected": true, "shortDescription": "8th-century Pallava-era shore temple complex on the Bay of Bengal.", "eTicketingAvailable": true },
-  { "name": "Konark Sun Temple", "slug": "konark-sun-temple", "state": "Odisha", "district": "Puri", "category": "temple", "isUnderexplored": true, "coordinates": [86.0945, 19.8876], "asiProtected": true, "shortDescription": "13th-century temple shaped as a colossal chariot of the sun god Surya.", "eTicketingAvailable": true },
-  { "name": "Khajuraho Group of Monuments", "slug": "khajuraho", "state": "Madhya Pradesh", "district": "Chhatarpur", "category": "temple", "isUnderexplored": true, "coordinates": [79.9199, 24.8318], "asiProtected": true, "shortDescription": "Nagara-style Hindu and Jain temples renowned for their intricate sculptures.", "eTicketingAvailable": true },
-  { "name": "Sanchi Stupa", "slug": "sanchi-stupa", "state": "Madhya Pradesh", "district": "Raisen", "category": "monument", "isUnderexplored": true, "coordinates": [77.7392, 23.4795], "asiProtected": true, "shortDescription": "Ancient Buddhist complex, among the oldest stone structures in India.", "eTicketingAvailable": true },
-  { "name": "Golden Temple", "slug": "golden-temple", "state": "Punjab", "district": "Amritsar", "category": "temple", "isUnderexplored": false, "coordinates": [74.8765, 31.6200], "asiProtected": false, "shortDescription": "Sikhism's holiest gurdwara, its upper floors gilded with pure gold.", "eTicketingAvailable": false },
-  { "name": "Majuli Island", "slug": "majuli-island", "state": "Assam", "district": "Majuli", "category": "natural", "isUnderexplored": true, "coordinates": [94.2278, 27.0169], "asiProtected": false, "shortDescription": "One of the world's largest river islands, home to Vaishnavite satras.", "eTicketingAvailable": false },
-  { "name": "Kaziranga National Park", "slug": "kaziranga", "state": "Assam", "district": "Golaghat", "category": "wildlife", "isUnderexplored": true, "coordinates": [93.3708, 26.5775], "asiProtected": false, "shortDescription": "UNESCO World Heritage wildlife sanctuary, home to two-thirds of the world's one-horned rhinos.", "eTicketingAvailable": true },
-  { "name": "Living Root Bridges, Cherrapunji", "slug": "living-root-bridges", "state": "Meghalaya", "district": "East Khasi Hills", "category": "natural", "isUnderexplored": true, "coordinates": [91.7168, 25.2497], "asiProtected": false, "shortDescription": "Bioengineered bridges grown from rubber fig tree roots by the Khasi people.", "eTicketingAvailable": false },
-  { "name": "Rumtek Monastery", "slug": "rumtek-monastery", "state": "Sikkim", "district": "Gangtok", "category": "monument", "isUnderexplored": true, "coordinates": [88.5583, 27.2870], "asiProtected": false, "shortDescription": "The largest monastery in Sikkim, seat-in-exile of the Karmapa Lama.", "eTicketingAvailable": false },
-  { "name": "Basilica of Bom Jesus", "slug": "basilica-of-bom-jesus", "state": "Goa", "district": "North Goa", "category": "monument", "isUnderexplored": false, "coordinates": [73.9114, 15.5009], "asiProtected": true, "shortDescription": "Baroque church holding the mortal remains of St. Francis Xavier.", "eTicketingAvailable": false },
-  { "name": "Charminar", "slug": "charminar", "state": "Telangana", "district": "Hyderabad", "category": "monument", "isUnderexplored": false, "coordinates": [78.4747, 17.3616], "asiProtected": true, "shortDescription": "1591 mosque-monument with four grand arches, the icon of Hyderabad.", "eTicketingAvailable": true },
-  { "name": "Rani ki Vav", "slug": "rani-ki-vav", "state": "Gujarat", "district": "Patan", "category": "monument", "isUnderexplored": true, "coordinates": [72.1094, 23.8595], "asiProtected": true, "shortDescription": "An intricately carved 11th-century stepwell, a UNESCO World Heritage Site.", "eTicketingAvailable": true },
-  { "name": "Victoria Memorial", "slug": "victoria-memorial", "state": "West Bengal", "district": "Kolkata", "category": "museum", "isUnderexplored": false, "coordinates": [88.3426, 22.5448], "asiProtected": false, "shortDescription": "White marble memorial and museum dedicated to Queen Victoria.", "eTicketingAvailable": true },
-  { "name": "Sun Temple, Modhera", "slug": "modhera-sun-temple", "state": "Gujarat", "district": "Mehsana", "category": "temple", "isUnderexplored": true, "coordinates": [72.1300, 23.5809], "asiProtected": true, "shortDescription": "11th-century temple dedicated to the sun god, aligned to the equinox sunrise.", "eTicketingAvailable": true }
+  {
+    "name": "Taj Mahal",
+    "slug": "taj-mahal",
+    "state": "Uttar Pradesh",
+    "district": "Agra",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      78.0421,
+      27.1751
+    ],
+    "asiProtected": true,
+    "shortDescription": "Ivory-white marble mausoleum built by Shah Jahan for Mumtaz Mahal.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/taj-mahal.jpg"
+    ],
+    "history": "Commissioned in 1631 by Mughal Emperor Shah Jahan to house the tomb of his favorite wife, Mumtaz Mahal. Constructed using pure white Makrana marble by over 20,000 artisans under chief architect Ustad Ahmad Lahori, it took over two decades to complete and is regarded as the jewel of Muslim art in India.",
+    "culturalSignificance": "A UNESCO World Heritage Site and one of the New Seven Wonders of the World, representing the pinnacle of Mughal architectural symmetry and pietra dura gemstone inlay work.",
+    "foodNearby": [
+      "Petha (Bansiwala)",
+      "Bedmi Puri & Jalebi",
+      "Mughlai Kebab (Pinch of Spice)",
+      "Agra Chaat"
+    ],
+    "lawsAndEtiquette": [
+      "Book e-tickets in advance online via ASI portal.",
+      "Wear complimentary shoe covers or remove footwear before ascending the marble plinth.",
+      "Drone photography, tripods, and eating food inside are strictly prohibited.",
+      "Closed on Fridays for congregational prayers."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Wheelchairs and ramps are available at the East and West gates. Electric golf carts transport visitors from parking areas."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 1100,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:30",
+      "closedOn": [
+        "Friday"
+      ],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Sunrise (06:00 - 08:30) or Sunset"
+    }
+  },
+  {
+    "name": "Agra Fort",
+    "slug": "agra-fort",
+    "state": "Uttar Pradesh",
+    "district": "Agra",
+    "category": "fort",
+    "isUnderexplored": false,
+    "coordinates": [
+      78.0206,
+      27.1795
+    ],
+    "asiProtected": true,
+    "shortDescription": "Mughal-era red sandstone fort on the banks of the Yamuna.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/agra-fort.jpg"
+    ],
+    "history": "A massive red sandstone fortress built primarily by Emperor Akbar starting in 1565, serving as the main seat of the Mughal government until 1638. Shah Jahan added white marble palaces and was later confined here by his son Aurangzeb in Musamman Burj, with a view of the Taj Mahal.",
+    "culturalSignificance": "UNESCO World Heritage Site showcasing the architectural transition from Akbar's robust red sandstone fortifications to Shah Jahan's ornate marble palaces.",
+    "foodNearby": [
+      "Agra Petha",
+      "Bedmi Poori",
+      "Dalmoth",
+      "Tandoori Chicken"
+    ],
+    "lawsAndEtiquette": [
+      "Keep to tourist pathways; active Indian Army sections inside the fort are strictly restricted.",
+      "Hire certified ASI guides with valid identification badges.",
+      "Carry water, especially during sunny afternoons."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Ramps are provided through the Amar Singh gate, though some palace courtyards have cobblestone incline paths."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 650,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (08:00 - 11:00)"
+    }
+  },
+  {
+    "name": "Fatehpur Sikri",
+    "slug": "fatehpur-sikri",
+    "state": "Uttar Pradesh",
+    "district": "Agra",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      77.6611,
+      27.0945
+    ],
+    "asiProtected": true,
+    "shortDescription": "Mughal capital city built by Akbar, now a UNESCO World Heritage ghost city.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/fatehpur-sikri.jpg"
+    ],
+    "history": "Founded in 1571 by Emperor Akbar as the capital of the Mughal Empire after Sufi saint Sheikh Salim Chishti prophesied the birth of his heir, Jahangir. It was abandoned in 1585 due to acute water scarcity.",
+    "culturalSignificance": "UNESCO World Heritage Site housing the towering 54-meter Buland Darwaza ('Gate of Magnificence'), the white marble Tomb of Salim Chishti, and the innovative Panch Mahal.",
+    "foodNearby": [
+      "Fatehpur Khurchan",
+      "Kachori & Jalebi",
+      "Rabri"
+    ],
+    "lawsAndEtiquette": [
+      "Remove shoes and cover your head before entering the Dargah of Salim Chishti.",
+      "Avoid unofficial touts offering unauthorized parking or guidance."
+    ],
+    "accessibility": {
+      "tags": [
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Electric shuttles connect the lower parking lot to the upper citadel entrance."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 610,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February"
+      ],
+      "bestVisitTimeOfDay": "Morning (07:00 - 10:30)"
+    }
+  },
+  {
+    "name": "Qutub Minar",
+    "slug": "qutub-minar",
+    "state": "Delhi",
+    "district": "South Delhi",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      77.1855,
+      28.5245
+    ],
+    "asiProtected": true,
+    "shortDescription": "73-metre tall minaret of red sandstone and marble, begun in 1192.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/qutub-minar.jpg"
+    ],
+    "history": "Initiated by Qutb-ud-din Aibak in 1192 and completed by his successors Iltutmish and Firoz Shah Tughlaq. Rising 72.5 meters, it is the world's tallest brick minaret and commemorates the establishment of the Delhi Sultanate.",
+    "culturalSignificance": "UNESCO World Heritage complex containing the famous rust-resistant 4th-century Iron Pillar of Chandragupta II and the Quwwat-ul-Islam Mosque.",
+    "foodNearby": [
+      "Chole Bhature",
+      "Kathi Rolls",
+      "Hauz Khas Social",
+      "Chaat Corner"
+    ],
+    "lawsAndEtiquette": [
+      "Climbing the interior tower staircase is closed to the public for safety.",
+      "Stay behind protective barriers surrounding the ancient Iron Pillar."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Wide paved pathways and ramps throughout the landscaped archaeological park."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "07:00",
+      "closeTime": "19:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Late Afternoon (15:30 - 18:00)"
+    }
+  },
+  {
+    "name": "Red Fort",
+    "slug": "red-fort",
+    "state": "Delhi",
+    "district": "Old Delhi",
+    "category": "fort",
+    "isUnderexplored": false,
+    "coordinates": [
+      77.241,
+      28.6562
+    ],
+    "asiProtected": true,
+    "shortDescription": "Mughal fortified palace, site of the Independence Day flag hoisting.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/red-fort.jpg"
+    ],
+    "history": "Constructed between 1638 and 1648 when Shah Jahan shifted his capital from Agra to Shahjahanabad (Old Delhi). Served as the imperial residence and ceremonial center of the Mughal Empire for nearly two centuries.",
+    "culturalSignificance": "UNESCO World Heritage Site where the Prime Minister of India unfurls the National Flag each Independence Day (15th August).",
+    "foodNearby": [
+      "Paranthe Wali Gali",
+      "Karim's Mutton Korma",
+      "Daulat ki Chaat",
+      "Jalebi Wala (Chandni Chowk)"
+    ],
+    "lawsAndEtiquette": [
+      "Strict airport-grade security screening at Lahori Gate.",
+      "Audio guides available at the entrance kiosk in multiple languages."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Ramps are installed at Lahori Gate and main museum halls inside the complex."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 650,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "09:30",
+      "closeTime": "16:30",
+      "closedOn": [
+        "Monday"
+      ],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (09:30 - 12:00)"
+    }
+  },
+  {
+    "name": "Humayun's Tomb",
+    "slug": "humayuns-tomb",
+    "state": "Delhi",
+    "district": "Nizamuddin",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      77.2507,
+      28.5933
+    ],
+    "asiProtected": true,
+    "shortDescription": "Garden tomb of Mughal Emperor Humayun, precursor to the Taj Mahal's design.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/humayuns-tomb.jpg"
+    ],
+    "history": "Commissioned in 1569 by Humayun's chief consort Empress Bega Begum and designed by Persian architect Mirak Mirza Ghiyas. It was the first garden-tomb on the Indian subcontinent and introduced the monumental double-dome architecture.",
+    "culturalSignificance": "UNESCO World Heritage Site that served as the primary architectural inspiration and design prototype for the Taj Mahal.",
+    "foodNearby": [
+      "Nizamuddin Galouti Kebabs",
+      "Nalli Nihari",
+      "Khan Market Cafes",
+      "Biryani"
+    ],
+    "lawsAndEtiquette": [
+      "Stay on marked paved pathways and avoid stepping into preserved garden charbagh channels.",
+      "Commercial tripod photography requires special ASI permission."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Accessible paved garden walkways and ramps leading to the lower terrace."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (06:30 - 09:00) or Sunset"
+    }
+  },
+  {
+    "name": "Hawa Mahal",
+    "slug": "hawa-mahal",
+    "state": "Rajasthan",
+    "district": "Jaipur",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      75.8267,
+      26.9239
+    ],
+    "asiProtected": false,
+    "shortDescription": "Five-storey pink sandstone palace with 953 small windows (jharokhas).",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/hawa-mahal.jpg"
+    ],
+    "history": "Built in 1799 by Maharaja Sawai Pratap Singh and designed by Lal Chand Ustad. Its unique five-story pyramidal exterior features 953 intricately carved honeycomb jharokha windows allowing royal women to observe street life without being seen.",
+    "culturalSignificance": "The defining architectural icon of Jaipur ('The Pink City'), constructed with red and pink sandstone mimicking the crown of Lord Krishna.",
+    "foodNearby": [
+      "Rawat Pyaaz Kachori",
+      "LMB Ghewar",
+      "Lassi Wala (MI Road)",
+      "Jaipuri Thali"
+    ],
+    "lawsAndEtiquette": [
+      "Morning light offers the best photograph angles from the street opposite Wind View Cafe.",
+      "Mind low door headers in upper chambers."
+    ],
+    "accessibility": {
+      "tags": [
+        "audio_guide_available",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Ramps exist between levels inside the palace; top terraces feature narrow spiral ramps."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 200,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "09:00",
+      "closeTime": "17:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (09:00 - 11:00)"
+    }
+  },
+  {
+    "name": "Amer Fort",
+    "slug": "amer-fort",
+    "state": "Rajasthan",
+    "district": "Jaipur",
+    "category": "fort",
+    "isUnderexplored": false,
+    "coordinates": [
+      75.8513,
+      26.9855
+    ],
+    "asiProtected": true,
+    "shortDescription": "Hilltop fort-palace of honey-coloured sandstone and marble overlooking Maota Lake.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/amer-fort.jpg"
+    ],
+    "history": "Constructed in 1592 by Raja Man Singh I atop Cheel ka Teela overlooking Maota Lake, with later expansions by Mirza Raja Jai Singh. Famed for its artistic Hindu elements and opulent Sheesh Mahal (Mirror Palace).",
+    "culturalSignificance": "UNESCO World Heritage Hill Fort of Rajasthan, exemplifying Rajput royal grandeur and sophisticated water harvesting engineering.",
+    "foodNearby": [
+      "Amer Ki Thali",
+      "Dal Baati Churma",
+      "Masala Chai at Maota Lake",
+      "Kulfi"
+    ],
+    "lawsAndEtiquette": [
+      "Avoid touching the delicate concave glass mirror inlays in the Sheesh Mahal.",
+      "Audio guides available at Jaleb Chowk."
+    ],
+    "accessibility": {
+      "tags": [
+        "audio_guide_available",
+        "guided_tours"
+      ],
+      "wcagNotes": "Jeep shuttle service available to transport visitors from base parking to the main courtyard."
+    },
+    "entryFee": {
+      "indian": 100,
+      "foreigner": 550,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "08:00",
+      "closeTime": "17:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (08:00 - 10:30) or Night Light Show (19:00)"
+    }
+  },
+  {
+    "name": "Mehrangarh Fort",
+    "slug": "mehrangarh-fort",
+    "state": "Rajasthan",
+    "district": "Jodhpur",
+    "category": "fort",
+    "isUnderexplored": false,
+    "coordinates": [
+      73.0186,
+      26.2979
+    ],
+    "asiProtected": false,
+    "shortDescription": "One of India's largest forts, rising 120m above Jodhpur's Blue City.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/mehrangarh-fort.jpg"
+    ],
+    "history": "Founded in 1459 by Rao Jodha when he established Jodhpur as the Marwar capital. Perched on a perpendicular cliff 122 meters above the Blue City with walls up to 36 meters high.",
+    "culturalSignificance": "One of India's best-curated private museum forts, housing royal palanquins, turbans, arms, miniature paintings, and the famous Phool Mahal.",
+    "foodNearby": [
+      "Mirchi Vada (Janta Sweets)",
+      "Mawa Kachori",
+      "Ghevar",
+      "Lal Maas (Gypsy Restaurant)"
+    ],
+    "lawsAndEtiquette": [
+      "Elevator ticket available at the entrance counter for senior citizens and mobility needs.",
+      "Ziplining (Flying Fox) available across the fort moats for adventure seekers."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "elevators",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "An elevator is available at the main entrance to take mobility-impaired visitors directly to the top museum terrace."
+    },
+    "entryFee": {
+      "indian": 100,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "09:00",
+      "closeTime": "17:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (09:00 - 11:30) or Late Afternoon"
+    }
+  },
+  {
+    "name": "Jaisalmer Fort",
+    "slug": "jaisalmer-fort",
+    "state": "Rajasthan",
+    "district": "Jaisalmer",
+    "category": "fort",
+    "isUnderexplored": true,
+    "coordinates": [
+      70.9083,
+      26.9124
+    ],
+    "asiProtected": true,
+    "shortDescription": "A living desert fort where thousands still reside within its sandstone walls.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/jaisalmer-fort.jpg"
+    ],
+    "history": "Built in 1156 CE by the Rajput ruler Rawal Jaisal. Known as Sonar Qila (Golden Fort) because of its yellow sandstone architecture that turns golden at sunset.",
+    "culturalSignificance": "One of the very few living forts in the world, where one-fourth of the old city's population still resides within its 99 bastions. UNESCO World Heritage Site.",
+    "foodNearby": [
+      "Ker Sangri",
+      "Dal Baati Churma",
+      "Gatte ki Sabzi",
+      "Ghotua Ladoo"
+    ],
+    "lawsAndEtiquette": [
+      "Respect the residential privacy of local families living inside the living fort.",
+      "Vehicular traffic is restricted inside the fort to preserve heritage structures."
+    ],
+    "accessibility": {
+      "tags": [
+        "audio_guide_available",
+        "guided_tours"
+      ],
+      "wcagNotes": "Main Suraj Pol gate is accessible; inner alleyways are pedestrian-only cobblestone pathways."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 250,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "17:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Sunrise or Sunset (16:30 - 18:30)"
+    }
+  },
+  {
+    "name": "Gateway of India",
+    "slug": "gateway-of-india",
+    "state": "Maharashtra",
+    "district": "Mumbai",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      72.8347,
+      18.922
+    ],
+    "asiProtected": false,
+    "shortDescription": "Arch monument built to commemorate King George V's 1911 visit.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/gateway-of-india.jpg"
+    ],
+    "history": "Erected to commemorate the landing of King George V and Queen Mary at Apollo Bunder in 1911. Designed by architect George Wittet in Indo-Saracenic style and completed in 1924. Historically, the last British troops departed India through this arch in 1948.",
+    "culturalSignificance": "Mumbai's premier waterfront landmark overlooking the Arabian Sea, standing opposite the historic Taj Mahal Palace Hotel.",
+    "foodNearby": [
+      "Vada Pav",
+      "Pav Bhaji (Cannon)",
+      "Bun Maska & Chai (Leopold Cafe)",
+      "Bhel Puri (Chowpatty)"
+    ],
+    "lawsAndEtiquette": [
+      "Free public entry; security bag screening required at promenade barricades.",
+      "Ferry tickets to Elephanta Caves are available at the jetty ticket booths."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Completely flat paved promenade with wheelchair access from the security plaza."
+    },
+    "entryFee": {
+      "indian": 0,
+      "foreigner": 0,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "00:00",
+      "closeTime": "23:59",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Evening Sunset (17:00 - 19:30)"
+    }
+  },
+  {
+    "name": "Ajanta Caves",
+    "slug": "ajanta-caves",
+    "state": "Maharashtra",
+    "district": "Aurangabad",
+    "category": "monument",
+    "isUnderexplored": true,
+    "coordinates": [
+      75.7033,
+      20.5519
+    ],
+    "asiProtected": true,
+    "shortDescription": "2nd-century BCE Buddhist rock-cut cave monuments with renowned murals.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/ajanta-caves.jpg"
+    ],
+    "history": "A series of 30 rock-cut Buddhist cave monuments excavated from the 2nd century BCE to about 480 CE into a horseshoe-shaped cliff along the Waghur River.",
+    "culturalSignificance": "UNESCO World Heritage Site world-renowned for its ancient Buddhist mural frescoes, including masterpieces depicting Bodhisattvas Padmapani and Vajrapani.",
+    "foodNearby": [
+      "Naan Qalia (Aurangabad)",
+      "Pithla Bhakri",
+      "Maharashtrian Thali",
+      "Kand Poha"
+    ],
+    "lawsAndEtiquette": [
+      "No flash photography allowed inside caves to protect the millennia-old natural mineral pigments.",
+      "Remove footwear before stepping onto cave temple sanctum floors."
+    ],
+    "accessibility": {
+      "tags": [
+        "guided_tours",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Palanquin (doli) services operated by certified porters are available for senior citizens and mobility needs."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "09:00",
+      "closeTime": "17:00",
+      "closedOn": [
+        "Monday"
+      ],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (09:00 - 12:30)"
+    }
+  },
+  {
+    "name": "Ellora Caves",
+    "slug": "ellora-caves",
+    "state": "Maharashtra",
+    "district": "Aurangabad",
+    "category": "monument",
+    "isUnderexplored": true,
+    "coordinates": [
+      75.1795,
+      20.0258
+    ],
+    "asiProtected": true,
+    "shortDescription": "Rock-cut Hindu, Buddhist and Jain monuments, including the Kailasa temple.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/ellora-caves.jpg"
+    ],
+    "history": "Comprising 34 monumental rock-cut monasteries and temples carved side-by-side between the 6th and 10th centuries CE by the Rashtrakuta and Yadava dynasties.",
+    "culturalSignificance": "UNESCO World Heritage Site home to Cave 16 (Kailasa Temple), the largest monolithic rock excavation in the world, carved top-down from a single basalt cliff.",
+    "foodNearby": [
+      "Aurangabad Biryani",
+      "Thalipeeth",
+      "Jowar Bhakri",
+      "Shrikhand"
+    ],
+    "lawsAndEtiquette": [
+      "Battery-operated shuttle buses available to transfer between Hindu, Buddhist, and Jain cave clusters.",
+      "Wear sturdy walking shoes for stone steps."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Ramped paved access from main parking into the central Kailasa Temple courtyard."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [
+        "Tuesday"
+      ],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (07:00 - 11:00)"
+    }
+  },
+  {
+    "name": "Mysore Palace",
+    "slug": "mysore-palace",
+    "state": "Karnataka",
+    "district": "Mysuru",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      76.6552,
+      12.3052
+    ],
+    "asiProtected": false,
+    "shortDescription": "Indo-Saracenic royal residence of the Wadiyar dynasty.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/mysore-palace.jpg"
+    ],
+    "history": "Designed by British architect Henry Irwin and commissioned in 1897 by Maharani Kempananjammanni Vani Vilasa Sannidhana after the old wooden palace burned down. Completed in 1912 as the official seat of the Wadiyar dynasty.",
+    "culturalSignificance": "A premier showcase of Indo-Saracenic architecture with stained glass ceilings, Belgian mirrors, and solid silver doors. Illuminated by 97,000 light bulbs on Sundays and during Mysore Dasara.",
+    "foodNearby": [
+      "Mysore Pak (Guru Sweet Mart)",
+      "Mylari Dosa",
+      "Filter Coffee",
+      "Bisi Bele Bath"
+    ],
+    "lawsAndEtiquette": [
+      "Footwear must be deposited at the free counter before entering the palace interior.",
+      "Photography is strictly prohibited inside the residential palace museum."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Free wheelchairs available at the entrance; ramps lead through the ground-floor royal galleries."
+    },
+    "entryFee": {
+      "indian": 70,
+      "foreigner": 200,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "10:00",
+      "closeTime": "17:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "September",
+        "October",
+        "November",
+        "December",
+        "January",
+        "February"
+      ],
+      "bestVisitTimeOfDay": "Afternoon (14:00 - 17:00) or Sunday Illumination (19:00 - 19:45)"
+    }
+  },
+  {
+    "name": "Hampi Group of Monuments",
+    "slug": "hampi",
+    "state": "Karnataka",
+    "district": "Ballari",
+    "category": "monument",
+    "isUnderexplored": true,
+    "coordinates": [
+      76.46,
+      15.335
+    ],
+    "asiProtected": true,
+    "shortDescription": "Ruins of the Vijayanagara Empire capital, a UNESCO World Heritage Site.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/hampi.jpg"
+    ],
+    "history": "Capital of the Vijayanagara Empire from 1336 to 1565. Described by medieval European travelers as one of the richest cities in the world before being sacked in the Battle of Talikota.",
+    "culturalSignificance": "UNESCO World Heritage Site with over 1,600 surviving monuments among boulder-strewn hills, including the iconic Stone Chariot at Vijaya Vittala Temple and the musical pillars.",
+    "foodNearby": [
+      "South Indian Banana Leaf Thali",
+      "Mango Tree Special Platter",
+      "Neer Dosa",
+      "Filter Kaapi"
+    ],
+    "lawsAndEtiquette": [
+      "Do not tap or strike the musical pillars at the Vittala Temple (enforced to prevent acoustic erosion).",
+      "Dress modestly when entering the active Virupaksha Temple."
+    ],
+    "accessibility": {
+      "tags": [
+        "guided_tours",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Electric buggies transport visitors from the parking depot to the Vittala Temple complex."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February"
+      ],
+      "bestVisitTimeOfDay": "Sunrise (06:00 - 08:30) or Sunset on Matanga Hill"
+    }
+  },
+  {
+    "name": "Meenakshi Amman Temple",
+    "slug": "meenakshi-temple",
+    "state": "Tamil Nadu",
+    "district": "Madurai",
+    "category": "temple",
+    "isUnderexplored": false,
+    "coordinates": [
+      78.1198,
+      9.9195
+    ],
+    "asiProtected": false,
+    "shortDescription": "Historic Dravidian-style temple with towering, sculpture-covered gopurams.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/meenakshi-temple.jpg"
+    ],
+    "history": "An ancient temple dedicated to Goddess Meenakshi and Lord Sundareswarar, celebrated in Sangam literature. The present majestic structure was expanded between 1623 and 1659 by Thirumalai Nayak.",
+    "culturalSignificance": "The supreme masterpiece of Dravidian temple architecture, featuring 14 soaring gopuram gateway towers adorned with thousands of painted stucco mythological figures, and the famous Hall of Thousand Pillars.",
+    "foodNearby": [
+      "Famous Jigarthanda",
+      "Madurai Kari Dosa",
+      "Bun Parotta (Murugan Idli)",
+      "Filter Coffee"
+    ],
+    "lawsAndEtiquette": [
+      "Strict traditional dress code: Men must wear dhotis/pants; women must wear sarees/salwar suits.",
+      "Mobile phones and smart cameras are prohibited inside the sanctum."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access"
+      ],
+      "wcagNotes": "Wheelchair assistance available at East and South entrances for senior citizens and mobility needs."
+    },
+    "entryFee": {
+      "indian": 0,
+      "foreigner": 50,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "05:00",
+      "closeTime": "22:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (05:30 - 08:30) or Night Palliarai Ceremony (21:00)"
+    }
+  },
+  {
+    "name": "Brihadeeswarar Temple",
+    "slug": "brihadeeswarar-temple",
+    "state": "Tamil Nadu",
+    "district": "Thanjavur",
+    "category": "temple",
+    "isUnderexplored": true,
+    "coordinates": [
+      79.1319,
+      10.7828
+    ],
+    "asiProtected": true,
+    "shortDescription": "11th-century Chola-era granite temple, a UNESCO World Heritage Site.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/brihadeeswarar-temple.jpg"
+    ],
+    "history": "Consecrated in 1010 CE by the legendary Emperor Raja Raja Chola I. Built entirely of granite blocks transported over 50 km, it was the largest temple structure in Asia of its era.",
+    "culturalSignificance": "UNESCO World Heritage Site (Great Living Chola Temples). Features a 66-meter vimana tower crowned by an 80-tonne single granite stone dome, and a massive monolithic Nandi bull.",
+    "foodNearby": [
+      "Thanjavur Traditional Meals",
+      "Ashoka Halwa",
+      "Degree Coffee",
+      "Kothu Parotta"
+    ],
+    "lawsAndEtiquette": [
+      "Remove footwear before stepping onto the raised temple stone plinth.",
+      "Avoid touching the ancient 11th-century Tamil stone inscriptions and fresco corridors."
+    ],
+    "accessibility": {
+      "tags": [
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Wide stone ramp and level paved walkways surrounding the vast cloistered courtyard."
+    },
+    "entryFee": {
+      "indian": 0,
+      "foreigner": 0,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "20:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "November",
+        "December",
+        "January",
+        "February"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (06:00 - 08:30) or Sunset (16:30 - 18:30)"
+    }
+  },
+  {
+    "name": "Mahabalipuram Shore Temple",
+    "slug": "mahabalipuram-shore-temple",
+    "state": "Tamil Nadu",
+    "district": "Chengalpattu",
+    "category": "temple",
+    "isUnderexplored": false,
+    "coordinates": [
+      80.1998,
+      12.6169
+    ],
+    "asiProtected": true,
+    "shortDescription": "8th-century Pallava-era shore temple complex on the Bay of Bengal.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/mahabalipuram-shore-temple.jpg"
+    ],
+    "history": "Constructed between 700 and 728 CE during the reign of Pallava king Narasimhavarman II. Built on the shores of the Bay of Bengal, it is one of the earliest structural stone temples of Southern India.",
+    "culturalSignificance": "UNESCO World Heritage Site showcasing classical Pallava coastal architecture, flanked by sculpted monolithic Nandis and reliefs of Shiva and Vishnu.",
+    "foodNearby": [
+      "Coastal Fresh Fish Fry",
+      "Banana Leaf Thali",
+      "Coconut Water",
+      "Filter Coffee"
+    ],
+    "lawsAndEtiquette": [
+      "Do not climb on weathered stone ramparts.",
+      "Ticket is valid for both the Shore Temple and the Five Rathas complex."
+    ],
+    "accessibility": {
+      "tags": [
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Paved garden pathways and wooden viewing boardwalks along the beach perimeter."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "November",
+        "December",
+        "January",
+        "February"
+      ],
+      "bestVisitTimeOfDay": "Sunrise (06:00 - 08:00)"
+    }
+  },
+  {
+    "name": "Konark Sun Temple",
+    "slug": "konark-sun-temple",
+    "state": "Odisha",
+    "district": "Puri",
+    "category": "temple",
+    "isUnderexplored": true,
+    "coordinates": [
+      86.0945,
+      19.8876
+    ],
+    "asiProtected": true,
+    "shortDescription": "13th-century temple shaped as a colossal chariot of the sun god Surya.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/konark-sun-temple.jpg"
+    ],
+    "history": "Built in 1250 CE by King Narasimhadeva I of the Eastern Ganga Dynasty. Designed as a colossal 24-wheeled chariot of Surya (the Sun God) pulled by seven galloping stone horses.",
+    "culturalSignificance": "UNESCO World Heritage Site celebrated as the crown jewel of Kalinga architecture, with wheels that function as precise astronomical sundials.",
+    "foodNearby": [
+      "Odisha Dalma",
+      "Chhena Poda (Pahala)",
+      "Khaja (Puri specialty)",
+      "Machha Besara"
+    ],
+    "lawsAndEtiquette": [
+      "Stay on designated raised boardwalks to protect ancient carvings from foot wear.",
+      "Sound and Light show runs every evening in Odia and English."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Paved stone ramps around the main Jagamohana platform and landscaped gardens."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "20:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (06:00 - 09:00) or Sunset Light Show"
+    }
+  },
+  {
+    "name": "Khajuraho Group of Monuments",
+    "slug": "khajuraho",
+    "state": "Madhya Pradesh",
+    "district": "Chhatarpur",
+    "category": "temple",
+    "isUnderexplored": true,
+    "coordinates": [
+      79.9199,
+      24.8318
+    ],
+    "asiProtected": true,
+    "shortDescription": "Nagara-style Hindu and Jain temples renowned for their intricate sculptures.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/khajuraho.jpg"
+    ],
+    "history": "Constructed between 950 and 1050 CE by the rulers of the Chandela dynasty. Originally comprising 85 temples, 25 survive today across the Western, Eastern, and Southern groups.",
+    "culturalSignificance": "UNESCO World Heritage Site famous for its Nagara-style architectural soaring spires and intricately carved stone reliefs celebrating human life, devotion, and cosmic balance.",
+    "foodNearby": [
+      "Bundelkhandi Thali",
+      "Dal Bafla",
+      "Korma",
+      "Jalebi"
+    ],
+    "lawsAndEtiquette": [
+      "Do not touch the delicate relief sculptures.",
+      "Audio guides available at the Western Group ticket entrance."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available",
+        "audio_guide_available"
+      ],
+      "wcagNotes": "Smooth paved paths and ramps throughout the manicured Western Group gardens."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (06:30 - 10:00) or Evening Sound & Light Show (18:30)"
+    }
+  },
+  {
+    "name": "Sanchi Stupa",
+    "slug": "sanchi-stupa",
+    "state": "Madhya Pradesh",
+    "district": "Raisen",
+    "category": "monument",
+    "isUnderexplored": true,
+    "coordinates": [
+      77.7392,
+      23.4795
+    ],
+    "asiProtected": true,
+    "shortDescription": "Ancient Buddhist complex, among the oldest stone structures in India.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/sanchi-stupa.jpg"
+    ],
+    "history": "Commissioned by Emperor Ashoka the Great in the 3rd century BCE to enshrine sacred relics of the Buddha. Later expanded with stone casing and four intricately carved gateways (toranas) by the Shunga and Satavahana rulers.",
+    "culturalSignificance": "The oldest stone structure in India and a UNESCO World Heritage Site. The four torana gateways depict Buddhist Jataka tales and Ashokan edicts in extraordinary narrative relief.",
+    "foodNearby": [
+      "Poha Jalebi",
+      "Bhutte Ka Kees",
+      "Malpua",
+      "Dal Bafla"
+    ],
+    "lawsAndEtiquette": [
+      "Circumambulate the Great Stupa clockwise (Pradakshina) in accordance with Buddhist tradition.",
+      "Maintain serene quiet around monastic ruins and meditation spots."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Paved pathways with gentle ramps around the main circumambulation path."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:30",
+      "closeTime": "18:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Morning (07:00 - 10:00)"
+    }
+  },
+  {
+    "name": "Golden Temple",
+    "slug": "golden-temple",
+    "state": "Punjab",
+    "district": "Amritsar",
+    "category": "temple",
+    "isUnderexplored": false,
+    "coordinates": [
+      74.8765,
+      31.62
+    ],
+    "asiProtected": false,
+    "shortDescription": "Sikhism's holiest gurdwara, its upper floors gilded with pure gold.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/golden-temple.jpg"
+    ],
+    "history": "Founded in 1577 by Guru Ram Das, the fourth Sikh Guru, and designed with four doors symbolizing openness to all humanity. Maharaja Ranjit Singh gilded the upper sanctum with 750 kg of pure gold in 1830.",
+    "culturalSignificance": "The holiest gurdwara of Sikhism (Harmandir Sahib). Operates the world's largest community kitchen (Langar), serving over 100,000 free hot meals daily to all visitors regardless of background.",
+    "foodNearby": [
+      "Guru Ka Langar (Community Kitchen)",
+      "Amritsari Kulcha (Bhai Kulwant Singh)",
+      "Kesar Da Dhaba",
+      "Sweet Lassi (Ahuja)"
+    ],
+    "lawsAndEtiquette": [
+      "Head must be covered at all times (scarves/headcloths provided free at the entrance).",
+      "Remove footwear and wash feet in the shallow running water channel before entering the marble Parikrama.",
+      "Smoking, tobacco, and alcohol are strictly forbidden anywhere in the precinct."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "elevators",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Specially designed wheelchairs with attendants are provided free at the Information Office for circumambulating the Parikrama."
+    },
+    "entryFee": {
+      "indian": 0,
+      "foreigner": 0,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "03:00",
+      "closeTime": "23:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Early Morning Palki Sahib Ceremony (04:30) or Night Illumination (20:00)"
+    }
+  },
+  {
+    "name": "Majuli Island",
+    "slug": "majuli-island",
+    "state": "Assam",
+    "district": "Majuli",
+    "category": "natural",
+    "isUnderexplored": true,
+    "coordinates": [
+      94.2278,
+      27.0169
+    ],
+    "asiProtected": false,
+    "shortDescription": "One of the world's largest river islands, home to Vaishnavite satras.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/majuli-island.jpg"
+    ],
+    "history": "Formed by changing courses of the Brahmaputra River, Majuli has been the heart of Assamese neo-Vaishnavite culture since the 15th century, founded by saint-reformer Srimanta Sankardev.",
+    "culturalSignificance": "The world's largest inhabited river island, famous for its historic Satras (monasteries), traditional bamboo mask-making at Natun Samaguri Satra, and classical Sattriya dance.",
+    "foodNearby": [
+      "Assamese Fish Thali with Joha Rice",
+      "Pitha & Laru",
+      "Apong",
+      "Duck Curry with Ash Gourd"
+    ],
+    "lawsAndEtiquette": [
+      "Maintain respectful quiet inside monastic Satras during prayer and chant hours.",
+      "Last ferry back to Nimati Ghat departs before sunset."
+    ],
+    "accessibility": {
+      "tags": [
+        "guided_tours"
+      ],
+      "wcagNotes": "Flat island terrain; battery e-rickshaws and eco-bicycles available at Kamalabari ferry ghat."
+    },
+    "entryFee": {
+      "indian": 0,
+      "foreigner": 0,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March",
+        "April"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (Ferry crossing at sunrise)"
+    }
+  },
+  {
+    "name": "Kaziranga National Park",
+    "slug": "kaziranga",
+    "state": "Assam",
+    "district": "Golaghat",
+    "category": "wildlife",
+    "isUnderexplored": true,
+    "coordinates": [
+      93.3708,
+      26.5775
+    ],
+    "asiProtected": false,
+    "shortDescription": "UNESCO World Heritage wildlife sanctuary, home to two-thirds of the world's one-horned rhinos.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/kaziranga.jpg"
+    ],
+    "history": "Established in 1905 through the conservation efforts of Mary Curzon, designated a National Park in 1974, and declared a Tiger Reserve in 2006.",
+    "culturalSignificance": "UNESCO World Heritage Site hosting two-thirds of the world's great one-horned rhinoceros population, along with wild water buffalo, swamp deer, and royal Bengal tigers.",
+    "foodNearby": [
+      "Assamese Duck Curry with Bamboo Shoot",
+      "Khar",
+      "Masor Tenga",
+      "Aloo Pitika"
+    ],
+    "lawsAndEtiquette": [
+      "Maintain absolute silence during jeep safari drives to avoid startling wildlife.",
+      "Stay inside your authorized safari vehicle; do not litter or use plastic."
+    ],
+    "accessibility": {
+      "tags": [
+        "guided_tours",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Accessible visitor interpretation center and paved viewing towers at Bagori range."
+    },
+    "entryFee": {
+      "indian": 100,
+      "foreigner": 650,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "07:00",
+      "closeTime": "16:30",
+      "closedOn": [
+        "Closed May-October (Monsoon)"
+      ],
+      "bestVisitMonths": [
+        "November",
+        "December",
+        "January",
+        "February",
+        "March",
+        "April"
+      ],
+      "bestVisitTimeOfDay": "Morning Elephant/Jeep Safari (07:00 - 09:30)"
+    }
+  },
+  {
+    "name": "Living Root Bridges, Cherrapunji",
+    "slug": "living-root-bridges",
+    "state": "Meghalaya",
+    "district": "East Khasi Hills",
+    "category": "natural",
+    "isUnderexplored": true,
+    "coordinates": [
+      91.7168,
+      25.2497
+    ],
+    "asiProtected": false,
+    "shortDescription": "Bioengineered bridges grown from rubber fig tree roots by the Khasi people.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/living-root-bridges.jpg"
+    ],
+    "history": "Bioengineered over centuries by the indigenous Khasi and Jaintia tribes by guiding the secondary aerial roots of Ficus elastica trees across rushing mountain river streams.",
+    "culturalSignificance": "UNESCO Tentative World Heritage Site representing an extraordinary living botanical engineering tradition that grows stronger and more resilient over centuries.",
+    "foodNearby": [
+      "Meghalaya Jadoh",
+      "Dohneiiong (Pork with black sesame)",
+      "Khasi Bamboo Shoot Curry",
+      "Local Wild Honey"
+    ],
+    "lawsAndEtiquette": [
+      "Never pull, swing on, or damage the living root structures.",
+      "Carry all plastic waste back; Cherrapunji follows strict village cleanliness standards."
+    ],
+    "accessibility": {
+      "tags": [
+        "guided_tours"
+      ],
+      "wcagNotes": "Involves moderate hiking on village stone stairways; local bamboo walking sticks available at trek start."
+    },
+    "entryFee": {
+      "indian": 30,
+      "foreigner": 100,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "17:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "September",
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March",
+        "April"
+      ],
+      "bestVisitTimeOfDay": "Early Morning (06:30 - 09:30)"
+    }
+  },
+  {
+    "name": "Rumtek Monastery",
+    "slug": "rumtek-monastery",
+    "state": "Sikkim",
+    "district": "Gangtok",
+    "category": "monument",
+    "isUnderexplored": true,
+    "coordinates": [
+      88.5583,
+      27.287
+    ],
+    "asiProtected": false,
+    "shortDescription": "The largest monastery in Sikkim, seat-in-exile of the Karmapa Lama.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/rumtek-monastery.jpg"
+    ],
+    "history": "Originally built in the mid-18th century and rebuilt in 1966 by the 16th Gyalwa Karmapa as the main seat-in-exile of the Karma Kagyu lineage outside Tibet.",
+    "culturalSignificance": "Largest monastery in Sikkim, housing the sacred Golden Stupa with the relics of the 16th Karmapa and a rare world collection of ancient thangkas and manuscripts.",
+    "foodNearby": [
+      "Sikkimese Steamed Momos",
+      "Thukpa",
+      "Gundruk Soup",
+      "Tibetan Butter Tea (Po Cha)"
+    ],
+    "lawsAndEtiquette": [
+      "Remove footwear before entering the main shrine sanctum.",
+      "Walk around the monastery and spin prayer wheels in a clockwise direction."
+    ],
+    "accessibility": {
+      "tags": [
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Paved ramped approach into the main courtyard with courtyard viewing benches."
+    },
+    "entryFee": {
+      "indian": 20,
+      "foreigner": 50,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "06:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "March",
+        "April",
+        "May",
+        "October",
+        "November",
+        "December"
+      ],
+      "bestVisitTimeOfDay": "Morning Prayer Chanting (06:30 - 08:00)"
+    }
+  },
+  {
+    "name": "Basilica of Bom Jesus",
+    "slug": "basilica-of-bom-jesus",
+    "state": "Goa",
+    "district": "North Goa",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      73.9114,
+      15.5009
+    ],
+    "asiProtected": true,
+    "shortDescription": "Baroque church holding the mortal remains of St. Francis Xavier.",
+    "eTicketingAvailable": false,
+    "images": [
+      "images/monuments/basilica-of-bom-jesus.jpg"
+    ],
+    "history": "Consecrated in 1605, this historic church is one of the oldest in India and enshrines the mortal remains of St. Francis Xavier.",
+    "culturalSignificance": "UNESCO World Heritage Site and India's finest example of Baroque church architecture, with unplastered black laterite stone and a masterfully gilded multi-tiered high altar.",
+    "foodNearby": [
+      "Goan Fish Curry Thali",
+      "Poi with Chorizo",
+      "Bebinca",
+      "Sorpotel"
+    ],
+    "lawsAndEtiquette": [
+      "Modest attire required: avoid sleeveless tops and short skirts.",
+      "Silence must be maintained during religious services."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Step-free ramped entrance into the central nave and side chapels."
+    },
+    "entryFee": {
+      "indian": 0,
+      "foreigner": 0,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "09:00",
+      "closeTime": "18:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "November",
+        "December",
+        "January",
+        "February"
+      ],
+      "bestVisitTimeOfDay": "Morning (09:00 - 11:30)"
+    }
+  },
+  {
+    "name": "Charminar",
+    "slug": "charminar",
+    "state": "Telangana",
+    "district": "Hyderabad",
+    "category": "monument",
+    "isUnderexplored": false,
+    "coordinates": [
+      78.4747,
+      17.3616
+    ],
+    "asiProtected": true,
+    "shortDescription": "1591 mosque-monument with four grand arches, the icon of Hyderabad.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/charminar.jpg"
+    ],
+    "history": "Built in 1591 by Sultan Muhammad Quli Qutb Shah to commemorate the end of a deadly plague epidemic and celebrate the founding of Hyderabad.",
+    "culturalSignificance": "The definitive emblem of Hyderabad, featuring four 48.7-meter grand minarets and four grand arches facing the cardinal directions, overlooking the historic Laad Bazaar.",
+    "foodNearby": [
+      "Hyderabadi Dum Biryani (Shadab / Paradise)",
+      "Irani Chai & Osmania Biscuits (Nimrah)",
+      "Double Ka Meetha",
+      "Haleem"
+    ],
+    "lawsAndEtiquette": [
+      "Scan e-tickets at the automated turnstile gates.",
+      "Mind your belongings in the busy Laad Bazaar pedestrian areas."
+    ],
+    "accessibility": {
+      "tags": [
+        "step_free_access"
+      ],
+      "wcagNotes": "Ground-level pedestrian plaza is fully accessible; top gallery is accessible via spiral stairs."
+    },
+    "entryFee": {
+      "indian": 25,
+      "foreigner": 300,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "09:30",
+      "closeTime": "17:30",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Evening Illumination (17:30 - 19:30)"
+    }
+  },
+  {
+    "name": "Rani ki Vav",
+    "slug": "rani-ki-vav",
+    "state": "Gujarat",
+    "district": "Patan",
+    "category": "monument",
+    "isUnderexplored": true,
+    "coordinates": [
+      72.1094,
+      23.8595
+    ],
+    "asiProtected": true,
+    "shortDescription": "An intricately carved 11th-century stepwell, a UNESCO World Heritage Site.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/rani-ki-vav.jpg"
+    ],
+    "history": "Commissioned in the 11th century CE by Queen Udayamati as a memorial stepwell for King Bhima I of the Chaulukya dynasty, on the banks of the Saraswati River.",
+    "culturalSignificance": "UNESCO World Heritage Site acclaimed as the pinnacle of subterranean stepwell architecture, designed as an inverted temple with seven subterranean tiers and over 500 principal sculptures.",
+    "foodNearby": [
+      "Gujarati Kathiyawadi Thali",
+      "Patan Patola Sweets",
+      "Khaman Dhokla",
+      "Fafda Jalebi"
+    ],
+    "lawsAndEtiquette": [
+      "Do not touch or lean on ancient stone carvings.",
+      "Photography permitted; tripods require prior ASI clearance."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Surrounding garden park has flat ramps; wide restored stairways descend into the upper stepwell tiers."
+    },
+    "entryFee": {
+      "indian": 40,
+      "foreigner": 600,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "08:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Mid-morning (09:30 - 12:00)"
+    }
+  },
+  {
+    "name": "Victoria Memorial",
+    "slug": "victoria-memorial",
+    "state": "West Bengal",
+    "district": "Kolkata",
+    "category": "museum",
+    "isUnderexplored": false,
+    "coordinates": [
+      88.3426,
+      22.5448
+    ],
+    "asiProtected": false,
+    "shortDescription": "White marble memorial and museum dedicated to Queen Victoria.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/victoria-memorial.jpg"
+    ],
+    "history": "Constructed between 1906 and 1921 to commemorate Queen Victoria. Designed by William Emerson using white Makrana marble, blending British, Mughal, and Venetian architectural styles.",
+    "culturalSignificance": "Kolkata's most celebrated museum, housing 25 royal galleries of historic paintings, rare manuscripts, and Indian Independence archives amidst 64 acres of landscaped gardens.",
+    "foodNearby": [
+      "Kolkata Kathi Roll (Kusum)",
+      "Phuchka & Jhalmuri",
+      "Mishti Doi & Rasgulla (K.C. Das)",
+      "Kolkata Biryani"
+    ],
+    "lawsAndEtiquette": [
+      "Closed on Mondays and designated national holidays.",
+      "Separate garden-only tickets available for morning walkers."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "elevators",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Full ramp and elevator access into the main royal galleries and garden lawns."
+    },
+    "entryFee": {
+      "indian": 50,
+      "foreigner": 500,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "10:00",
+      "closeTime": "17:00",
+      "closedOn": [
+        "Monday"
+      ],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Afternoon (14:00 - 17:00)"
+    }
+  },
+  {
+    "name": "Sun Temple, Modhera",
+    "slug": "modhera-sun-temple",
+    "state": "Gujarat",
+    "district": "Mehsana",
+    "category": "temple",
+    "isUnderexplored": true,
+    "coordinates": [
+      72.13,
+      23.5809
+    ],
+    "asiProtected": true,
+    "shortDescription": "11th-century temple dedicated to the sun god, aligned to the equinox sunrise.",
+    "eTicketingAvailable": true,
+    "images": [
+      "images/monuments/modhera-sun-temple.jpg"
+    ],
+    "history": "Built in 1026-27 CE by King Bhima I of the Chaulukya dynasty, dedicated to the solar deity Surya. Designed so that during the equinoxes, the first rays of the rising sun directly illuminated the sanctum.",
+    "culturalSignificance": "Masterpiece of Maru-Gurjara temple architecture, featuring the magnificent Surya Kund stepped tank with 108 miniature shrines and the 52-pillared Sabha Mandapa assembly hall.",
+    "foodNearby": [
+      "Gujarati Farsan",
+      "Thepla with Chhunda",
+      "Handvo",
+      "Shrikhand"
+    ],
+    "lawsAndEtiquette": [
+      "Remove footwear before stepping onto the pillared sabhamandapa platform.",
+      "Do not step into deep pool water of Surya Kund."
+    ],
+    "accessibility": {
+      "tags": [
+        "wheelchair_accessible",
+        "step_free_access",
+        "rest_areas_available"
+      ],
+      "wcagNotes": "Paved ramped pathways throughout the monument grounds and viewing terraces."
+    },
+    "entryFee": {
+      "indian": 25,
+      "foreigner": 300,
+      "currency": "INR"
+    },
+    "timings": {
+      "openTime": "07:00",
+      "closeTime": "18:00",
+      "closedOn": [],
+      "bestVisitMonths": [
+        "October",
+        "November",
+        "December",
+        "January",
+        "February",
+        "March"
+      ],
+      "bestVisitTimeOfDay": "Sunrise (07:00 - 09:00) or Evening 3D Projection Show"
+    }
+  }
 ]

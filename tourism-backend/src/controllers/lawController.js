@@ -1,10 +1,16 @@
+/**
+ * lawController.js — Legal Rules, Temple Etiquette & Regional Food Guide Controller
+ *
+ * Exposes national regulatory guidelines (drones, photography, permits) alongside
+ * state-specific cultural customs and dining traditions.
+ */
+
 const lawsData = require("../data/laws-data.json");
 const { asyncHandler, ApiError } = require("../utils/apiError");
 
 /**
- * GET /api/laws
- * Query parameters:
- *  - state (optional): Filter details for a specific state
+ * Returns national and state-specific legal regulations, etiquette, and food culture.
+ * GET /api/laws?state=...
  */
 exports.getLaws = asyncHandler(async (req, res) => {
   const { state } = req.query;

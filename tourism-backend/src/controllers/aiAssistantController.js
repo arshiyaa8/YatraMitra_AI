@@ -1,7 +1,16 @@
+/**
+ * aiAssistantController.js — Multilingual Conversational Heritage AI Engine
+ *
+ * Implements intent classification, entity extraction, crowd level modeling,
+ * optimal visiting hours computation, hidden gem discovery, travel law retrieval,
+ * and safety advisory summaries for the voice & chat interfaces.
+ */
+
 const Monument = require("../models/Monument");
 const Alert = require("../models/Alert");
 const lawsData = require("../data/laws-data.json");
 
+// Direct Hindi names mapping for accurate transliteration and Indic NLP
 const HINDI_MONUMENT_NAMES = {
   "taj-mahal": "ताजमहल",
   "agra-fort": "आगरा का किला",
@@ -28,6 +37,13 @@ const HINDI_MONUMENT_NAMES = {
   "kaziranga": "काजीरंगा राष्ट्रीय उद्यान"
 };
 
+/**
+ * Returns the localized name of a monument for the requested language.
+ *
+ * @param {Object} m - Monument document
+ * @param {string} lang - Language code (e.g. 'hi', 'en')
+ * @returns {string} Localized monument name
+ */
 function getLocalizedName(m, lang) {
   if (lang === "hi" && HINDI_MONUMENT_NAMES[m.slug]) return HINDI_MONUMENT_NAMES[m.slug];
   if (m.translations && m.translations.length > 0) {
@@ -37,7 +53,16 @@ function getLocalizedName(m, lang) {
   return m.name;
 }
 
-// ── ML Crowd Predictor Logic (Ported from crowd_predictor.py) ────
+/**
+ * Predicts footfall density and crowd level (1.0 - 10.0) based on hour of day,
+ * day of week, weather conditions, and seasonal baseline.
+ *
+ * @param {Object} monument - Monument document
+ * @param {number} hour - Hour of the day (0-23)
+ * @param {number} tempC - Temperature in Celsius
+ * @param {boolean} isHoliday - Public / school holiday flag
+ * @returns {Object} Footfall analytics and recommended quiet hours
+ */
 function predictCrowdLevel(monument, hour = new Date().getHours(), tempC = 26, isHoliday = false) {
   const popularity = monument.popularity || 7;
   let baseLevel = (popularity / 10) * 6;

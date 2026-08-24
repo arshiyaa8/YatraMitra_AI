@@ -126,6 +126,13 @@ YM.api = (() => {
     updateMe: ({ name, preferredLanguage, preferences }) =>
       request("/auth/me", { method: "PATCH", auth: true, body: { name, preferredLanguage, preferences } }),
 
+    getSavedDestinations: () => request("/auth/me/saved-destinations", { auth: true }),
+    addSavedDestination: (slug) =>
+      request(`/auth/me/saved-destinations/${encodeURIComponent(slug)}`, { method: "POST", auth: true }),
+    removeSavedDestination: (slug) =>
+      request(`/auth/me/saved-destinations/${encodeURIComponent(slug)}`, { method: "DELETE", auth: true }),
+
+
     // ── Health / accessibility profile — healthRoutes.js (opt-in, encrypted at rest) ──
     getHealthProfile: () => request("/health-profile", { auth: true }),
     setHealthProfile: ({ allergies, conditions, mobilityNeeds, notes }) =>

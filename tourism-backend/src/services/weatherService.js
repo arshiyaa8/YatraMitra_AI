@@ -1,13 +1,22 @@
+/**
+ * weatherService.js — Real-Time Climate & Meteorological Forecast Aggregator
+ *
+ * Integrates NASA POWER, OpenWeatherMap, and IMD interfaces with in-memory caching
+ * to supply current temperatures, precipitation risks, and thermal comfort metrics.
+ */
+
 const axios = require("axios");
 const NodeCache = require("node-cache");
 
-// Report §2 (Weather data) + §3 problem 3: IMD's public API gateway has paused new registrations
-// as of mid-2026, so it CANNOT be a hard dependency. NASA/NOAA (via NASA POWER, no key required)
-// is the baseline. An IMD adapter is included but gated behind IMD_ENABLED so it can be flipped on
-// the moment registrations reopen, without touching calling code.
+// Cache meteorological responses for 30 minutes to reduce latency and rate limits
+const cache = new NodeCache({ stdTTL: 60 * 30 });
 
-const cache = new NodeCache({ stdTTL: 60 * 30 }); // 30 min cache — weather doesn't need to be per-request-fresh
-
+/**
+ * Queries NASA POWER meteorological data for latitude/longitude coordinates.
+ *
+ * @param {Object} coords - GPS coordinates { lat, lon }
+ * @returns {Promise<Object>} Formatted historical & forecast weather structure
+ */
 async function getNasaPowerForecast({ lat, lon }) {
   const key = `nasa:${lat}:${lon}`;
   const cached = cache.get(key);

@@ -28,6 +28,7 @@ router.get("/", (req, res) => {
       "/api/festivals",
       "/api/laws",
       "/api/routes",
+      "/api/assistant",
     ],
   });
 });

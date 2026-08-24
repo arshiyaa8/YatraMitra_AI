@@ -1,7 +1,16 @@
+/**
+ * validate.js — Request Payload Validation Interceptor
+ *
+ * Evaluates express-validator check rules on incoming request bodies/params.
+ * Throws a structured 400 ApiError if any validation constraints fail.
+ */
+
 const { validationResult } = require("express-validator");
 const { ApiError } = require("../utils/apiError");
 
-// Run after an array of express-validator checks; throws a formatted 400 if any failed.
+/**
+ * Validates request schema and raises an ApiError with field-level diagnostics on failure.
+ */
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

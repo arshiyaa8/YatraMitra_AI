@@ -1,0 +1,66 @@
+{
+  "name": "YatraMitra AI — Indian Heritage Voice Assistant",
+  "short_name": "YatraMitra",
+  "description": "Multilingual AI Heritage Voice Guide, Live Crowd Estimator, Cultural Festivals & TSP Itinerary Optimizer for Indian Monuments.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8f9fc",
+  "theme_color": "#1a2238",
+  "categories": [
+    "travel",
+    "navigation",
+    "culture",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Monuments",
+      "short_name": "Explore",
+      "description": "Browse and search 31+ Indian heritage monuments and hidden gems",
+      "url": "explore.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cultural Festivals",
+      "short_name": "Festivals",
+      "description": "Active and upcoming 2026 Indian cultural celebrations",
+      "url": "festivals.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Disaster Alerts",
+      "short_name": "Alerts",
+      "description": "Real-time NDMA SACHET early warnings and safety notices",
+      "url": "alerts.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

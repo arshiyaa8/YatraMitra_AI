@@ -1,14 +1,22 @@
+/**
+ * seed.js — Unified Database Seeder & Environment Initializer
+ *
+ * Populates MongoDB with:
+ * 1. 31 curated heritage monuments with verified local photography and GPS data.
+ * 2. 2026 national and regional cultural festival calendar.
+ * 3. Verified Indic translations across Hindi, Tamil, Telugu, Bengali, Marathi, etc.
+ * 4. Superadmin default administrative credentials.
+ *
+ * Usage: npm run seed
+ */
+
 require("dotenv").config();
 const mongoose = require("mongoose");
 const connectDB = require("../config/db");
 const User = require("../models/User");
 const { importCuratedSeed } = require("../importers/importMonuments");
 const { importFestivals } = require("../importers/importFestivals");
-
-// This script now delegates to the real importers rather than inlining data:
-//  - Monuments: src/importers/importMonuments.js -> src/data/monuments-seed.json (30 real, verified sites)
-//  - Festivals: src/importers/importFestivals.js -> src/data/festivals-2026.json (real 2026 dates)
-// Run them standalone via `npm run import:monuments` / `npm run import:festivals` any time after initial seed.
+const { importTranslations } = require("../data/seedTranslations");
 
 const run = async () => {
   await connectDB();
@@ -19,6 +27,10 @@ const run = async () => {
 
   const festivalResult = await importFestivals(2026);
   console.log(`Festivals: ${festivalResult.upserted}/${festivalResult.total} upserted for ${festivalResult.year}.`);
+
+  const transResult = await importTranslations();
+  console.log(`Translations: ${transResult.updated}/${transResult.total} seeded.`);
+
 
   const adminEmail = "admin@tourismassistant.gov.in";
   const existingAdmin = await User.findOne({ email: adminEmail });

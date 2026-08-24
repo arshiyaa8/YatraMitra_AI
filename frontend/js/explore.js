@@ -1,7 +1,8 @@
 /**
- * explore.js — search box + filters + monument grid + interactive Leaflet GPS map.
- * Backs onto GET /api/monuments (search/state/category/underexplored/page/limit)
- * and GET /api/monuments/nearby (lat/lng from the browser's geolocation).
+ * explore.js — Heritage Destination Explorer & Interactive Leaflet Map Controller
+ *
+ * Manages search querying, state/category filtering, pagination, underexplored gem
+ * toggles, browser GPS geolocation, nearest-site routing, and interactive map markers.
  */
 
 const state = {
@@ -25,6 +26,15 @@ let userAccuracyCircle = null;
 let currentLoadedMonuments = [];
 let activeRoutePolyline = null;
 
+/**
+ * Calculates great-circle distance (in km) between two geographical coordinates.
+ *
+ * @param {number} lat1 - Latitude of start point
+ * @param {number} lon1 - Longitude of start point
+ * @param {number} lat2 - Latitude of destination
+ * @param {number} lon2 - Longitude of destination
+ * @returns {number} Distance in kilometers rounded to 1 decimal place
+ */
 function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth's radius in km
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -40,8 +50,6 @@ function calculateDistanceKm(lat1, lon1, lat2, lon2) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!YM.nationality.require()) return;
-
   YM.renderHeader("explore");
   YM.renderAlertBanner("alert-banner-host");
   YM.renderFestivalBanner("festival-banner-host");
@@ -451,7 +459,19 @@ function setupViewSwitcher() {
       }, 100);
     }
   });
+
+  window.addEventListener("resize", () => {
+    if (exploreMap && state.viewMode === "map") {
+      exploreMap.invalidateSize();
+    }
+  });
+  window.addEventListener("orientationchange", () => {
+    if (exploreMap && state.viewMode === "map") {
+      setTimeout(() => exploreMap.invalidateSize(), 200);
+    }
+  });
 }
+
 
 function renderMapMarkers(items) {
   if (!exploreMap || !markerGroup) return;
@@ -464,9 +484,14 @@ function renderMapMarkers(items) {
   validItems.forEach((m) => {
     // GeoJSON coordinates in MongoDB are [lng, lat], Leaflet requires [lat, lng]
     const [lng, lat] = m.location.coordinates;
-    const nationality = YM.nationality.get();
-    const fee = m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
-    const feeLabel = fee === 0 ? YM.t("free_entry", "Free entry") : fee ? `${m.entryFee.currency || "INR"} ${fee} ${YM.t("entry_fee", "entry")}` : "";
+    let feeLabel = "";
+    if (m.entryFee) {
+      if (m.entryFee.indian === 0) {
+        feeLabel = YM.t("free_entry", "Free entry");
+      } else if (m.entryFee.indian) {
+        feeLabel = `${m.entryFee.currency || "INR"} ${m.entryFee.indian} ${YM.t("entry_fee", "entry")}`;
+      }
+    }
 
     const loc = YM.i18n.getMonument(m.slug, m.name, m.shortDescription);
     const mName = loc.name;
@@ -601,14 +626,25 @@ function renderGrid(grid, items) {
 }
 
 function monumentCard(m) {
-  const nationality = YM.nationality.get();
-  const fee =
-    m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
-  const feeLabel =
-    fee === 0 ? YM.t("free_entry", "Free entry") : fee ? `${m.entryFee.currency || "INR"} ${fee} ${YM.t("entry_fee", "entry")}` : "";
+  let feeLabel = "";
+  if (m.entryFee) {
+    if (m.entryFee.indian === 0) {
+      feeLabel = YM.t("free_entry", "Free entry");
+    } else if (m.entryFee.indian) {
+      feeLabel = `${m.entryFee.currency || "INR"} ${m.entryFee.indian} ${YM.t("entry_fee", "entry")}`;
+    }
+  }
 
   const isAccessible = (m.accessibility?.tags || []).includes("wheelchair_accessible");
-  const imgUrl = m.images && m.images.length > 0 ? m.images[0] : null;
+  const defaultCategoryImages = {
+    monument: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80",
+    fort: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80",
+    temple: "https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?auto=format&fit=crop&w=800&q=80",
+    museum: "https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=800&q=80",
+    natural: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    wildlife: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?auto=format&fit=crop&w=800&q=80",
+  };
+  const imgUrl = (m.images && m.images.length > 0) ? m.images[0] : (defaultCategoryImages[m.category] || defaultCategoryImages.monument);
 
   // Localized name & description
   const loc = YM.i18n.getMonument(m.slug, m.name, m.shortDescription);

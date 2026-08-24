@@ -1,6 +1,8 @@
 """
-main.py -- Central menu hub for the ym-tourism-ml project.
-Runs interactive text options alongside the new Sarvam + Groq Multilingual Voice Assistant.
+main.py — Terminal CLI Hub for Tourism ML Engines & Multilingual Voice Pipeline
+
+Provides interactive terminal menus for monument recommendation, laws and etiquette,
+regional food culture, translation, and Sarvam AI voice assistant processing.
 """
 
 import os

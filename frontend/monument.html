@@ -5,8 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Monument — YatraMitra</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1a2238" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="YatraMitra" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 
 <body>
@@ -29,11 +36,11 @@
                     <div class="lang-switcher" style="display:flex; flex-wrap:wrap; gap:1.25rem; align-items:center; margin-bottom:1rem;">
                         <div>
                             <label for="monument-select" style="font-weight:600; font-size:0.85rem; color:rgba(255,255,255,0.9); display:block; margin-bottom:0.2rem;">Select Heritage Site</label>
-                            <select id="monument-select" style="min-width:220px; max-width:320px;"></select>
+                            <select id="monument-select" aria-label="Select Heritage Site" title="Select Heritage Site" style="min-width:220px; max-width:320px;"></select>
                         </div>
                         <div>
                             <label for="lang-select" style="font-weight:600; font-size:0.85rem; color:rgba(255,255,255,0.9); display:block; margin-bottom:0.2rem;">Language</label>
-                            <select id="lang-select"></select>
+                            <select id="lang-select" aria-label="Select language" title="Select language"></select>
                         </div>
                         <span id="lang-tier-note" class="tier-note" style="margin-top:1.2rem;"></span>
                     </div>
@@ -173,7 +180,7 @@
                             <div id="crowd-report-block" hidden>
                                 <label for="crowd-report-select">Report what you see</label>
                                 <div class="inline-form">
-                                    <select id="crowd-report-select">
+                                    <select id="crowd-report-select" aria-label="Observed crowd level" title="Observed crowd level">
                                         <option value="low">Low</option>
                                         <option value="moderate">Moderate</option>
                                         <option value="high">High</option>
@@ -203,6 +210,12 @@
                         <ul id="m-accessibility-list" class="chip-list"></ul>
                     </article>
 
+                    <article class="panel panel--compact" id="m-location-panel">
+                        <h2>📍 Location &amp; Map</h2>
+                        <div id="monument-mini-map" style="height:190px; width:100%; border-radius:var(--radius-sm); border:1px solid var(--line); margin-bottom:0.75rem;" role="region" aria-label="Monument location map"></div>
+                        <a id="m-directions-btn" href="#" target="_blank" rel="noopener" class="btn btn--primary btn--block btn--sm">Get GPS Directions ↗</a>
+                    </article>
+
                     <article class="panel panel--compact">
                         <h2>Offline pack</h2>
                         <p class="widget-sub">Save the essentials for this site (and the rest of your trip list) to view without a connection.</p>
@@ -221,6 +234,7 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/monument.js"></script>
 </body>
 

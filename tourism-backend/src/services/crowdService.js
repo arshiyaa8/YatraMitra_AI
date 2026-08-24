@@ -1,3 +1,10 @@
+/**
+ * crowdService.js — Multimodal Footfall Estimation & Calibration Service
+ *
+ * Blends Python ML model predictions, realtime meteorological indicators (IMD/NASA),
+ * seasonal festival footfall spikes, turnstile ticketing data, and crowdsourced reports.
+ */
+
 const axios = require("axios");
 const CrowdReport = require("../models/CrowdReport");
 const { CROWD_LEVELS } = require("../config/constants");
@@ -7,6 +14,14 @@ const weatherService = require("./weatherService");
 const ML_API_URL = (process.env.ML_API_URL || "http://127.0.0.1:5001").replace(/\/$/, "");
 const ML_TIMEOUT_MS = Number(process.env.ML_API_TIMEOUT_MS) || 5000;
 
+/**
+ * Calculates a baseline crowd level when the external ML service is unreachable.
+ * Evaluates weekend presence and festival proximity.
+ *
+ * @param {Date} date - Evaluation timestamp
+ * @param {string|null} state - Target Indian state
+ * @returns {Promise<string>} Baseline crowd category ('low', 'moderate', 'high', 'very_high')
+ */
 async function ruleBasedBaseline(date = new Date(), state = null) {
   const day = date.getDay();
   let score = 1;

@@ -1,3 +1,11 @@
+"""
+route_maker.py — Heritage Itinerary & TSP Route Optimizer
+
+Solves multi-destination waypoint sequencing using the Nearest-Neighbor Travelling
+Salesperson heuristic. Incorporates physical accessibility filtering and optional
+offbeat destination promotion.
+"""
+
 import sys
 import json
 import os
@@ -8,9 +16,9 @@ import urllib.request
 from typing import List, Dict, Any, Optional
 
 DEFAULT_START = {
-    "name": "JIIT Noida",
-    "lat": 28.6304,
-    "lng": 77.3721,
+    "name": "New Delhi Central",
+    "lat": 28.6139,
+    "lng": 77.2090,
 }
 
 # Accessibility aliases let the frontend use friendly names.
@@ -45,10 +53,7 @@ class RouteOptimizer:
 
     def __init__(self, dataset_path: str = None, geocode_missing: bool = True):
         if dataset_path is None:
-            base = os.path.dirname(__file__)
-            preferred = os.path.join(base, "monuments.json")
-            fallback = os.path.join(base, "monument.json")
-            dataset_path = preferred if os.path.exists(preferred) else fallback
+            dataset_path = os.path.join(os.path.dirname(__file__), "monuments.json")
         self.dataset_path = dataset_path
         self.geocode_missing = geocode_missing
         self.monuments = self._load_data(dataset_path)

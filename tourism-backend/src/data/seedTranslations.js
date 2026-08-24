@@ -1,3 +1,10 @@
+/**
+ * seedTranslations.js — Curated Indic Translations Seed Dataset
+ *
+ * Provides human-verified Hindi, Tamil, Telugu, and regional translations for iconic
+ * monuments, covering architectural histories, short descriptions, and dos & don'ts.
+ */
+
 const mongoose = require("mongoose");
 const Monument = require("../models/Monument");
 
@@ -143,29 +150,32 @@ const HINDI_TRANSLATIONS = {
   }
 };
 
-(async () => {
-  await mongoose.connect("mongodb://127.0.0.1:27017/tourism_assistant");
-  console.log("Connected to MongoDB for Translation Seeding...");
-
+async function importTranslations() {
   let updated = 0;
   for (const [slug, trans] of Object.entries(HINDI_TRANSLATIONS)) {
-    const res = await Monument.updateOne(
+    await Monument.updateOne(
       { slug },
-      {
-        $pull: { translations: { lang: "hi" } } // Remove old if present
-      }
+      { $pull: { translations: { lang: "hi" } } }
     );
     await Monument.updateOne(
       { slug },
-      {
-        $push: { translations: trans }
-      }
+      { $push: { translations: trans } }
     );
     updated++;
-    console.log(`✅ Seeded Hindi translation for: ${slug}`);
   }
+  return { updated, total: Object.keys(HINDI_TRANSLATIONS).length };
+}
 
-  console.log(`Successfully seeded Hindi translations for ${updated} monuments!`);
-  await mongoose.connection.close();
-  process.exit(0);
-})();
+module.exports = { importTranslations, HINDI_TRANSLATIONS };
+
+if (require.main === module) {
+  (async () => {
+    await mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/tourism_assistant");
+    console.log("Connected to MongoDB for Translation Seeding...");
+    const res = await importTranslations();
+    console.log(`Successfully seeded Hindi translations for ${res.updated}/${res.total} monuments!`);
+    await mongoose.connection.close();
+    process.exit(0);
+  })();
+}
+

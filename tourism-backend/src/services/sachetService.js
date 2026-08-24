@@ -1,13 +1,21 @@
+/**
+ * sachetService.js — NDMA SACHET Common Alerting Protocol (CAP) Integration
+ *
+ * Ingests national disaster and meteorological warnings (floods, cyclones, landslides,
+ * heatwaves) from the National Disaster Management Authority's CAP feed into MongoDB.
+ */
+
 const axios = require("axios");
 const xml2js = require("xml2js");
 const Alert = require("../models/Alert");
 const { DISASTER_ALERT_TYPES } = require("../config/constants");
 
-// Report §2 (Disaster and safety alerts) + §4.2: SACHET is NDMA's Common Alerting Protocol (CAP)
-// National Disaster Alert Portal, aggregating verified IMD/CWC/INCOIS alerts as a public CAP RSS feed
-// covering floods, cyclones, landslides, forest fires in 12 languages. This replaces building
-// disaster prediction from scratch.
-
+/**
+ * Classifies free-form alert text into standard DISASTER_ALERT_TYPES enum.
+ *
+ * @param {string} text - Headline and description content
+ * @returns {string} Normalized alert category ('flood', 'cyclone', 'landslide', etc.)
+ */
 const classifyType = (text = "") => {
   const t = text.toLowerCase();
   if (t.includes("flood")) return "flood";

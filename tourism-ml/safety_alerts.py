@@ -1,7 +1,20 @@
+"""
+safety_alerts.py — SACHET (NDMA) National Early Warning Parser
+
+Fetches Common Alerting Protocol (CAP) RSS feeds directly from NDMA
+to extract active natural disaster safety warnings.
+"""
+
 import requests
 import xml.etree.ElementTree as ET
 
+
 def get_disaster_alerts():
+    """
+    Fetches active disaster alert headlines from the NDMA SACHET CAP feed.
+
+    :return: List of active alert title strings
+    """
     url = "https://sachet.ndma.gov.in/CapFeed"
 
     try:

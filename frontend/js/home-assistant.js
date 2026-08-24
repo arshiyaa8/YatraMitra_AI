@@ -9,11 +9,6 @@ let isRecording = false;
 let currentSynthUtterance = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Ensure default nationality if not set yet
-  if (!YM.nationality.get()) {
-    YM.nationality.set("indian");
-  }
-
   YM.renderHeader("assistant");
   YM.renderAlertBanner("alert-banner-host");
   YM.renderFestivalBanner("festival-banner-host");

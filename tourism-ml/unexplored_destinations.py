@@ -1,12 +1,19 @@
+"""
+unexplored_destinations.py — Hidden Gems Scoring & Sustainable Tourism Engine
+
+Scores and promotes low-footfall heritage destinations (crowd level <= 3, high user satisfaction)
+to encourage sustainable tourism distribution beyond high-density monuments.
+"""
+
 import sys
 import json
 import os
 import argparse
 from typing import List, Dict, Any
 
-DEFAULT_DATASET_PATH = os.path.join(os.path.dirname(__file__), "monuments.json" if os.path.exists(os.path.join(os.path.dirname(__file__), "monuments.json")) else "monument.json")
+DEFAULT_DATASET_PATH = os.path.join(os.path.dirname(__file__), "monuments.json")
 
-# Fallback curated unexplored destinations in India if JSON isn't available
+# Fallback curated unexplored destinations in India if JSON is unavailable
 FALLBACK_UNEXPLORED = [
     {
         "id": "exp_001",

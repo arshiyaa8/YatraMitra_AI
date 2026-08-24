@@ -1,9 +1,11 @@
 /**
- * account.js — login, register, profile preferences, opt-in health/accessibility
- * profile, and the local trip list. Talks to /api/auth/*, /api/health-profile/*.
+ * account.js — User Account, Privacy-Encrypted Health Profile & Itinerary Controller
+ *
+ * Manages JWT session authentication, profile interest preferences, DPDP Act 2023 compliant
+ * AES-256 encrypted accessibility & health sensitivities, and multi-stop trip route planning.
  */
 
-// Matches tourism-backend/src/config/constants.js ACCESSIBILITY_TAGS exactly.
+// Supported accessibility accommodations (synced with backend constants)
 const ACCESSIBILITY_TAGS = [
   "wheelchair_accessible",
   "elderly_friendly",
@@ -13,7 +15,7 @@ const ACCESSIBILITY_TAGS = [
   "rest_areas_available",
 ];
 
-// Matches the example interest values in tourism-backend/src/models/User.js.
+// Curated traveler interest categories
 const INTEREST_OPTIONS = ["heritage", "food", "wildlife", "adventure"];
 
 let selectedInterests = new Set();
@@ -93,6 +95,7 @@ async function showLoggedIn() {
   const user = YM.auth.getUser();
   renderAccountSummary(user);
   await loadProfileForm();
+  await YM.trip.sync();
   renderTripList();
   setupRoutePlanner();
   setupHealthChips();
@@ -112,7 +115,6 @@ function renderAccountSummary(user) {
     <div><dt>Name</dt><dd>${YM.util.escapeHtml(user.name)}</dd></div>
     <div><dt>Email</dt><dd>${YM.util.escapeHtml(user.email)}</dd></div>
     <div><dt>Preferred language</dt><dd>${YM.util.escapeHtml(user.preferredLanguage || "en")}</dd></div>
-    <div><dt>Visitor type</dt><dd>${YM.util.escapeHtml(YM.nationality.label() || "Not set")}</dd></div>
   `;
 }
 
@@ -123,9 +125,18 @@ async function loadProfileForm() {
   try {
     const [langsRes, meRes] = await Promise.all([YM.api.listLanguages(), YM.api.getMe()]);
     const langs = langsRes.data || {};
-    langSelect.innerHTML = Object.entries(langs)
-      .map(([code, info]) => `<option value="${code}">${YM.util.escapeHtml(info.name)}</option>`)
-      .join("");
+    
+    const globalEntries = Object.entries(langs).filter(([_, info]) => info.region === "global" || info.region === "foreign");
+    const indianEntries = Object.entries(langs).filter(([_, info]) => info.region === "indian");
+
+    langSelect.innerHTML = `
+      <optgroup label="Global Languages">
+        ${globalEntries.map(([code, info]) => `<option value="${code}">${YM.util.escapeHtml(info.name)}</option>`).join("")}
+      </optgroup>
+      <optgroup label="Indian Languages">
+        ${indianEntries.map(([code, info]) => `<option value="${code}">${YM.util.escapeHtml(info.name)}</option>`).join("")}
+      </optgroup>
+    `;
 
     const user = meRes.user;
     document.getElementById("profile-name").value = user.name || "";

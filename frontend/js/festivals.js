@@ -1,11 +1,11 @@
 /**
- * festivals.js — GET /api/festivals/active and GET /api/festivals/upcoming.
- * These endpoints existed in the backend already but weren't used by any
- * page before — this is the first UI surface for them.
+ * festivals.js — Live & Upcoming Heritage Festival Calendar Controller
+ *
+ * Renders active and upcoming cultural festivals with exact dates, locations,
+ * expected crowd footfall surges, and cultural celebration highlights.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!YM.nationality.require()) return;
   YM.renderHeader("festivals");
 
   document.getElementById("festival-state-filter").addEventListener("change", (e) => {

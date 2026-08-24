@@ -1,12 +1,13 @@
 /**
- * laws.js — Interactive Laws, Culture & Regional Dining Guide.
- * Fetches real data from GET /api/laws (powered by lawController.js).
+ * laws.js — Travel Regulations, Cultural Etiquette & Regional Food Guide Controller
+ *
+ * Fetches structured legal guidelines (drone laws, photography permits, temple attire),
+ * social etiquette customs, and regional cuisine recommendations across all Indian states.
  */
 
 let allLawsData = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!YM.nationality.require()) return;
   YM.renderHeader("laws");
 
   const stateSelect = document.getElementById("state-select");

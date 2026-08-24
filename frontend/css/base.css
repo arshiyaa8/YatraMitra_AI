@@ -34,12 +34,20 @@
   /* Mobile is the primary target: a comfortable 44px+ tap target everywhere,
      and a bottom-nav height other layout math (page padding) depends on. */
   --tap-min: 44px;
-  --bottom-nav-h: 62px;
+  --bottom-nav-h: 60px;
   --header-h: 56px;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -48,8 +56,12 @@ body {
   background: var(--ivory);
   line-height: 1.55;
   font-size: 16px;
+  min-height: 100vh;
+  min-height: 100dvh;
   /* Room for the fixed mobile bottom nav; overridden per-page where absent. */
-  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(var(--bottom-nav-h) + 16px + env(safe-area-inset-bottom, 0px));
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 h1, h2, h3 {
@@ -57,7 +69,8 @@ h1, h2, h3 {
   font-weight: 600;
   margin: 0 0 0.4em;
   color: var(--maroon-dark);
-  line-height: 1.2;
+  line-height: 1.25;
+  word-break: break-word;
 }
 
 h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); font-weight: 700; }

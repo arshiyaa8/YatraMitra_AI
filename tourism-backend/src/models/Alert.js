@@ -1,8 +1,13 @@
+/**
+ * Alert.js — National Disaster Management Early Warning & Safety Alert Schema
+ *
+ * Persists Common Alerting Protocol (CAP) feeds ingested from NDMA's SACHET network.
+ * Features an automated MongoDB TTL index to auto-purge expired alerts.
+ */
+
 const mongoose = require("mongoose");
 const { DISASTER_ALERT_TYPES } = require("../config/constants");
 
-// Local cache of SACHET (NDMA) CAP alerts, refreshed periodically by sachetService.
-// Report §4.2: "SACHET-powered safety layer" — verified govt-sourced alerts instead of building prediction from scratch.
 const AlertSchema = new mongoose.Schema(
   {
     capIdentifier: { type: String, required: true, unique: true },
@@ -16,12 +21,12 @@ const AlertSchema = new mongoose.Schema(
     effective: Date,
     expires: Date,
     sourceUrl: String,
-    // Optional geofence if the CAP feed provides a polygon/circle (kept as raw string; parsed on demand)
-    rawArea: String,
+    rawArea: String, // Geospatial polygon / circle boundary string if provided by CAP feed
   },
   { timestamps: true }
 );
 
-AlertSchema.index({ expires: 1 }, { expireAfterSeconds: 0 }); // auto-purge expired alerts
+// TTL index: Automatically deletes alert documents when expires timestamp is passed
+AlertSchema.index({ expires: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model("Alert", AlertSchema);

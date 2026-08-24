@@ -1,27 +1,62 @@
-// Priority languages: "full" = actively supported/QA'd, "best_effort" = Bhashini-covered but unverified.
-// This powers the "transparent language-support tiering" innovation from the report (section 4.6).
+/**
+ * constants.js — Application-Wide Enums and System Configuration Constants
+ *
+ * Defines centralized configuration maps and enum domains shared across
+ * controllers, validation layers, and database schemas.
+ */
+
+/**
+ * Language Support Registry
+ * Maps ISO language codes to their human-readable localized names, support tiers,
+ * and geographic classifications (global vs. Indian scheduled languages).
+ *
+ * - "full": End-to-end verified translation, TTS, and UI localization.
+ * - "best_effort": Algorithmic fallback support via machine translation pipeline.
+ */
 const LANGUAGE_SUPPORT_TIERS = {
-  hi: { name: "Hindi", tier: "full" },
-  en: { name: "English", tier: "full" },
-  ta: { name: "Tamil", tier: "full" },
-  te: { name: "Telugu", tier: "full" },
-  kn: { name: "Kannada", tier: "full" },
-  mr: { name: "Marathi", tier: "full" },
-  bn: { name: "Bengali", tier: "full" },
-  gu: { name: "Gujarati", tier: "full" },
-  ml: { name: "Malayalam", tier: "best_effort" },
-  pa: { name: "Punjabi", tier: "best_effort" },
-  or: { name: "Odia", tier: "best_effort" },
-  as: { name: "Assamese", tier: "best_effort" },
-  ur: { name: "Urdu", tier: "best_effort" },
-  kok: { name: "Konkani", tier: "best_effort" },
-  brx: { name: "Bodo", tier: "best_effort" },
+  // Global / International Languages
+  en: { name: "English", tier: "full", region: "global" },
+  es: { name: "Spanish (Español)", tier: "best_effort", region: "foreign" },
+  fr: { name: "French (Français)", tier: "best_effort", region: "foreign" },
+  de: { name: "German (Deutsch)", tier: "best_effort", region: "foreign" },
+  ja: { name: "Japanese (日本語)", tier: "best_effort", region: "foreign" },
+  zh: { name: "Mandarin Chinese (中文)", tier: "best_effort", region: "foreign" },
+  ru: { name: "Russian (Русский)", tier: "best_effort", region: "foreign" },
+  ar: { name: "Arabic (العربية)", tier: "best_effort", region: "foreign" },
+  pt: { name: "Portuguese (Português)", tier: "best_effort", region: "foreign" },
+  it: { name: "Italian (Italiano)", tier: "best_effort", region: "foreign" },
+  ko: { name: "Korean (한국어)", tier: "best_effort", region: "foreign" },
+
+  // Scheduled & Regional Indian Languages
+  hi: { name: "Hindi (हिन्दी)", tier: "full", region: "indian" },
+  ta: { name: "Tamil (தமிழ்)", tier: "full", region: "indian" },
+  te: { name: "Telugu (తెలుగు)", tier: "full", region: "indian" },
+  kn: { name: "Kannada (ಕನ್ನಡ)", tier: "full", region: "indian" },
+  mr: { name: "Marathi (मराठी)", tier: "full", region: "indian" },
+  bn: { name: "Bengali (বাংলা)", tier: "full", region: "indian" },
+  gu: { name: "Gujarati (ગુજરાતી)", tier: "full", region: "indian" },
+  ml: { name: "Malayalam (മലയാളം)", tier: "best_effort", region: "indian" },
+  pa: { name: "Punjabi (ਪੰਜਾਬੀ)", tier: "best_effort", region: "indian" },
+  or: { name: "Odia (ଓଡ଼ିଆ)", tier: "best_effort", region: "indian" },
+  as: { name: "Assamese (অসমীয়া)", tier: "best_effort", region: "indian" },
+  ur: { name: "Urdu (اردو)", tier: "best_effort", region: "indian" },
+  kok: { name: "Konkani (कोंकणी)", tier: "best_effort", region: "indian" },
+  brx: { name: "Bodo (बड़ो)", tier: "best_effort", region: "indian" },
 };
 
+/**
+ * Standardized crowd density buckets used for reporting and ML estimates
+ */
 const CROWD_LEVELS = ["low", "moderate", "high", "very_high"];
 
+/**
+ * Weather & disaster classification types aligned with SACHET (NDMA) taxonomy
+ */
 const DISASTER_ALERT_TYPES = ["flood", "cyclone", "landslide", "forest_fire", "earthquake", "other"];
 
+/**
+ * Recognized physical & sensory accessibility features for monument filtering
+ */
 const ACCESSIBILITY_TAGS = [
   "wheelchair_accessible",
   "elderly_friendly",

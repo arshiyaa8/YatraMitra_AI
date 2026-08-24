@@ -1,17 +1,29 @@
+/**
+ * User.js — User Account & DPDP-Compliant Encrypted Profile Schema
+ *
+ * Manages identity credentials, hashed passwords (bcrypt), travel preferences,
+ * saved bookmark itineraries, and AES-256 encrypted personal health disclosures.
+ */
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { encrypt, decrypt } = require("../utils/crypto");
 
-// Health/allergy data is sensitive personal data under India's DPDP Act, 2023 (report §3, problem 7).
-// It is strictly opt-in, stored encrypted at rest, and never used beyond recommendation purposes.
+/**
+ * Embedded Sub-Schema for Privacy-Protected Health & Mobility Information
+ * Complies with the Digital Personal Data Protection (DPDP) Act, 2023.
+ */
 const HealthProfileSchema = new mongoose.Schema(
   {
     optedIn: { type: Boolean, default: false },
-    encryptedPayload: { type: String, default: null }, // AES-encrypted JSON: { allergies, conditions, mobilityNeeds, notes }
+    encryptedPayload: { type: String, default: null }, // AES-256 encrypted JSON payload
   },
   { _id: false }
 );
 
+/**
+ * Main User Identity Schema
+ */
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -21,35 +33,50 @@ const UserSchema = new mongoose.Schema(
 
     preferences: {
       interests: [{ type: String }], // e.g. ["heritage", "food", "wildlife", "adventure"]
-      accessibilityNeeds: [{ type: String }], // subset of ACCESSIBILITY_TAGS
+      accessibilityNeeds: [{ type: String }], // e.g. ["wheelchair_accessible", "step_free_access"]
     },
 
-    // Strictly opt-in, encrypted. See DPDP-compliant handling in healthController.
     healthProfile: { type: HealthProfileSchema, default: () => ({}) },
-
     savedDestinations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Monument" }],
-
     role: { type: String, enum: ["tourist", "admin", "data_curator"], default: "tourist" },
   },
   { timestamps: true }
 );
 
+/**
+ * Pre-save hook: Automatically hashes password before persisting if modified
+ */
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
+/**
+ * Compares candidate plain password with stored bcrypt hash
+ *
+ * @param {string} candidate - Plaintext password to test
+ * @returns {Promise<boolean>} Match result
+ */
 UserSchema.methods.comparePassword = function (candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
-// Helpers to set/get health data transparently encrypted — never stored in plaintext.
+/**
+ * Encrypts and stores personal health disclosures
+ *
+ * @param {Object} data - Health profile object { allergies, conditions, mobilityNeeds, notes }
+ */
 UserSchema.methods.setHealthData = function (data) {
   this.healthProfile.optedIn = true;
   this.healthProfile.encryptedPayload = encrypt(JSON.stringify(data));
 };
 
+/**
+ * Decrypts and returns personal health data in plaintext
+ *
+ * @returns {Object|null} Decrypted health profile object or null
+ */
 UserSchema.methods.getHealthData = function () {
   if (!this.healthProfile?.optedIn || !this.healthProfile?.encryptedPayload) return null;
   try {
@@ -59,6 +86,9 @@ UserSchema.methods.getHealthData = function () {
   }
 };
 
+/**
+ * Purges encrypted health data and resets opt-in consent flag
+ */
 UserSchema.methods.clearHealthData = function () {
   this.healthProfile.optedIn = false;
   this.healthProfile.encryptedPayload = null;

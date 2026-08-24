@@ -1,9 +1,22 @@
+"""
+voice_assistant.py — Multilingual Voice Assistant & Speech Pipeline
+
+Integrates Sarvam AI Saaras (ASR), Mayura (NMT), and Bulbul (TTS) pipelines
+for end-to-end voice interactions in Indian languages.
+"""
+
 import os
 import base64
 import requests
 
-SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "sk_epzcovi1_ZbxCQcW6mhwuCbpRM598jncl")
-HEADERS = {"api-subscription-key": SARVAM_API_KEY}
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "")
+
+
+def get_headers():
+    """Builds authorization header dictionary from environment API key."""
+    key = os.getenv("SARVAM_API_KEY", SARVAM_API_KEY)
+    return {"api-subscription-key": key} if key else {}
+
 
 
 def speech_to_text(audio_file_path: str, language_code: str = "hi-IN") -> str:
@@ -12,7 +25,7 @@ def speech_to_text(audio_file_path: str, language_code: str = "hi-IN") -> str:
     with open(audio_file_path, "rb") as file:
         files = {"file": (os.path.basename(audio_file_path), file, "audio/wav")}
         data = {"model": "saaras:v3", "language_code": language_code}
-        response = requests.post(url, headers=HEADERS, files=files, data=data)
+        response = requests.post(url, headers=get_headers(), files=files, data=data)
 
     if response.status_code == 200:
         return response.json().get("transcript", "")
@@ -29,7 +42,7 @@ def translate_text(text: str, target_lang: str = "hi-IN", source_lang: str = "au
         "target_language_code": target_lang,
         "model": "mayura:v1",
     }
-    response = requests.post(url, headers=HEADERS, json=payload)
+    response = requests.post(url, headers=get_headers(), json=payload)
     if response.status_code == 200:
         return response.json().get("translated_text", "")
     else:
@@ -45,7 +58,7 @@ def text_to_speech(text: str, target_lang: str = "hi-IN", speaker: str = "anushk
         "speaker": speaker,
         "model": "bulbul:v2",
     }
-    response = requests.post(url, headers=HEADERS, json=payload)
+    response = requests.post(url, headers=get_headers(), json=payload)
     if response.status_code == 200:
         audio_content = base64.b64decode(response.json()["audios"][0])
         with open(output_path, "wb") as f:

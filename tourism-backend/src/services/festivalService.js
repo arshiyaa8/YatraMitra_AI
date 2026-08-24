@@ -1,11 +1,20 @@
+/**
+ * festivalService.js — Cultural Festival Footfall Impact Calculation Service
+ *
+ * Evaluates active cultural events, multi-day celebrations, and upcoming tourist surges
+ * based on verified annual festival schedules.
+ */
+
 const Festival = require("../models/Festival");
 
-// Replaces the illustrative FESTIVAL_MONTHS_HIGH_TRAFFIC stub in the original crowdService with
-// queries against the real imported festival calendar (src/data/festivals-2026.json via importFestivals.js).
-
 /**
- * Returns festivals active on `date` (defaults to now) that are relevant to `state`
- * (either state-specific or tagged "ALL" nationwide).
+ * Returns festivals actively occurring on a specific date (defaults to current day),
+ * filtered by regional relevance (state match or nationwide 'ALL' tag).
+ *
+ * @param {Object} params - Query parameters
+ * @param {Date} [params.date=new Date()] - Target date
+ * @param {string} [params.state] - State name
+ * @returns {Promise<Array>} List of active festival documents
  */
 async function getActiveFestivals({ date = new Date(), state } = {}) {
   const query = {

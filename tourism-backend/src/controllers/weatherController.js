@@ -1,6 +1,17 @@
+/**
+ * weatherController.js — Real-Time Climate & Seasonal Suitability Controller
+ *
+ * Exposes current weather observation bundles (NASA POWER / OpenWeatherMap)
+ * and evaluates climatic suitability against ideal visiting months.
+ */
+
 const weatherService = require("../services/weatherService");
 const { ApiError, asyncHandler } = require("../utils/apiError");
 
+/**
+ * Returns weather conditions bundle (temperature, humidity, precipitation) for GPS coordinates.
+ * GET /api/weather?lat=...&lng=...
+ */
 exports.getWeather = asyncHandler(async (req, res) => {
   const { lat, lng } = req.query;
   if (!lat || !lng) throw new ApiError(400, "lat and lng query params are required");
@@ -10,9 +21,8 @@ exports.getWeather = asyncHandler(async (req, res) => {
 });
 
 /**
- * "Best time to visit" helper: combines recent NASA POWER climate signal with a simple heuristic.
- * Full crowd+climate joint prediction is a roadmap item; this MVP version reasons over weather only,
- * per monument.timings.bestVisitMonths as the source of truth, cross-checked against live conditions.
+ * Cross-checks live climate metrics against monument's recommended seasonal visit window.
+ * POST /api/weather/best-time
  */
 exports.getBestTimeAdvice = asyncHandler(async (req, res) => {
   const { lat, lng, bestVisitMonths = [] } = req.body;

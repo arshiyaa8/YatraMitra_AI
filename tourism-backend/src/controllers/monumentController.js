@@ -1,8 +1,17 @@
+/**
+ * monumentController.js — Monument Catalog & Heritage Knowledge Controller
+ *
+ * Exposes full CRUD, geospatial radius queries ($near), localized translations,
+ * oral history archives, offline caching packages, and grounded fact-based Q&A.
+ */
+
 const Monument = require("../models/Monument");
 const { ApiError, asyncHandler } = require("../utils/apiError");
 
-// Layer 1 (Foundation) — monument/heritage database. See report §2 for the merged-dataset sourcing strategy.
-
+/**
+ * Lists monuments with pagination, search, state filters, and gem toggles.
+ * GET /api/monuments
+ */
 exports.listMonuments = asyncHandler(async (req, res) => {
   const { state, category, underexplored, search, page = 1, limit = 20 } = req.query;
   const query = {};
@@ -20,6 +29,10 @@ exports.listMonuments = asyncHandler(async (req, res) => {
   res.json({ success: true, count: items.length, total, page: Number(page), data: items });
 });
 
+/**
+ * Finds monuments within a given radial distance (km) using MongoDB 2dsphere index.
+ * GET /api/monuments/nearby?lat=...&lng=...&radiusKm=...
+ */
 exports.getNearby = asyncHandler(async (req, res) => {
   const { lat, lng, radiusKm = 25 } = req.query;
   if (!lat || !lng) throw new ApiError(400, "lat and lng query params are required");
@@ -36,6 +49,10 @@ exports.getNearby = asyncHandler(async (req, res) => {
   res.json({ success: true, count: items.length, data: items });
 });
 
+/**
+ * Retrieves full details for a single monument, optionally including localized translations.
+ * GET /api/monuments/:slug?lang=...
+ */
 exports.getMonument = asyncHandler(async (req, res) => {
   const monument = await Monument.findOne({ slug: req.params.slug }).populate(
     "heritageArchive.contributedBy",
@@ -43,7 +60,6 @@ exports.getMonument = asyncHandler(async (req, res) => {
   );
   if (!monument) throw new ApiError(404, "Monument not found");
 
-  // If a language is requested and a translation exists, surface it alongside the base record + its support tier
   const lang = req.query.lang;
   let translation = null;
   if (lang) {
@@ -53,6 +69,10 @@ exports.getMonument = asyncHandler(async (req, res) => {
   res.json({ success: true, data: monument, translation });
 });
 
+/**
+ * Creates a new monument entry (Admin authorized).
+ * POST /api/monuments
+ */
 exports.createMonument = asyncHandler(async (req, res) => {
   const monument = await Monument.create(req.body);
   res.status(201).json({ success: true, data: monument });

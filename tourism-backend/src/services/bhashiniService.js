@@ -1,17 +1,26 @@
+/**
+ * bhashiniService.js — National Language Translation Mission (NLTM) Bhashini Integration
+ *
+ * Integrates MeitY's ULCA Bhashini pipeline for text translation (NMT), speech recognition (ASR),
+ * and audio synthesis (TTS) across 25 scheduled Indian and international languages.
+ * Includes local in-memory caching for pipeline configurations.
+ */
+
 const axios = require("axios");
 const NodeCache = require("node-cache");
 const { LANGUAGE_SUPPORT_TIERS } = require("../config/constants");
 
-// Report §2 (Voice synthesis / multilingual NLP) + §4.1: Bhashini-first multilingual core.
-// Bhashini (Digital India NLTM) provides free translation/ASR/TTS across 22 scheduled languages.
-// It is a pipeline-based API: you first fetch a "pipeline config" for the requested tasks/languages,
-// then call the returned inference endpoint. Azure/Amazon TTS are reserved only as a fallback for
-// premium "character voice" styling that Bhashini doesn't provide.
-
-const cache = new NodeCache({ stdTTL: 60 * 60 }); // cache pipeline configs for 1 hour
+// Cache pipeline endpoints for 1 hour to minimize discovery round-trips
+const cache = new NodeCache({ stdTTL: 60 * 60 });
 
 const ULCA_CONFIG_URL = "https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline";
 
+/**
+ * Resolves the operational support tier ("full", "best_effort", "machine_only") for a language code.
+ *
+ * @param {string} langCode - ISO language code
+ * @returns {string} Support tier classification
+ */
 const getLanguageTier = (langCode) => LANGUAGE_SUPPORT_TIERS[langCode]?.tier || "machine_only";
 
 /**

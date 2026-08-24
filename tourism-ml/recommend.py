@@ -1,20 +1,26 @@
-import json
+"""
+recommend.py — Content-Based Tag & Interest Recommendation Engine
 
-# Load monument data from the JSON file instead of hardcoding it here.
-# monuments.json should sit in the same folder as this script.
-with open("monuments.json", "r", encoding="utf-8") as f:
+Filters and ranks monument destinations according to traveler interest preferences,
+accessibility constraints, and baseline popularity tiebreakers.
+"""
+
+import json
+import os
+
+DATASET_PATH = os.path.join(os.path.dirname(__file__), "monuments.json")
+with open(DATASET_PATH, "r", encoding="utf-8") as f:
     monuments = json.load(f)
 
 
 def recommend(user_preferences, needs_accessibility=False, sort_by_popularity=True):
     """
-    user_preferences: list like ["historical", "offbeat"]
-    needs_accessibility: if True, only keep monuments tagged wheelchair_accessible
-    sort_by_popularity: if True, ties in tag-match score are broken using popularity
+    Ranks monuments matching user interest tags.
 
-    Returns monuments sorted by:
-      1. how many preferences they match (highest first)
-      2. popularity score (highest first) -- used as a tiebreaker
+    :param user_preferences: List of interest tags (e.g. ['historical', 'offbeat', 'temple'])
+    :param needs_accessibility: If True, restricts results to wheelchair-accessible sites
+    :param sort_by_popularity: If True, uses popularity score to break matching score ties
+    :return: List of sorted (score, popularity, matched_tags, monument_dict) tuples
     """
     results = []
 

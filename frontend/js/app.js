@@ -1,14 +1,13 @@
 /**
- * app.js — shared across every page: nationality gate, auth state, preferred
- * language, the local "my trip" list, the header + mobile bottom nav, and the
- * live alert/festival banners (all backed by real API calls).
+ * app.js — shared across every page: auth state, preferred language,
+ * the local "my trip" list, header + mobile bottom nav, and live
+ * alert/festival banners.
  */
 
 // NOTE: YM is already declared (const) by config.js, which loads before this
 // file on every page — do not redeclare it here, just use it directly below.
 
 // ── Storage keys ────────────────────────────────────────────────────
-const NATIONALITY_KEY = "ym_nationality"; // "indian" | "foreigner"
 const TOKEN_KEY = "ym_token";
 const USER_KEY = "ym_user";
 const LANG_KEY = "ym_lang";
@@ -35,27 +34,17 @@ YM.util = {
   },
 };
 
-// ── Nationality gate ───────────────────────────────────────────────
+// ── Nationality (no longer gatekept or bifurcated) ─────────────────
 YM.nationality = {
   get() {
-    return localStorage.getItem(NATIONALITY_KEY);
+    return "all";
   },
-  set(value) {
-    localStorage.setItem(NATIONALITY_KEY, value);
-  },
-  clear() {
-    localStorage.removeItem(NATIONALITY_KEY);
-  },
+  set() {},
+  clear() {},
   label() {
-    const v = this.get();
-    return v === "indian" ? "Indian visitor" : v === "foreigner" ? "Foreign visitor" : "";
+    return "";
   },
-  /** Call on every page except index.html. Redirects home if no choice was made yet. */
   require() {
-    if (!this.get()) {
-      window.location.href = "index.html";
-      return false;
-    }
     return true;
   },
 };
@@ -282,14 +271,34 @@ YM.trip = {
       list.push(slug);
       localStorage.setItem(TRIP_KEY, JSON.stringify(list));
     }
+    if (typeof YM.auth !== "undefined" && YM.auth.getToken() && YM.api?.addSavedDestination) {
+      YM.api.addSavedDestination(slug).catch(() => {});
+    }
   },
   remove(slug) {
     const list = this.get().filter((s) => s !== slug);
     localStorage.setItem(TRIP_KEY, JSON.stringify(list));
+    if (typeof YM.auth !== "undefined" && YM.auth.getToken() && YM.api?.removeSavedDestination) {
+      YM.api.removeSavedDestination(slug).catch(() => {});
+    }
   },
   toggle(slug) {
     this.has(slug) ? this.remove(slug) : this.add(slug);
     return this.has(slug);
+  },
+  async sync() {
+    if (typeof YM.auth === "undefined" || !YM.auth.getToken() || !YM.api?.getSavedDestinations) return;
+    try {
+      const res = await YM.api.getSavedDestinations();
+      if (res && res.data) {
+        const remoteSlugs = res.data.map((m) => (typeof m === "string" ? m : m.slug)).filter(Boolean);
+        const local = this.get();
+        const merged = Array.from(new Set([...local, ...remoteSlugs]));
+        localStorage.setItem(TRIP_KEY, JSON.stringify(merged));
+      }
+    } catch (e) {
+      console.warn("Trip cloud sync failed:", e);
+    }
   },
   clear() {
     localStorage.removeItem(TRIP_KEY);
@@ -321,23 +330,44 @@ YM.renderHeader = function renderHeader(activePage) {
   const host = document.getElementById("ym-header");
   if (host) {
     const user = YM.auth.getUser();
-    const nat = YM.nationality.get();
-    const natShortLabel = nat === "indian" ? "🇮🇳 Indian" : nat === "foreigner" ? "🌐 Foreign" : "";
     const currentLang = YM.lang.get();
 
-    const LANG_OPTIONS = [
-      { code: "en", name: "🌐 EN" },
-      { code: "hi", name: "🇮🇳 हिन्दी" },
-      { code: "ta", name: "🇮🇳 தமிழ்" },
-      { code: "te", name: "🇮🇳 తెలుగు" },
-      { code: "bn", name: "🇮🇳 বাংলা" },
-      { code: "mr", name: "🇮🇳 मराठी" },
-      { code: "gu", name: "🇮🇳 ગુજરાતી" },
-      { code: "kn", name: "🇮🇳 ಕನ್ನಡ" },
-      { code: "ml", name: "🇮🇳 മലയാളം" },
-      { code: "pa", name: "🇮🇳 ਪੰਜਾਬੀ" },
-      { code: "or", name: "🇮🇳 ଓଡ଼ିଆ" },
-      { code: "as", name: "🇮🇳 অসমীয়া" },
+    const LANG_GROUPS = [
+      {
+        group: "Global Languages",
+        options: [
+          { code: "en", name: "🌐 English" },
+          { code: "es", name: "🇪🇸 Español (Spanish)" },
+          { code: "fr", name: "🇫🇷 Français (French)" },
+          { code: "de", name: "🇩🇪 Deutsch (German)" },
+          { code: "ja", name: "🇯🇵 日本語 (Japanese)" },
+          { code: "zh", name: "🇨🇳 中文 (Mandarin)" },
+          { code: "ru", name: "🇷🇺 Русский (Russian)" },
+          { code: "ar", name: "🇸🇦 العربية (Arabic)" },
+          { code: "pt", name: "🇵🇹 Português (Portuguese)" },
+          { code: "it", name: "🇮🇹 Italiano (Italian)" },
+          { code: "ko", name: "🇰🇷 한국어 (Korean)" },
+        ],
+      },
+      {
+        group: "Indian Languages",
+        options: [
+          { code: "hi", name: "🇮🇳 हिन्दी (Hindi)" },
+          { code: "ta", name: "🇮🇳 தமிழ் (Tamil)" },
+          { code: "te", name: "🇮🇳 తెలుగు (Telugu)" },
+          { code: "bn", name: "🇮🇳 বাংলা (Bengali)" },
+          { code: "mr", name: "🇮🇳 मराठी (Marathi)" },
+          { code: "gu", name: "🇮🇳 ગુજરાતી (Gujarati)" },
+          { code: "kn", name: "🇮🇳 ಕನ್ನಡ (Kannada)" },
+          { code: "ml", name: "🇮🇳 മലയാളം (Malayalam)" },
+          { code: "pa", name: "🇮🇳 ਪੰਜਾਬੀ (Punjabi)" },
+          { code: "or", name: "🇮🇳 ଓଡ଼ିଆ (Odia)" },
+          { code: "as", name: "🇮🇳 অসমীয়া (Assamese)" },
+          { code: "ur", name: "🇮🇳 اردو (Urdu)" },
+          { code: "kok", name: "🇮🇳 कोंकणी (Konkani)" },
+          { code: "brx", name: "🇮🇳 बड़ो (Bodo)" },
+        ],
+      },
     ];
 
     host.innerHTML = `
@@ -355,16 +385,22 @@ YM.renderHeader = function renderHeader(activePage) {
         <div class="header-right">
           <div class="header-lang-wrapper">
             <select id="ym-global-lang-select" class="header-lang-select" aria-label="Select language" style="background: #ffffff; color: var(--ink); border: 1.5px solid var(--gold); border-radius: var(--radius-sm); padding: 0.25rem 0.5rem; height: 32px; font-size: 0.82rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.06); outline: none;">
-              ${LANG_OPTIONS.map(
-                (opt) => `<option value="${opt.code}" style="color:#222; font-weight:500;" ${opt.code === currentLang ? "selected" : ""}>${opt.name}</option>`
+              ${LANG_GROUPS.map(
+                (grp) => `
+                  <optgroup label="${grp.group}">
+                    ${grp.options
+                      .map(
+                        (opt) =>
+                          `<option value="${opt.code}" style="color:#222; font-weight:500;" ${
+                            opt.code === currentLang ? "selected" : ""
+                          }>${opt.name}</option>`
+                      )
+                      .join("")}
+                  </optgroup>
+                `
               ).join("")}
             </select>
           </div>
-          ${
-            natShortLabel
-              ? `<button class="badge badge--nationality badge--clickable" id="ym-nationality-badge" type="button" title="Click to change nationality" style="height: 32px; font-size: 0.76rem; padding: 0.25rem 0.55rem; white-space: nowrap;">${natShortLabel} · Change</button>`
-              : ""
-          }
           ${
             user
               ? `<span class="header-user">Hi, ${YM.util.escapeHtml(user.name.split(" ")[0])}</span>
@@ -381,14 +417,6 @@ YM.renderHeader = function renderHeader(activePage) {
         const newLang = e.target.value;
         YM.lang.set(newLang);
         window.dispatchEvent(new CustomEvent("ym-lang-changed", { detail: { lang: newLang } }));
-      });
-    }
-
-    const nationalityBadge = document.getElementById("ym-nationality-badge");
-    if (nationalityBadge) {
-      nationalityBadge.addEventListener("click", () => {
-        YM.nationality.clear();
-        window.location.href = "index.html";
       });
     }
 
@@ -465,3 +493,27 @@ YM.renderFestivalBanner = async function renderFestivalBanner(hostId, { state } 
     host.innerHTML = "";
   }
 };
+
+// ── Progressive Web App (PWA) Service Worker Registration ───────────
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("sw.js")
+      .then((registration) => {
+        console.log("[PWA] ServiceWorker registered with scope:", registration.scope);
+      })
+      .catch((err) => {
+        console.warn("[PWA] ServiceWorker registration failed:", err);
+      });
+  });
+}
+
+// ── PWA Install Prompt Capture ──────────────────────────────────────
+let deferredInstallPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  window.deferredPwaPrompt = deferredInstallPrompt;
+  window.dispatchEvent(new CustomEvent("ym-pwa-installable"));
+});
+

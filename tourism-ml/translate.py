@@ -1,20 +1,16 @@
+"""
+translate.py — Multilingual Translation CLI & Sarvam AI Integration
+
+Provides terminal-based multilingual translation for Indian scheduled languages
+and major foreign languages, supporting regional speech localization.
+"""
+
 import os
 from sarvamai import SarvamAI
 
-# ---- API key is now read from an environment variable, NOT hardcoded ----
-# Set it before running, e.g. in PowerShell:
-#   $env:SARVAM_API_KEY="your_actual_key_here"
-#   python translate.py
-SARVAM_API_KEY = os.environ.get("sk_epzcovi1_ZbxCQcW6mhwuCbpRM598jncl")
+SARVAM_API_KEY = os.environ.get("SARVAM_API_KEY", "")
+client = SarvamAI(api_subscription_key=SARVAM_API_KEY) if SARVAM_API_KEY else None
 
-if not SARVAM_API_KEY:
-    raise ValueError(
-        "SARVAM_API_KEY not found. Set it first with:\n"
-        '  $env:SARVAM_API_KEY="your_actual_key_here"   (PowerShell)\n'
-        "then run this script again."
-    )
-
-client = SarvamAI(api_subscription_key=SARVAM_API_KEY)
 
 # 10 common Indian languages
 INDIAN_LANGUAGES = {

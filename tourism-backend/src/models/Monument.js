@@ -1,11 +1,19 @@
+/**
+ * Monument.js — Indian Heritage Site & Monument Catalog Schema
+ *
+ * Sourced from curated ASI listings, Indian Culture Portal, and Bhuvan Geo-Heritage GIS.
+ * Includes geospatial coordinates (2dsphere index for radius queries), multilingual
+ * translations, accessibility tags, seasonal timings, ticketing, and oral history archives.
+ */
+
 const mongoose = require("mongoose");
 
-// This is the "one curated internal dataset" recommended in the report (§2, Monument/heritage data row):
-// merged from Indian Culture Portal + Bhuvan heritage layer + Wikidata + ASI listings, then maintained internally
-// rather than depending on a single live ASI API (which does not exist as a clean public feed).
+/**
+ * Embedded Sub-Schema for Localized Translations & Verified Indic Scripts
+ */
 const TranslationSchema = new mongoose.Schema(
   {
-    lang: { type: String, required: true }, // ISO code, e.g. "hi", "ta"
+    lang: { type: String, required: true }, // ISO language code (e.g. 'hi', 'ta', 'te')
     name: String,
     shortDescription: String,
     history: String,
@@ -15,6 +23,9 @@ const TranslationSchema = new mongoose.Schema(
   { _id: false }
 );
 
+/**
+ * Main Heritage Monument & Destination Schema
+ */
 const MonumentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, index: true },
@@ -22,11 +33,11 @@ const MonumentSchema = new mongoose.Schema(
     state: { type: String, required: true, index: true },
     district: String,
     category: { type: String, enum: ["monument", "temple", "fort", "museum", "natural", "wildlife", "other"], default: "monument" },
-    isUnderexplored: { type: Boolean, default: false }, // powers "promote underexplored destinations"
+    isUnderexplored: { type: Boolean, default: false }, // Powers undiscovered hidden gem recommendations
 
     location: {
       type: { type: String, enum: ["Point"], default: "Point" },
-      coordinates: { type: [Number], required: true }, // [lng, lat]
+      coordinates: { type: [Number], required: true }, // GeoJSON format: [longitude, latitude]
     },
 
     asiProtected: { type: Boolean, default: false },
@@ -45,7 +56,7 @@ const MonumentSchema = new mongoose.Schema(
     lawsAndEtiquette: [String],
 
     accessibility: {
-      tags: [{ type: String }], // subset of ACCESSIBILITY_TAGS
+      tags: [{ type: String }], // Subset of ACCESSIBILITY_TAGS enum
       wcagNotes: String,
     },
 
@@ -56,18 +67,17 @@ const MonumentSchema = new mongoose.Schema(
     },
 
     timings: {
-      openTime: String, // "06:00"
-      closeTime: String, // "18:00"
+      openTime: String, // e.g. "06:00"
+      closeTime: String, // e.g. "18:00"
       closedOn: [String], // e.g. ["Monday"]
       bestVisitMonths: [String],
       bestVisitTimeOfDay: String,
     },
 
-    eTicketingAvailable: { type: Boolean, default: false }, // enables ticket-linked crowd signal
-
+    eTicketingAvailable: { type: Boolean, default: false },
     translations: [TranslationSchema],
 
-    // Digital heritage preservation (report §4.5): archive of recorded oral histories / local-guide narration
+    // Digital Heritage Preservation Archive: Community and guide audio narrations
     heritageArchive: [
       {
         title: String,
@@ -87,6 +97,7 @@ const MonumentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// ── Geospatial & Full-Text Search Indexes ──────────────────────────
 MonumentSchema.index({ location: "2dsphere" });
 MonumentSchema.index({ name: "text", shortDescription: "text", state: "text" });
 

@@ -1,8 +1,18 @@
+/**
+ * auth.js — JSON Web Token (JWT) Authentication & Role Authorization Middleware
+ *
+ * Provides route protection guards, optional visitor identity resolution,
+ * and role-based access control (RBAC).
+ */
+
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { ApiError, asyncHandler } = require("../utils/apiError");
 
-// Verifies Bearer token, attaches req.user. Use on any route needing a logged-in user.
+/**
+ * Strict Route Guard: Requires a valid Bearer token in the Authorization header.
+ * Attaches the authenticated User document to `req.user`.
+ */
 const protect = asyncHandler(async (req, res, next) => {
   const header = req.headers.authorization;
   if (!header || !header.startsWith("Bearer ")) {
@@ -21,8 +31,10 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Optional auth — attaches req.user if a valid token is present, but doesn't block anonymous access.
-// Useful for endpoints (e.g. monument browsing) that personalize when logged in but work without auth.
+/**
+ * Permissive Route Guard: Identifies logged-in users when a token is present,
+ * but allows anonymous guest visitors through without blocking.
+ */
 const optionalAuth = asyncHandler(async (req, res, next) => {
   const header = req.headers.authorization;
   if (header && header.startsWith("Bearer ")) {
@@ -30,12 +42,17 @@ const optionalAuth = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(header.split(" ")[1], process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id);
     } catch {
-      // silently ignore bad tokens on optional routes
+      // Allow unauthenticated fallback if token is expired or malformed
     }
   }
   next();
 });
 
+/**
+ * Role-Based Access Control (RBAC) Guard: Restricts endpoint access to specific roles.
+ *
+ * @param  {...string} roles - Permitted user roles (e.g. 'admin', 'user')
+ */
 const restrictTo = (...roles) => (req, res, next) => {
   if (!req.user || !roles.includes(req.user.role)) {
     throw new ApiError(403, "You do not have permission to perform this action");
@@ -43,4 +60,8 @@ const restrictTo = (...roles) => (req, res, next) => {
   next();
 };
 
-module.exports = { protect, optionalAuth, restrictTo };
+module.exports = {
+  protect,
+  optionalAuth,
+  restrictTo,
+};
