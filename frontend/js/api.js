@@ -80,8 +80,8 @@ YM.api = (() => {
     speechToText: ({ audioBase64, language, audioFormat }) =>
       request("/translate/speech-to-text", { method: "POST", body: { audioBase64, language, audioFormat } }),
 
-    textToSpeech: ({ text, language, gender }) =>
-      request("/translate/text-to-speech", { method: "POST", body: { text, language, gender } }),
+    textToSpeech: ({ text, language, speaker, gender }) =>
+      request("/translate/text-to-speech", { method: "POST", body: { text, language, speaker, gender } }),
 
     characterVoice: ({ text, voiceName }) =>
       request("/translate/character-voice", { method: "POST", auth: true, body: { text, voiceName } }),

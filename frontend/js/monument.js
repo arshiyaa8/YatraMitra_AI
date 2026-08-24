@@ -204,6 +204,17 @@ async function renderMonument(m, translation, lang) {
   document.getElementById("m-fee").textContent =
     fee === 0 ? "Free" : fee ? `${m.entryFee.currency || "INR"} ${fee}` : "Not listed";
 
+  // Localize labels if in Hindi
+  const isHi = lang === "hi";
+  const hoursLabel = document.querySelector("#m-hours")?.previousElementSibling;
+  if (hoursLabel && isHi) hoursLabel.textContent = "समय";
+  const closedLabel = document.querySelector("#m-closed-on")?.previousElementSibling;
+  if (closedLabel && isHi) closedLabel.textContent = "बंद दिन";
+  const bestTimeLabel = document.querySelector("#m-best-time-of-day")?.previousElementSibling;
+  if (bestTimeLabel && isHi) bestTimeLabel.textContent = "उत्तम समय";
+  const feeLabel = document.querySelector("#m-fee")?.previousElementSibling;
+  if (feeLabel && isHi) feeLabel.textContent = "प्रवेश शुल्क";
+
   // Language tier note — be honest about machine-only translations
   const tierNote = document.getElementById("lang-tier-note");
   const reportBtn = document.getElementById("report-translation-btn");
@@ -212,7 +223,7 @@ async function renderMonument(m, translation, lang) {
     reportBtn.hidden = true;
   } else if (translation) {
     tierNote.textContent =
-      translation.supportTier === "full" ? "✓ Reviewed translation" : "Best-effort machine translation";
+      translation.supportTier === "full" ? "✓ पूर्ण सत्यापित हिन्दी अनुवाद (Verified Translation)" : "Best-effort machine translation";
     reportBtn.hidden = false;
   } else {
     tierNote.textContent = "No stored translation for this language yet — showing English.";
@@ -402,9 +413,14 @@ function setupListenButton() {
       utterance.rate = 0.95;
 
       const voices = window.speechSynthesis.getVoices();
-      const matchedVoice = voices.find(
-        (v) => v.lang === utterance.lang || v.lang.startsWith(lang)
+      const langPrefix = utterance.lang.split("-")[0];
+      const matchingVoices = voices.filter(
+        (v) => v.lang.toLowerCase().startsWith(langPrefix) || v.lang.toLowerCase() === utterance.lang.toLowerCase()
       );
+      const matchedVoice =
+        matchingVoices.find((v) => /natural|neural|online|google|siri/i.test(v.name)) ||
+        matchingVoices[0] ||
+        voices.find((v) => /natural|neural|online|google/i.test(v.name));
       if (matchedVoice) utterance.voice = matchedVoice;
 
       utterance.onstart = () => {

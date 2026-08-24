@@ -48,6 +48,17 @@ document.addEventListener("DOMContentLoaded", () => {
   checkPersonalization();
   initExploreMap();
   setupViewSwitcher();
+  applyLanguageToUI();
+
+  // Listen for global language changes and immediately update UI
+  window.addEventListener("ym-lang-changed", (e) => {
+    applyLanguageToUI();
+    const grid = document.getElementById("destination-grid");
+    if (grid && currentLoadedMonuments.length > 0) {
+      renderGrid(grid, currentLoadedMonuments);
+      renderMapMarkers(currentLoadedMonuments);
+    }
+  });
 
   document.getElementById("search-form").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -81,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMonuments();
   });
 
-  document.getElementById("underexplored-toggle").addEventListener("change", (e) => {
+  document.getElementById("underexplored-toggle")?.addEventListener("change", (e) => {
     state.nearbyMode = false;
     state.underexplored = e.target.checked;
     state.page = 1;
@@ -92,6 +103,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadMonuments();
 });
+
+function applyLanguageToUI() {
+  const heroTitle = document.querySelector(".page-hero h1");
+  const heroSubtitle = document.querySelector(".page-hero p");
+  const searchInput = document.getElementById("search-input");
+  const searchBtn = document.querySelector("#search-form button[type='submit']");
+  const cardsBtn = document.getElementById("view-cards-btn");
+  const mapBtn = document.getElementById("view-map-btn");
+  const nearMeBtn = document.getElementById("near-me-btn");
+  const underexploredLabel = document.querySelector("label[for='underexplored-toggle']");
+  const stateFilter = document.getElementById("state-filter");
+  const catFilter = document.getElementById("category-filter");
+  const closestBtn = document.getElementById("map-closest-btn");
+  const locateBtn = document.getElementById("map-locate-btn");
+
+  if (heroTitle) heroTitle.textContent = YM.t("explore_title", "Explore heritage sites");
+  if (heroSubtitle) heroSubtitle.textContent = YM.t("explore_subtitle", "Search by name, state, or region. Every result comes from the live monument database.");
+  if (searchInput) searchInput.placeholder = YM.t("search_placeholder", "e.g. Taj Mahal, Rajasthan, forts…");
+  if (searchBtn) searchBtn.textContent = YM.t("search_btn", "Search");
+  if (cardsBtn) cardsBtn.textContent = YM.t("cards_tab", "🗂️ Cards");
+  if (mapBtn) mapBtn.textContent = YM.t("map_tab", "🗺️ Interactive Map");
+  if (nearMeBtn) nearMeBtn.textContent = YM.t("near_me_btn", "📍 Near me");
+
+  if (underexploredLabel) {
+    const isChecked = document.getElementById("underexplored-toggle")?.checked;
+    underexploredLabel.innerHTML = `
+      <input type="checkbox" id="underexplored-toggle" style="width:auto; min-height:auto;" ${isChecked ? "checked" : ""} />
+      ${YM.t("underexplored_label", "Underexplored gems only")}
+    `;
+    document.getElementById("underexplored-toggle")?.addEventListener("change", (e) => {
+      state.nearbyMode = false;
+      state.underexplored = e.target.checked;
+      state.page = 1;
+      loadMonuments();
+    });
+  }
+
+  if (catFilter) {
+    const val = catFilter.value;
+    catFilter.options[0].textContent = YM.t("all_categories", "All categories");
+    const optMap = {
+      monument: "cat_monument",
+      temple: "cat_temple",
+      fort: "cat_fort",
+      museum: "cat_museum",
+      natural: "cat_natural",
+      wildlife: "cat_wildlife",
+      other: "cat_other",
+    };
+    for (let i = 1; i < catFilter.options.length; i++) {
+      const opt = catFilter.options[i];
+      if (optMap[opt.value]) {
+        opt.textContent = YM.t(optMap[opt.value], opt.value);
+      }
+    }
+    catFilter.value = val;
+  }
+
+  if (stateFilter && stateFilter.options.length > 0) {
+    stateFilter.options[0].textContent = YM.t("all_states", "All states");
+  }
+
+  if (closestBtn) closestBtn.innerHTML = YM.t("route_closest", "🧭 Route to Closest Site");
+  if (locateBtn) locateBtn.innerHTML = YM.t("my_location", "📍 My Location");
+}
 
 // ── Leaflet OpenStreetMap Initialization ─────────────────────────
 function initExploreMap() {
@@ -390,26 +466,29 @@ function renderMapMarkers(items) {
     const [lng, lat] = m.location.coordinates;
     const nationality = YM.nationality.get();
     const fee = m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
-    const feeLabel = fee === 0 ? "Free entry" : fee ? `${m.entryFee.currency || "INR"} ${fee}` : "";
+    const feeLabel = fee === 0 ? YM.t("free_entry", "Free entry") : fee ? `${m.entryFee.currency || "INR"} ${fee} ${YM.t("entry_fee", "entry")}` : "";
+
+    const loc = YM.i18n.getMonument(m.slug, m.name, m.shortDescription);
+    const mName = loc.name;
 
     let distText = "";
     if (userLocation) {
       const dist = calculateDistanceKm(userLocation.lat, userLocation.lng, lat, lng);
-      distText = `<div style="font-size:0.8rem; color:#0066cc; font-weight:600; margin-bottom:0.35rem;">🚗 ${dist} km from your location</div>`;
+      distText = `<div style="font-size:0.8rem; color:#0066cc; font-weight:600; margin-bottom:0.35rem;">🚗 ${dist} km ${YM.t("from_you", "from your location")}</div>`;
     }
 
     const marker = L.marker([lat, lng]);
     marker.bindPopup(`
       <div class="map-popup-card">
-        <div class="map-popup-arch">${YM.util.escapeHtml(m.category || "monument")}</div>
+        <div class="map-popup-arch">${YM.util.escapeHtml(YM.t("cat_" + (m.category || "monument"), m.category || "monument"))}</div>
         <div style="padding: 0.6rem 0.2rem 0;">
-          <h4>${YM.util.escapeHtml(m.name)}</h4>
+          <h4>${YM.util.escapeHtml(mName)}</h4>
           <p>${YM.util.escapeHtml(m.state)}${m.district ? ` · ${YM.util.escapeHtml(m.district)}` : ""}</p>
           ${distText}
           ${feeLabel ? `<div style="font-size:0.78rem; color:var(--maroon); font-weight:600; margin-bottom:0.4rem;">${YM.util.escapeHtml(feeLabel)}</div>` : ""}
           <div style="display:flex; flex-direction:column; gap:0.35rem; margin-top:0.4rem;">
-            <button type="button" class="btn btn--sm btn--primary" style="font-size:0.78rem; padding:0.35rem 0.6rem; width:100%; text-align:center;" onclick="window.YM_routeTo('${m.slug}')">🧭 Route from My Location</button>
-            <a class="map-popup-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View Full Guide &rarr;</a>
+            <button type="button" class="btn btn--sm btn--primary" style="font-size:0.78rem; padding:0.35rem 0.6rem; width:100%; text-align:center;" onclick="window.YM_routeTo('${m.slug}')">🧭 ${YM.t("route_closest", "Route from My Location")}</button>
+            <a class="map-popup-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">${YM.t("view_guide", "View Full Guide")} &rarr;</a>
           </div>
         </div>
       </div>
@@ -436,7 +515,7 @@ async function checkPersonalization() {
 async function loadMonuments() {
   const grid = document.getElementById("destination-grid");
   const status = document.getElementById("results-status");
-  status.textContent = "Loading…";
+  status.textContent = "…";
   document.getElementById("near-me-status").textContent = "";
 
   try {
@@ -460,7 +539,7 @@ async function loadMonuments() {
     renderGrid(grid, items);
     renderMapMarkers(items);
 
-    status.textContent = `${res.total} destination${res.total === 1 ? "" : "s"} found`;
+    status.textContent = `${res.total} ${res.total === 1 ? YM.t("destination_found", "destination found") : YM.t("destinations_found", "destinations found")}`;
     renderPagination(res.total, res.page);
   } catch (err) {
     console.error(err);
@@ -526,34 +605,39 @@ function monumentCard(m) {
   const fee =
     m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
   const feeLabel =
-    fee === 0 ? "Free entry" : fee ? `${m.entryFee.currency || "INR"} ${fee} entry` : "";
+    fee === 0 ? YM.t("free_entry", "Free entry") : fee ? `${m.entryFee.currency || "INR"} ${fee} ${YM.t("entry_fee", "entry")}` : "";
 
   const isAccessible = (m.accessibility?.tags || []).includes("wheelchair_accessible");
   const imgUrl = m.images && m.images.length > 0 ? m.images[0] : null;
+
+  // Localized name & description
+  const loc = YM.i18n.getMonument(m.slug, m.name, m.shortDescription);
+  const localizedName = loc.name;
+  const localizedDesc = loc.desc;
 
   let distanceBadge = "";
   if (userLocation && m.location?.coordinates && m.location.coordinates.length >= 2) {
     const [mLng, mLat] = m.location.coordinates;
     const dist = calculateDistanceKm(userLocation.lat, userLocation.lng, mLat, mLng);
-    distanceBadge = `<span class="badge badge--distance">🚗 ${dist} km away</span>`;
+    distanceBadge = `<span class="badge badge--distance">🚗 ${dist} km ${YM.t("from_you", "away")}</span>`;
   }
 
   return `
     <article class="card" style="overflow:hidden; display:flex; flex-direction:column;">
       <div class="card-arch" style="${imgUrl ? `background-image: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%), url('${imgUrl}'); background-size: cover; background-position: center; min-height: 140px; position:relative;` : ""}" aria-hidden="true">
-        <span class="card-arch-label" style="${imgUrl ? "background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" : ""}">${YM.util.escapeHtml(m.category || "monument")}</span>
+        <span class="card-arch-label" style="${imgUrl ? "background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" : ""}">${YM.util.escapeHtml(YM.t("cat_" + (m.category || "monument"), m.category || "monument"))}</span>
       </div>
       <div class="card-body" style="flex:1; display:flex; flex-direction:column;">
-        <h3>${YM.util.escapeHtml(m.name)}</h3>
+        <h3>${YM.util.escapeHtml(localizedName)}</h3>
         <p class="card-meta">${YM.util.escapeHtml(m.state)}${m.district ? `, ${YM.util.escapeHtml(m.district)}` : ""}</p>
-        <p class="card-desc">${YM.util.escapeHtml(m.shortDescription || "")}</p>
+        <p class="card-desc">${YM.util.escapeHtml(localizedDesc || "")}</p>
         <div class="card-footer" style="margin-top:auto; padding-top:0.6rem; display:flex; flex-wrap:wrap; gap:0.35rem;">
           ${distanceBadge}
           ${feeLabel ? `<span class="badge badge--fee">${YM.util.escapeHtml(feeLabel)}</span>` : ""}
-          ${m.isUnderexplored ? `<span class="badge badge--underexplored">Underexplored gem</span>` : ""}
-          ${accessibilityFlagged && isAccessible ? `<span class="badge badge--accessible">Matches your accessibility needs</span>` : ""}
+          ${m.isUnderexplored ? `<span class="badge badge--underexplored">${YM.t("underexplored_gem", "Underexplored gem")}</span>` : ""}
+          ${accessibilityFlagged && isAccessible ? `<span class="badge badge--accessible">${YM.t("accessible_badge", "Matches your accessibility needs")}</span>` : ""}
         </div>
-        <a class="card-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View details &rarr;</a>
+        <a class="card-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">${YM.t("view_details", "View details →")}</a>
       </div>
     </article>
   `;

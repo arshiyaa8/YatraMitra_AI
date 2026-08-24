@@ -25,22 +25,23 @@
   display: block;
   position: sticky;
   top: 0;
-  z-index: 30;
-  background: var(--ivory);
+  z-index: 100;
+  background: #ffffff;
   border-bottom: 1px solid var(--line);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .header-inner {
-  max-width: 1100px;
+  max-width: 1280px;
   margin: 0 auto;
-  min-height: var(--header-h);
-  padding: 0.4rem 1rem;
+  min-height: 56px;
+  height: 56px;
+  padding: 0 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  gap: 1rem;
+  flex-wrap: nowrap;
 }
 
 .nav { display: none; }
@@ -48,16 +49,38 @@
 @media (min-width: 768px) {
   .header-inner {
     padding: 0 1.5rem;
-    height: var(--header-h);
+    height: 56px;
     flex-wrap: nowrap;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
-  .nav { display: flex; gap: 1.25rem; flex: 1; }
-  .nav-link { color: var(--ink); font-weight: 500; padding: 0.4rem 0; border-bottom: 2px solid transparent; }
-  .nav-link:hover { text-decoration: none; border-bottom-color: var(--gold-light); }
-  .nav-link--active { color: var(--maroon); border-bottom-color: var(--gold); }
-  .header-right { display: flex; align-items: center; gap: 0.75rem; }
-  .header-user { color: var(--ink-soft); font-size: 0.92rem; }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex: 1;
+    margin: 0 0.5rem;
+    white-space: nowrap;
+  }
+  .nav-link {
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 0.88rem;
+    padding: 0.35rem 0.15rem;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+  }
+  .nav-link:hover { text-decoration: none; border-bottom-color: var(--gold); color: var(--maroon); }
+  .nav-link--active { color: var(--maroon); font-weight: 700; border-bottom-color: var(--maroon); }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  .header-user { color: var(--ink-soft); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
 }
 
 .brand {

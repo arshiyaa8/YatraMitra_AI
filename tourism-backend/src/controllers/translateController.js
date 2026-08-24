@@ -19,8 +19,8 @@ exports.speechToText = asyncHandler(async (req, res) => {
 });
 
 exports.textToSpeech = asyncHandler(async (req, res) => {
-  const { text, language, gender } = req.body;
-  const result = await bhashini.textToSpeech({ text, language, gender });
+  const { text, language, speaker, gender } = req.body;
+  const result = await bhashini.textToSpeech({ text, language, speaker, gender });
   res.json({ success: true, ...result });
 });
 
