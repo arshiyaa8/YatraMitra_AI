@@ -5,71 +5,69 @@ import argparse
 import requests
 from datetime import datetime
 
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+HEADERS = {"User-Agent": "tourism-ml/1.0 (tourism image fetcher)"}
+
+
 class MonumentImageFetcher:
-    """Fetches real-time or recent images of monuments from open APIs."""
-    
+    """Fetch a Wikimedia Commons image for a monument."""
+
     def __init__(self, save_dir: str):
         self.save_dir = save_dir
-        if not os.path.exists(self.save_dir):
-            os.makedirs(self.save_dir)
+        os.makedirs(self.save_dir, exist_ok=True)
 
-    def fetch_wikimedia_image(self, monument_name: str) -> str:
-        """
-        Searches Wikimedia Commons for a recent image of the given monument
-        and downloads it to the local temporary directory.
-        """
-        # 1. Search for the monument image file name
-        search_url = "https://en.wikipedia.org/w/api.php"
-        search_params = {
-            "action": "query",
-            "format": "json",
-            "titles": monument_name,
-            "prop": "images",
-            "imlimit": 1
-        }
-        
+    def fetch_wikimedia_image(self, monument_name: str):
         try:
-            res = requests.get(search_url, params=search_params, timeout=10)
-            data = res.json()
-            
-            pages = data.get("query", {}).get("pages", {})
-            page = list(pages.values())[0]
-            images = page.get("images", [])
-            
-            if not images:
-                return None
-                
-            file_title = images[0]["title"]
-            
-            # 2. Get the actual download URL for the image file
-            imageinfo_params = {
+            search_params = {
                 "action": "query",
                 "format": "json",
-                "titles": file_title,
+                "generator": "search",
+                "gsrsearch": f"{monument_name} filetype:bitmap",
+                "gsrnamespace": 6,
+                "gsrlimit": 5,
                 "prop": "imageinfo",
-                "iiprop": "url"
+                "iiprop": "url|mime",
+                "iiurlwidth": 1600,
             }
-            
-            info_res = requests.get(search_url, params=imageinfo_params, timeout=10)
-            info_data = info_res.json()
-            
-            info_pages = info_data.get("query", {}).get("pages", {})
-            info_page = list(info_pages.values())[0]
-            image_url = info_page["imageinfo"][0]["url"]
-            
-            # 3. Download and save the image
-            img_data = requests.get(image_url, timeout=10).content
+            res = requests.get(COMMONS_API, params=search_params, headers=HEADERS, timeout=15)
+            res.raise_for_status()
+            data = res.json()
+            pages = data.get("query", {}).get("pages", {})
+
+            image_url = None
+            for page in pages.values():
+                infos = page.get("imageinfo", [])
+                if infos:
+                    image_url = infos[0].get("thumburl") or infos[0].get("url")
+                    if image_url:
+                        break
+
+            if not image_url:
+                return None
+
+            image_res = requests.get(image_url, headers=HEADERS, timeout=20)
+            image_res.raise_for_status()
+
+            content_type = image_res.headers.get("Content-Type", "").lower()
+            if not content_type.startswith("image/"):
+                return None
+
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            safe_name = monument_name.replace(" ", "_").lower()
-            file_path = os.path.join(self.save_dir, f"{safe_name}_{timestamp}.jpg")
-            
+            safe_name = "".join(c if c.isalnum() else "_" for c in monument_name).strip("_").lower()
+            ext = ".jpg"
+            if "png" in content_type:
+                ext = ".png"
+            elif "webp" in content_type:
+                ext = ".webp"
+
+            file_path = os.path.join(self.save_dir, f"{safe_name}_{timestamp}{ext}")
             with open(file_path, "wb") as handler:
-                handler.write(img_data)
-                
+                handler.write(image_res.content)
             return file_path
-            
-        except Exception as e:
+
+        except (requests.RequestException, ValueError, KeyError, OSError):
             return None
+
 
 def main():
     parser = argparse.ArgumentParser(description="Monument Image Fetcher")
@@ -77,14 +75,13 @@ def main():
     args = parser.parse_args()
 
     save_directory = os.path.join(os.path.dirname(__file__), "temp_images")
-    fetcher = MonumentImageFetcher(save_dir=save_directory)
-    
-    downloaded_path = fetcher.fetch_wikimedia_image(args.monument)
-    
-    if downloaded_path:
-        print(json.dumps({"status": "success", "image_path": downloaded_path}))
+    path = MonumentImageFetcher(save_directory).fetch_wikimedia_image(args.monument)
+
+    if path:
+        print(json.dumps({"status": "success", "image_path": path}))
     else:
         print(json.dumps({"status": "error", "message": "No image found or download failed."}))
+
 
 if __name__ == "__main__":
     main()

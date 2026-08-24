@@ -16,6 +16,16 @@ MONUMENT_BASELINES = {
 }
 
 
+def _to_bool(value):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    if isinstance(value, (int, float)):
+        return value != 0
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
 class CrowdPredictorEngine:
     """Core Crowd Prediction Engine utilizing multi-factor inputs."""
 
@@ -86,6 +96,11 @@ class CrowdPredictorEngine:
 
         target_hour = hour if hour is not None else dt.hour
         day_of_week = dt.weekday()  # 0 = Monday, 6 = Sunday
+
+        if not 0 <= float(rain_prob) <= 1:
+            raise ValueError("rain_prob must be between 0 and 1")
+        if not -100 <= float(temp_c) <= 100:
+            raise ValueError("temp_c must be a valid Celsius value")
 
         # 1. Day Multiplier (Weekends carry higher density)
         day_multiplier = 1.35 if day_of_week in [5, 6] else 1.0
@@ -166,7 +181,7 @@ def main():
         hour=params.get("hour"),
         temp_c=float(params.get("temp", 25.0)),
         rain_prob=float(params.get("rain_prob", 0.0)),
-        is_holiday=bool(params.get("is_holiday", False)),
+        is_holiday=_to_bool(params.get("is_holiday", False)),
         image_path=params.get("image_path")
     )
 

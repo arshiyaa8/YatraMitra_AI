@@ -4,7 +4,7 @@ import os
 import argparse
 from typing import List, Dict, Any
 
-DEFAULT_DATASET_PATH = os.path.join(os.path.dirname(__file__), "monuments.json")
+DEFAULT_DATASET_PATH = os.path.join(os.path.dirname(__file__), "monuments.json" if os.path.exists(os.path.join(os.path.dirname(__file__), "monuments.json")) else "monument.json")
 
 # Fallback curated unexplored destinations in India if JSON isn't available
 FALLBACK_UNEXPLORED = [
