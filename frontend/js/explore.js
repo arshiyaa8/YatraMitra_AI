@@ -1,9 +1,7 @@
 /**
- * explore.js — search box + filters + monument grid.
+ * explore.js — search box + filters + monument grid + interactive Leaflet GPS map.
  * Backs onto GET /api/monuments (search/state/category/underexplored/page/limit)
  * and GET /api/monuments/nearby (lat/lng from the browser's geolocation).
- * State filter options are derived from real results, not invented — the
- * backend has no separate "list states" endpoint.
  */
 
 const state = {
@@ -14,10 +12,13 @@ const state = {
   categoryFilter: "",
   underexplored: false,
   knownStates: new Set(),
-  nearbyMode: false, // true while showing GET /monuments/nearby results (no pagination there)
+  nearbyMode: false,
+  viewMode: "cards", // "cards" | "map"
 };
 
 let accessibilityFlagged = false;
+let exploreMap = null;
+let markerGroup = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!YM.nationality.require()) return;
@@ -26,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
   YM.renderAlertBanner("alert-banner-host");
   YM.renderFestivalBanner("festival-banner-host");
   checkPersonalization();
+  initExploreMap();
+  setupViewSwitcher();
 
   document.getElementById("search-form").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -71,9 +74,97 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMonuments();
 });
 
-// Recommendation flags come from the opt-in health/accessibility profile
-// (GET /api/health-profile/recommendation-flags). Logged-out visitors and
-// visitors who never opted in simply see no personalization — that's expected.
+// ── Leaflet OpenStreetMap Initialization ─────────────────────────
+function initExploreMap() {
+  const mapEl = document.getElementById("explore-map");
+  if (!mapEl || typeof L === "undefined") return;
+
+  // Center on geographic center of India
+  exploreMap = L.map("explore-map", {
+    scrollWheelZoom: true,
+  }).setView([22.5, 80], 5);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18,
+  }).addTo(exploreMap);
+
+  markerGroup = L.featureGroup().addTo(exploreMap);
+}
+
+function setupViewSwitcher() {
+  const cardsBtn = document.getElementById("view-cards-btn");
+  const mapBtn = document.getElementById("view-map-btn");
+  const mapContainer = document.getElementById("map-view-container");
+  const gridContainer = document.getElementById("destination-grid");
+  const paginationContainer = document.getElementById("pagination");
+
+  if (!cardsBtn || !mapBtn) return;
+
+  cardsBtn.addEventListener("click", () => {
+    state.viewMode = "cards";
+    cardsBtn.classList.add("chip-toggle--active");
+    mapBtn.classList.remove("chip-toggle--active");
+    mapContainer.hidden = true;
+    gridContainer.hidden = false;
+    paginationContainer.hidden = false;
+  });
+
+  mapBtn.addEventListener("click", () => {
+    state.viewMode = "map";
+    mapBtn.classList.add("chip-toggle--active");
+    cardsBtn.classList.remove("chip-toggle--active");
+    gridContainer.hidden = true;
+    paginationContainer.hidden = true;
+    mapContainer.hidden = false;
+
+    if (exploreMap) {
+      setTimeout(() => {
+        exploreMap.invalidateSize();
+        if (markerGroup && markerGroup.getLayers().length > 0) {
+          exploreMap.fitBounds(markerGroup.getBounds(), { padding: [40, 40], maxZoom: 13 });
+        }
+      }, 100);
+    }
+  });
+}
+
+function renderMapMarkers(items) {
+  if (!exploreMap || !markerGroup) return;
+
+  markerGroup.clearLayers();
+  const validItems = items.filter(
+    (m) => m.location?.coordinates && m.location.coordinates.length >= 2
+  );
+
+  validItems.forEach((m) => {
+    // GeoJSON coordinates in MongoDB are [lng, lat], Leaflet requires [lat, lng]
+    const [lng, lat] = m.location.coordinates;
+    const nationality = YM.nationality.get();
+    const fee = m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
+    const feeLabel = fee === 0 ? "Free entry" : fee ? `${m.entryFee.currency || "INR"} ${fee}` : "";
+
+    const marker = L.marker([lat, lng]);
+    marker.bindPopup(`
+      <div class="map-popup-card">
+        <div class="map-popup-arch">${YM.util.escapeHtml(m.category || "monument")}</div>
+        <div style="padding: 0.6rem 0.2rem 0;">
+          <h4>${YM.util.escapeHtml(m.name)}</h4>
+          <p>${YM.util.escapeHtml(m.state)}${m.district ? ` · ${YM.util.escapeHtml(m.district)}` : ""}</p>
+          ${feeLabel ? `<div style="font-size:0.78rem; color:var(--maroon); font-weight:600; margin-bottom:0.4rem;">${YM.util.escapeHtml(feeLabel)}</div>` : ""}
+          <a class="map-popup-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View Full Guide &rarr;</a>
+        </div>
+      </div>
+    `);
+    markerGroup.addLayer(marker);
+  });
+
+  if (validItems.length > 0 && state.viewMode === "map") {
+    exploreMap.fitBounds(markerGroup.getBounds(), { padding: [40, 40], maxZoom: 13 });
+  }
+}
+
+// Recommendation flags from health/accessibility profile
 async function checkPersonalization() {
   if (!YM.auth.isLoggedIn()) return;
   try {
@@ -91,13 +182,16 @@ async function loadMonuments() {
   document.getElementById("near-me-status").textContent = "";
 
   try {
+    // If map view is active, request higher limit to show comprehensive pins
+    const queryLimit = state.viewMode === "map" ? 50 : state.limit;
+
     const res = await YM.api.listMonuments({
       search: state.search || undefined,
       state: state.stateFilter || undefined,
       category: state.categoryFilter || undefined,
       underexplored: state.underexplored ? "true" : undefined,
       page: state.page,
-      limit: state.limit,
+      limit: queryLimit,
     });
 
     const items = res.data || [];
@@ -105,6 +199,8 @@ async function loadMonuments() {
     populateStateFilter();
 
     renderGrid(grid, items);
+    renderMapMarkers(items);
+
     status.textContent = `${res.total} destination${res.total === 1 ? "" : "s"} found`;
     renderPagination(res.total, res.page);
   } catch (err) {
@@ -135,7 +231,15 @@ async function loadNearby() {
         state.nearbyMode = true;
         const grid = document.getElementById("destination-grid");
         const items = res.data || [];
+
         renderGrid(grid, items);
+        renderMapMarkers(items);
+
+        // Center map directly on user's current GPS position
+        if (exploreMap) {
+          exploreMap.setView([pos.coords.latitude, pos.coords.longitude], 9);
+        }
+
         document.getElementById("results-status").textContent = `${res.count} site${res.count === 1 ? "" : "s"} within 50km`;
         document.getElementById("pagination").innerHTML = "";
         statusEl.textContent = "";
@@ -165,22 +269,23 @@ function monumentCard(m) {
     fee === 0 ? "Free entry" : fee ? `${m.entryFee.currency || "INR"} ${fee} entry` : "";
 
   const isAccessible = (m.accessibility?.tags || []).includes("wheelchair_accessible");
+  const imgUrl = m.images && m.images.length > 0 ? m.images[0] : null;
 
   return `
-    <article class="card">
-      <div class="card-arch" aria-hidden="true">
-        <span class="card-arch-label">${YM.util.escapeHtml(m.category || "monument")}</span>
+    <article class="card" style="overflow:hidden; display:flex; flex-direction:column;">
+      <div class="card-arch" style="${imgUrl ? `background-image: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%), url('${imgUrl}'); background-size: cover; background-position: center; min-height: 140px; position:relative;` : ""}" aria-hidden="true">
+        <span class="card-arch-label" style="${imgUrl ? "background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" : ""}">${YM.util.escapeHtml(m.category || "monument")}</span>
       </div>
-      <div class="card-body">
+      <div class="card-body" style="flex:1; display:flex; flex-direction:column;">
         <h3>${YM.util.escapeHtml(m.name)}</h3>
         <p class="card-meta">${YM.util.escapeHtml(m.state)}${m.district ? `, ${YM.util.escapeHtml(m.district)}` : ""}</p>
         <p class="card-desc">${YM.util.escapeHtml(m.shortDescription || "")}</p>
-        <div class="card-footer">
+        <div class="card-footer" style="margin-top:auto; padding-top:0.6rem;">
           ${feeLabel ? `<span class="badge badge--fee">${YM.util.escapeHtml(feeLabel)}</span>` : ""}
           ${m.isUnderexplored ? `<span class="badge badge--underexplored">Underexplored gem</span>` : ""}
           ${accessibilityFlagged && isAccessible ? `<span class="badge badge--accessible">Matches your accessibility needs</span>` : ""}
         </div>
-        <a class="card-link" href="monument.html?slug=${encodeURIComponent(m.slug)}">View details &rarr;</a>
+        <a class="card-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View details &rarr;</a>
       </div>
     </article>
   `;

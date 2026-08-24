@@ -18,24 +18,33 @@
         <div id="monument-loading" class="loading-state">Loading monument…</div>
         <div id="monument-content" class="monument-layout" hidden>
 
-            <div class="monument-hero">
-                <div class="monument-hero-arch" aria-hidden="true"></div>
-                <div class="monument-hero-text">
+            <div class="monument-hero" style="position:relative; overflow:hidden;">
+                <div id="m-hero-backdrop" style="position:absolute; inset:0; background-size:cover; background-position:center; filter:brightness(0.32); z-index:0; transition:background-image 0.4s ease;"></div>
+                <div class="monument-hero-arch" aria-hidden="true" style="z-index:1; position:relative;"></div>
+                <div class="monument-hero-text" style="z-index:2; position:relative;">
                     <p class="eyebrow" id="m-location"></p>
                     <h1 id="m-name"></h1>
                     <p class="lede" id="m-tagline"></p>
 
-                    <div class="lang-switcher">
-                        <label for="lang-select">Read this page in</label>
-                        <select id="lang-select"></select>
-                        <span id="lang-tier-note" class="tier-note"></span>
+                    <div class="lang-switcher" style="display:flex; flex-wrap:wrap; gap:1.25rem; align-items:center; margin-bottom:1rem;">
+                        <div>
+                            <label for="monument-select" style="font-weight:600; font-size:0.85rem; color:rgba(255,255,255,0.9); display:block; margin-bottom:0.2rem;">Select Heritage Site</label>
+                            <select id="monument-select" style="min-width:220px; max-width:320px;"></select>
+                        </div>
+                        <div>
+                            <label for="lang-select" style="font-weight:600; font-size:0.85rem; color:rgba(255,255,255,0.9); display:block; margin-bottom:0.2rem;">Language</label>
+                            <select id="lang-select"></select>
+                        </div>
+                        <span id="lang-tier-note" class="tier-note" style="margin-top:1.2rem;"></span>
                     </div>
 
-                    <div class="monument-actions">
+                    <div class="monument-actions" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
                         <button id="listen-btn" class="btn btn--sm btn--ghost" type="button" style="color:#fff; border-color: rgba(255,255,255,0.5);">🔊 Listen</button>
+                        <button id="pause-btn" class="btn btn--sm btn--ghost" type="button" style="color:#fff; border-color: rgba(255,255,255,0.5);" hidden>⏸️ Pause</button>
+                        <button id="stop-btn" class="btn btn--sm btn--ghost" type="button" style="color:#fff; border-color: rgba(255,255,255,0.5);" hidden>⏹️ Stop</button>
                         <button id="trip-btn" class="btn btn--sm btn--ghost" type="button" style="color:#fff; border-color: rgba(255,255,255,0.5);"></button>
                     </div>
-                    <p class="widget-sub" id="listen-status" style="color: rgba(255,255,255,0.75); margin-top:0.4rem;"></p>
+                    <p class="widget-sub" id="listen-status" style="color: rgba(255,255,255,0.85); margin-top:0.4rem;"></p>
                     <audio id="listen-audio" hidden controls style="width:100%; margin-top:0.4rem;"></audio>
                 </div>
             </div>
@@ -47,6 +56,41 @@
                         <p id="m-description"></p>
                         <button id="report-translation-btn" class="btn btn--sm btn--ghost" type="button" hidden>Report a translation issue</button>
                         <p class="widget-sub" id="report-translation-status"></p>
+                    </article>
+
+                    <!-- Photo Gallery Showcase -->
+                    <article class="panel" id="m-gallery-panel">
+                        <h2>📸 Photo Gallery</h2>
+                        <div id="m-photo-gallery" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-top:0.75rem;"></div>
+                    </article>
+
+                    <!-- AI Heritage Q&A Assistant -->
+                    <article class="panel" id="assistant-panel" style="background: linear-gradient(180deg, #fdfbf7 0%, #fff 100%); border-left: 4px solid var(--gold);">
+                        <h2 style="display:flex; align-items:center; gap:0.5rem; color:var(--maroon-dark);">
+                            🤖 Ask the Heritage Assistant
+                        </h2>
+                        <p class="widget-sub" style="margin-top:0.2rem; margin-bottom:0.75rem;">
+                            Get instant, verified answers about visiting hours, ticket prices, accessibility, photography rules, and history.
+                        </p>
+
+                        <!-- Quick Prompts -->
+                        <div class="chip-list" style="margin-bottom:0.9rem;" id="assistant-quick-prompts">
+                            <button type="button" class="chip chip-toggle" data-prompt="What are the visiting hours and best timings?">🕒 Timings</button>
+                            <button type="button" class="chip chip-toggle" data-prompt="What are the entry ticket fees for Indian and foreign visitors?">🎟️ Ticket fees</button>
+                            <button type="button" class="chip chip-toggle" data-prompt="Is this monument wheelchair accessible for elderly or disabled visitors?">♿ Wheelchair access</button>
+                            <button type="button" class="chip chip-toggle" data-prompt="Are cameras, photography, and drones allowed inside?">📷 Photo &amp; Drone rules</button>
+                            <button type="button" class="chip chip-toggle" data-prompt="What famous local food and sweets are recommended nearby?">🍲 Famous food nearby</button>
+                        </div>
+
+                        <!-- Chat Stream -->
+                        <div id="assistant-chat-stream" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:0.9rem;"></div>
+
+                        <!-- Input Bar -->
+                        <form id="assistant-form" class="inline-form" style="display:flex; gap:0.5rem;">
+                            <label for="assistant-input" class="visually-hidden">Ask a question about this monument</label>
+                            <input type="text" id="assistant-input" placeholder="e.g. Can I carry a camera inside? Are bags allowed?" style="flex:1; min-height:var(--tap-min); padding:0.55rem 0.8rem; border:1px solid var(--line); border-radius:var(--radius-sm);" autocomplete="off" />
+                            <button type="submit" id="assistant-submit-btn" class="btn btn--primary" style="flex-shrink:0;">Ask</button>
+                        </form>
                     </article>
 
                     <article class="panel" id="m-history-panel">

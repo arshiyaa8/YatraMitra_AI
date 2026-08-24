@@ -9,6 +9,8 @@ router.use("/alerts", require("./alertRoutes"));
 router.use("/crowd", require("./crowdRoutes"));
 router.use("/health-profile", require("./healthRoutes"));
 router.use("/festivals", require("./festivalRoutes"));
+router.use("/laws", require("./lawRoutes"));
+router.use("/routes", require("./routeRoutes"));
 
 router.get("/", (req, res) => {
   res.json({
@@ -23,6 +25,8 @@ router.get("/", (req, res) => {
       "/api/crowd",
       "/api/health-profile",
       "/api/festivals",
+      "/api/laws",
+      "/api/routes",
     ],
   });
 });

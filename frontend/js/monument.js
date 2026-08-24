@@ -14,19 +14,53 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!YM.nationality.require()) return;
   YM.renderHeader("explore");
 
-  currentSlug = YM.util.qs("slug");
-  if (!currentSlug) {
-    showError("No monument specified.");
-    return;
-  }
+  const urlSlug = YM.util.qs("slug") || YM.util.qs("id");
+  const storedSlug = sessionStorage.getItem("ym_selected_monument");
+  currentSlug = urlSlug || storedSlug || "taj-mahal";
+  sessionStorage.setItem("ym_selected_monument", currentSlug);
 
+  await setupMonumentSwitcher();
   await setupLanguageSwitcher();
   await loadMonument(YM.lang.get());
   setupListenButton();
+  setupAssistantForm();
   setupTripButton();
   setupOfflinePackButton();
   setupArchiveForm();
 });
+
+async function setupMonumentSwitcher() {
+  const select = document.getElementById("monument-select");
+  if (!select) return;
+
+  try {
+    const res = await YM.api.listMonuments({ limit: 50 });
+    const items = res.data || [];
+    select.innerHTML = items
+      .map((m) => `<option value="${m.slug}">${YM.util.escapeHtml(m.name)} (${YM.util.escapeHtml(m.state)})</option>`)
+      .join("");
+    select.value = currentSlug;
+  } catch (err) {
+    console.error("Could not populate monument list:", err);
+  }
+
+  select.addEventListener("change", async (e) => {
+    currentSlug = e.target.value;
+    window.history.pushState(null, "", `monument.html?slug=${encodeURIComponent(currentSlug)}`);
+    await loadMonument(YM.lang.get());
+    const chatStream = document.getElementById("assistant-chat-stream");
+    if (chatStream) chatStream.innerHTML = "";
+  });
+
+  window.addEventListener("popstate", async () => {
+    const slug = YM.util.qs("slug") || YM.util.qs("id") || "taj-mahal";
+    if (slug !== currentSlug) {
+      currentSlug = slug;
+      select.value = currentSlug;
+      await loadMonument(YM.lang.get());
+    }
+  });
+}
 
 async function setupLanguageSwitcher() {
   const select = document.getElementById("lang-select");
@@ -58,6 +92,11 @@ async function loadMonument(lang) {
     currentMonument = res.data;
     await renderMonument(currentMonument, res.translation, lang);
 
+    const monumentSelect = document.getElementById("monument-select");
+    if (monumentSelect && monumentSelect.value !== currentSlug) {
+      monumentSelect.value = currentSlug;
+    }
+
     document.getElementById("monument-loading").hidden = true;
     document.getElementById("monument-content").hidden = false;
 
@@ -83,10 +122,44 @@ async function renderMonument(m, translation, lang) {
 
   const description = t("shortDescription", m.shortDescription);
   document.getElementById("m-description").textContent = description;
-  currentDisplayedText = description;
+
+  const history = t("history", m.history);
+  currentDisplayedText = `${t("name", m.name)}. ${description}${history ? " " + history : ""}`;
+
+  // Hero Backdrop Photo
+  const heroBg = document.getElementById("m-hero-backdrop");
+  const images = m.images && m.images.length ? m.images : [];
+  if (heroBg) {
+    if (images.length > 0) {
+      heroBg.style.backgroundImage = `url("${images[0]}")`;
+      heroBg.hidden = false;
+    } else {
+      heroBg.style.backgroundImage = "none";
+    }
+  }
+
+  // Photo Showcase Gallery
+  const galleryPanel = document.getElementById("m-gallery-panel");
+  const galleryContainer = document.getElementById("m-photo-gallery");
+  if (galleryPanel && galleryContainer) {
+    if (images.length > 0) {
+      galleryPanel.hidden = false;
+      galleryContainer.innerHTML = images
+        .map(
+          (imgUrl, idx) => `
+            <div style="position:relative; border-radius:var(--radius-md); overflow:hidden; box-shadow:var(--shadow-card); aspect-ratio:16/10; background:var(--ivory-dim);">
+              <img src="${YM.util.escapeHtml(imgUrl)}" alt="${YM.util.escapeHtml(m.name)} - Photo ${idx + 1}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
+            </div>
+          `
+        )
+        .join("");
+    } else {
+      galleryPanel.hidden = true;
+    }
+  }
 
   togglePanel("m-history-panel", m.history);
-  document.getElementById("m-history").textContent = t("history", m.history);
+  document.getElementById("m-history").textContent = history || "";
 
   togglePanel("m-culture-panel", m.culturalSignificance);
   document.getElementById("m-culture").textContent = m.culturalSignificance || "";
@@ -219,30 +292,166 @@ async function loadWeather(m) {
   }
 }
 
-// ── Listen (text-to-speech via Bhashini) ───────────────────────────────────
+// ── Listen (text-to-speech via Bhashini & Web Speech API) ──────────────────
+let isAudioPlaying = false;
+let isAudioPaused = false;
+
 function setupListenButton() {
-  const btn = document.getElementById("listen-btn");
-  btn.addEventListener("click", async () => {
-    const statusEl = document.getElementById("listen-status");
-    const audioEl = document.getElementById("listen-audio");
-    btn.disabled = true;
-    statusEl.textContent = "Preparing narration…";
-    audioEl.hidden = true;
+  const listenBtn = document.getElementById("listen-btn");
+  const pauseBtn = document.getElementById("pause-btn");
+  const stopBtn = document.getElementById("stop-btn");
+  const statusEl = document.getElementById("listen-status");
+  const audioEl = document.getElementById("listen-audio");
+
+  const resetAudioUI = () => {
+    isAudioPlaying = false;
+    isAudioPaused = false;
+    listenBtn.hidden = false;
+    listenBtn.disabled = false;
+    listenBtn.textContent = "🔊 Listen";
+    if (pauseBtn) {
+      pauseBtn.hidden = true;
+      pauseBtn.textContent = "⏸️ Pause";
+    }
+    if (stopBtn) stopBtn.hidden = true;
+    statusEl.textContent = "";
+  };
+
+  const stopAllAudio = () => {
+    if (audioEl) {
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      audioEl.hidden = true;
+    }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    resetAudioUI();
+  };
+
+  listenBtn.addEventListener("click", async () => {
+    stopAllAudio();
+    listenBtn.disabled = true;
+    statusEl.textContent = "Preparing voice guide…";
+
+    const lang = YM.lang.get();
+    const textToRead = currentDisplayedText || document.getElementById("m-name").textContent;
 
     try {
-      const res = await YM.api.textToSpeech({ text: currentDisplayedText, language: YM.lang.get() });
-      if (!res.audioBase64) throw new Error("No audio returned");
-      audioEl.src = `data:audio/wav;base64,${res.audioBase64}`;
-      audioEl.hidden = false;
-      statusEl.textContent = "";
-      audioEl.play().catch(() => {});
+      // 1. Try server-side Bhashini TTS
+      const res = await YM.api.textToSpeech({ text: textToRead, language: lang });
+
+      if (res && res.audioBase64) {
+        audioEl.src = `data:audio/wav;base64,${res.audioBase64}`;
+        audioEl.hidden = false;
+        audioEl.play().catch(() => {});
+        isAudioPlaying = true;
+        isAudioPaused = false;
+
+        listenBtn.hidden = true;
+        if (pauseBtn) pauseBtn.hidden = false;
+        if (stopBtn) stopBtn.hidden = false;
+        statusEl.textContent = "🔊 Playing official audio narration…";
+
+        audioEl.onended = () => resetAudioUI();
+        audioEl.onpause = () => {
+          if (isAudioPlaying && pauseBtn) {
+            pauseBtn.textContent = "▶️ Resume";
+            statusEl.textContent = "Narration paused.";
+          }
+        };
+        audioEl.onplay = () => {
+          if (pauseBtn) pauseBtn.textContent = "⏸️ Pause";
+          statusEl.textContent = "🔊 Playing official audio narration…";
+        };
+        return;
+      }
     } catch (err) {
-      console.error("Text-to-speech failed:", err);
-      statusEl.textContent = "Voice narration isn't available right now.";
-    } finally {
-      btn.disabled = false;
+      console.warn("Server TTS unavailable, using browser speech synthesis:", err);
+    }
+
+    // 2. Client-side Web Speech API Fallback
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+
+      const langMap = {
+        hi: "hi-IN",
+        ta: "ta-IN",
+        te: "te-IN",
+        bn: "bn-IN",
+        mr: "mr-IN",
+        gu: "gu-IN",
+        kn: "kn-IN",
+        ml: "ml-IN",
+        pa: "pa-IN",
+        ur: "ur-IN",
+        en: "en-IN",
+      };
+      utterance.lang = langMap[lang] || "en-IN";
+      utterance.rate = 0.95;
+
+      const voices = window.speechSynthesis.getVoices();
+      const matchedVoice = voices.find(
+        (v) => v.lang === utterance.lang || v.lang.startsWith(lang)
+      );
+      if (matchedVoice) utterance.voice = matchedVoice;
+
+      utterance.onstart = () => {
+        isAudioPlaying = true;
+        isAudioPaused = false;
+        listenBtn.hidden = true;
+        if (pauseBtn) pauseBtn.hidden = false;
+        if (stopBtn) stopBtn.hidden = false;
+        statusEl.textContent = `🔊 Narrating in ${lang.toUpperCase()}…`;
+      };
+
+      utterance.onend = () => resetAudioUI();
+      utterance.onerror = (e) => {
+        console.error("Speech synthesis error:", e);
+        resetAudioUI();
+        statusEl.textContent = "Narration finished.";
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      resetAudioUI();
+      statusEl.textContent = "Audio narration is not supported on this browser.";
     }
   });
+
+  if (pauseBtn) {
+    pauseBtn.addEventListener("click", () => {
+      if (!isAudioPlaying) return;
+
+      if (!isAudioPaused) {
+        if (audioEl && !audioEl.hidden && !audioEl.paused) {
+          audioEl.pause();
+        } else if (window.speechSynthesis && window.speechSynthesis.speaking) {
+          window.speechSynthesis.pause();
+        }
+        isAudioPaused = true;
+        pauseBtn.textContent = "▶️ Resume";
+        statusEl.textContent = "Narration paused.";
+      } else {
+        if (audioEl && !audioEl.hidden && audioEl.paused) {
+          audioEl.play().catch(() => {});
+        } else if (window.speechSynthesis && window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+        isAudioPaused = false;
+        pauseBtn.textContent = "⏸️ Pause";
+        statusEl.textContent = "🔊 Resuming narration…";
+      }
+    });
+  }
+
+  if (stopBtn) {
+    stopBtn.addEventListener("click", () => {
+      stopAllAudio();
+    });
+  }
+
+  window.addEventListener("beforeunload", () => stopAllAudio());
 
   document.getElementById("report-translation-btn").addEventListener("click", async () => {
     const status = document.getElementById("report-translation-status");
@@ -260,6 +469,90 @@ function setupListenButton() {
       status.textContent = "Thanks — flagged for review.";
     } catch (err) {
       status.textContent = `Couldn't send feedback: ${err.message}`;
+    }
+  });
+}
+
+// ── AI Heritage Q&A Assistant ─────────────────────────────────────────────
+function setupAssistantForm() {
+  const form = document.getElementById("assistant-form");
+  const input = document.getElementById("assistant-input");
+  const chatStream = document.getElementById("assistant-chat-stream");
+  const promptsContainer = document.getElementById("assistant-quick-prompts");
+
+  if (!form || !input || !chatStream) return;
+
+  // Handle Quick Prompts
+  if (promptsContainer) {
+    promptsContainer.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-prompt]");
+      if (!btn) return;
+      input.value = btn.getAttribute("data-prompt");
+      form.dispatchEvent(new Event("submit"));
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+
+    input.value = "";
+
+    // 1. Append User Question Bubble
+    const userBubble = document.createElement("div");
+    userBubble.style.cssText =
+      "align-self: flex-end; background: var(--maroon); color: #fff; padding: 0.6rem 0.95rem; border-radius: 14px 14px 2px 14px; max-width: 82%; font-size: 0.92rem; word-break: break-word;";
+    userBubble.textContent = question;
+    chatStream.appendChild(userBubble);
+
+    // 2. Append Typing Indicator
+    const typingBubble = document.createElement("div");
+    typingBubble.id = "assistant-typing";
+    typingBubble.style.cssText =
+      "align-self: flex-start; background: var(--ivory-dim); border: 1px solid var(--line); padding: 0.6rem 0.9rem; border-radius: 14px 14px 14px 2px; max-width: 85%; font-size: 0.88rem; color: var(--ink-soft); font-style: italic;";
+    typingBubble.textContent = "Checking verified heritage records…";
+    chatStream.appendChild(typingBubble);
+    chatStream.scrollTop = chatStream.scrollHeight;
+
+    try {
+      const res = await YM.api.askMonumentQuestion(currentSlug, question);
+      typingBubble.remove();
+
+      // 3. Append AI Answer Bubble
+      const answerBubble = document.createElement("div");
+      answerBubble.className = "assistant-answer-bubble";
+      answerBubble.style.cssText =
+        "align-self: flex-start; background: #fff; border: 1px solid var(--gold-light); border-left: 3px solid var(--gold); padding: 0.8rem 1rem; border-radius: 14px 14px 14px 2px; max-width: 90%; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);";
+
+      const answerText = res.answer || "No specific details found for that question.";
+      answerBubble.innerHTML = `
+        <p style="margin: 0 0 0.5rem; line-height: 1.5; color: var(--ink); white-space: pre-line;">${YM.util.escapeHtml(answerText)}</p>
+        <button type="button" class="btn btn--ghost btn--sm speak-answer-btn" style="padding: 0.2rem 0.6rem; font-size: 0.78rem;">🔊 Read aloud</button>
+      `;
+
+      // Attach speak action
+      const speakBtn = answerBubble.querySelector(".speak-answer-btn");
+      speakBtn.addEventListener("click", () => {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(answerText);
+          const lang = YM.lang.get();
+          utterance.lang = lang === "hi" ? "hi-IN" : "en-IN";
+          utterance.rate = 0.95;
+          window.speechSynthesis.speak(utterance);
+        }
+      });
+
+      chatStream.appendChild(answerBubble);
+      chatStream.scrollTop = chatStream.scrollHeight;
+    } catch (err) {
+      typingBubble.remove();
+      const errBubble = document.createElement("div");
+      errBubble.style.cssText =
+        "align-self: flex-start; background: #fff5f5; border: 1px solid #fed7d7; color: var(--danger); padding: 0.6rem 0.9rem; border-radius: 12px; font-size: 0.88rem;";
+      errBubble.textContent = `Couldn't get answer: ${err.message}`;
+      chatStream.appendChild(errBubble);
     }
   });
 }
@@ -355,10 +648,24 @@ function setupArchiveForm() {
   });
 }
 
-function showError(message) {
+function showError(message, showExploreLink = true) {
   document.getElementById("monument-loading").hidden = true;
   document.getElementById("monument-content").hidden = true;
   const errorEl = document.getElementById("monument-error");
-  errorEl.textContent = message;
+  if (showExploreLink) {
+    errorEl.innerHTML = `
+      <div style="padding: 2rem 1rem; text-align: center;">
+        <p style="font-size:1.1rem; color:var(--ink); margin-bottom:1.25rem;">${YM.util.escapeHtml(message)}</p>
+        <a href="explore.html" class="btn btn--primary">Browse Heritage Sites &rarr;</a>
+      </div>
+    `;
+  } else {
+    errorEl.innerHTML = `
+      <div style="padding: 2rem 1rem; text-align: center;">
+        <p style="font-size:1.1rem; color:var(--ink); margin-bottom:1.25rem;">${YM.util.escapeHtml(message)}</p>
+        <a href="explore.html" class="btn btn--ghost">&larr; Back to Explore</a>
+      </div>
+    `;
+  }
   errorEl.hidden = false;
 }

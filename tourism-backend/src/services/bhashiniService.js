@@ -120,22 +120,39 @@ async function speechToText({ audioBase64, language, audioFormat = "wav" }) {
 }
 
 async function textToSpeech({ text, language, gender = "female" }) {
-  const config = await getPipelineConfig({ task: "tts", sourceLanguage: language });
-  const serviceId = config.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
+  if (!process.env.BHASHINI_USER_ID || !process.env.BHASHINI_ULCA_API_KEY) {
+    return {
+      audioBase64: null,
+      engine: "browser_tts_fallback",
+      message: "Bhashini credentials not set; client-side speech synthesis fallback enabled",
+    };
+  }
 
-  const body = {
-    pipelineTasks: [
-      {
-        taskType: "tts",
-        config: { language: { sourceLanguage: language }, serviceId, gender, samplingRate: 22050 },
-      },
-    ],
-    inputData: { input: [{ source: text }] },
-  };
+  try {
+    const config = await getPipelineConfig({ task: "tts", sourceLanguage: language });
+    const serviceId = config.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
 
-  const result = await callInference(config, body);
-  const audioBase64 = result?.pipelineResponse?.[0]?.audio?.[0]?.audioContent || null;
-  return { audioBase64, engine: "bhashini" };
+    const body = {
+      pipelineTasks: [
+        {
+          taskType: "tts",
+          config: { language: { sourceLanguage: language }, serviceId, gender, samplingRate: 22050 },
+        },
+      ],
+      inputData: { input: [{ source: text }] },
+    };
+
+    const result = await callInference(config, body);
+    const audioBase64 = result?.pipelineResponse?.[0]?.audio?.[0]?.audioContent || null;
+    return { audioBase64, engine: "bhashini" };
+  } catch (err) {
+    console.warn("Bhashini TTS call failed, falling back to browser speech synthesis:", err.message);
+    return {
+      audioBase64: null,
+      engine: "browser_tts_fallback",
+      error: err.message,
+    };
+  }
 }
 
 /**

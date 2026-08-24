@@ -1,0 +1,171 @@
+{
+  "disclaimer": "This is general public information for travelers, NOT legal advice. Laws and local regulations change over time; always verify current rules with official government sources.",
+  "nationalLaws": [
+    {
+      "title": "Carrying ID",
+      "description": "Foreign tourists must carry their passport (with visa) at all times; Indian citizens should carry a government ID (Aadhaar/Voter ID/DL) when traveling, especially near border areas or protected monuments."
+    },
+    {
+      "title": "Photography at monuments",
+      "description": "Photography is generally allowed at ASI-protected monuments, but tripods, drones, and commercial shoots usually require prior permission. Interior photography is banned at many temples and the Taj Mahal's mausoleum chamber."
+    },
+    {
+      "title": "Alcohol Regulations",
+      "description": "The legal drinking age varies by state (18–25). Some states (e.g. Gujarat, Bihar, Nagaland, Mizoram, Lakshadweep) have full or partial prohibition; alcohol possession there can lead to fines or arrest."
+    },
+    {
+      "title": "Drone Flying Laws",
+      "description": "Flying a drone requires registration on the Digital Sky platform and permission in many areas, especially near airports, military zones, and protected/heritage sites. Unauthorized drone use near monuments like the Taj Mahal is a punishable offense."
+    },
+    {
+      "title": "Foreign Currency & Customs",
+      "description": "Carrying large amounts of undeclared foreign currency above set limits requires customs declaration upon arrival in India."
+    },
+    {
+      "title": "Religious Site Conduct",
+      "description": "Many temples restrict entry for non-Hindus in inner sanctums; leather items (shoes, belts, wallets) are often prohibited inside temple premises."
+    },
+    {
+      "title": "Single-Use Plastic Bans",
+      "description": "Several states and heritage zones (including around the Taj Mahal) have single-use plastic bans; carrying banned plastic items can result in spot fines."
+    }
+  ],
+  "generalCulture": [
+    {
+      "title": "Greetings",
+      "description": "The traditional greeting is 'Namaste' — palms pressed together at chest level with a slight bow. Handshakes are common in urban/business settings, but many older or more traditional people still prefer Namaste."
+    },
+    {
+      "title": "Dress Norms & Modesty",
+      "description": "Modesty is valued, especially at religious sites; shoulders and knees are often expected to be covered. Removing shoes before entering homes, temples, and mosques is standard practice."
+    },
+    {
+      "title": "Right Hand Usage",
+      "description": "The right hand is traditionally used for eating, giving/receiving objects, and greetings; the left hand is considered unclean in many traditional contexts."
+    },
+    {
+      "title": "Festivals & Celebrations",
+      "description": "India has an extremely dense festival calendar; major pan-India festivals include Diwali (festival of lights), Holi (festival of colors), Eid, and Christmas, alongside hundreds of regional harvest and temple festivals."
+    },
+    {
+      "title": "Joint Family Structure",
+      "description": "Multi-generational households remain common, particularly outside metro cities, with strong emphasis on family hierarchy and respect for elders."
+    },
+    {
+      "title": "Public Displays of Affection",
+      "description": "Generally more conservative than Western norms, especially outside major metro cities; handholding is common but kissing in public is frowned upon in most public spaces."
+    }
+  ],
+  "generalFood": [
+    {
+      "title": "Spice Levels",
+      "description": "Indian food is rich in spices, but heat level varies hugely by region and dish; you can almost always ask for food to be made 'less spicy' (kam mirchi) at restaurants."
+    },
+    {
+      "title": "Vegetarian Dining",
+      "description": "India has one of the largest vegetarian populations in the world; most restaurants clearly separate veg (green dot) and non-veg (brown dot) menus, and pure-veg restaurants are widely available."
+    },
+    {
+      "title": "Street Food Safety",
+      "description": "Extremely popular and diverse (chaat, vada pav, momos, kathi rolls). Stick to stalls with high customer turnover and freshly cooked, piping-hot items. Drink bottled or purified water."
+    },
+    {
+      "title": "The Thali Tradition",
+      "description": "A thali is a platter with small portions of multiple dishes (dal, sabzi, roti/rice, curd, pickle, sweet) — an authentic way to sample a region's cuisine in one balanced meal."
+    },
+    {
+      "title": "Meal Timings",
+      "description": "Lunch is typically the largest midday meal; dinner tends to be eaten later, commonly between 8:00 PM and 10:00 PM."
+    }
+  ],
+  "states": {
+    "Uttar Pradesh": {
+      "laws": [
+        "Alcohol is legal but regulated; sale hours and 'dry days' apply around elections and select religious festivals.",
+        "Around the Taj Mahal and other ASI monuments, food, tobacco, and single-use plastics are banned inside the complex.",
+        "Photography restrictions apply inside the main mausoleum chamber of the Taj Mahal."
+      ],
+      "culture": "Deeply linked to both Hindu and Islamic heritage — Varanasi is one of the world's oldest continuously inhabited cities and a major Hindu pilgrimage center, while Lucknow's Nawabi culture gave rise to refined Awadhi etiquette, Urdu poetry, and Kathak dance. Ayodhya and Mathura are major sacred centers.",
+      "food": "Awadhi cuisine (from Lucknow) is famous for slow-cooked biryani, melt-in-mouth kebabs (galouti kebab), and rich curries using the 'dum' (sealed-pot) cooking style. Varanasi is renowned for kachori-sabzi, chaat, and thick lassi served in clay kulhads. Agra is famous for petha sweet."
+    },
+    "Delhi": {
+      "laws": [
+        "Alcohol is sold through government-licensed shops; legal drinking age is 25 for spirits and 21 for beer/wine.",
+        "Strict pollution-control rules apply to vehicles (odd-even scheme during high-pollution periods); check local advisories if self-driving.",
+        "Photography is strictly restricted near central government and defense zones (e.g. Parliament, Rashtrapati Bhavan perimeter)."
+      ],
+      "culture": "A cosmopolitan capital layered over eight historic cities, combining Mughal monuments (Red Fort, Humayun's Tomb) with colonial architecture (Lutyens' Delhi) and bustling modern art, culinary, and diplomatic communities.",
+      "food": "A street food paradise featuring Chandni Chowk's parathas, dahi bhalla, butter chicken (invented at Moti Mahal), chole bhature, and kebabs at Jama Masjid."
+    },
+    "Rajasthan": {
+      "laws": [
+        "Several heritage forts/palaces are privately owned; follow property-specific guidelines on photography fees and dress codes.",
+        "Wildlife sanctuaries (Ranthambore, Sariska, Keoladeo) require permits; off-road driving and night transit inside core tiger reserves are strictly illegal."
+      ],
+      "culture": "Celebrated for Rajput chivalric heritage, grand desert forts, havelis with fresco art, colorful turbans, mirror-work bandhani textiles, Ghoomar dance, and puppetry (kathputli) traditions.",
+      "food": "Adapted to arid desert climates using lentils, gram flour, and ghee — iconic dishes include Dal Baati Churma, Gatte ki Sabzi, Ker Sangri, and festive sweets like Ghewar."
+    },
+    "Goa": {
+      "laws": [
+        "Legal drinking age is 18, with relaxed alcohol licensing and duties.",
+        "Beach shacks and nightlife venues must adhere to local noise cutoff regulations (usually 10:00 PM in residential and coastal zones).",
+        "Narcotics laws are strictly enforced under the NDPS Act; drug possession carries severe non-bailable criminal penalties."
+      ],
+      "culture": "A unique blend of Indian and Portuguese colonial heritage (Portuguese rule until 1961), visible in baroque churches (Basilica of Bom Jesus), vibrant Konkani folk culture, and laid-back Susegad lifestyle.",
+      "food": "Coastal cuisine rich in coconut, kokum, and local spices — famous for Goan fish curry with rice, Pork Vindaloo, Chicken Xacuti, Prawn Balchão, and the layered Bebinca dessert."
+    },
+    "Kerala": {
+      "laws": [
+        "State-run liquor outlets (Bevco) exist but availability is regulated; multiple dry days are observed every month (including the 1st of every month).",
+        "Houseboat tourism in Alappuzha/Kumarakom backwaters is strictly licensed; only board approved operators with safety gear."
+      ],
+      "culture": "Renowned for classical art forms including Kathakali dance-drama, Kalaripayattu martial arts, temple festivals with caparisoned elephants, and ancient Ayurvedic wellness traditions.",
+      "food": "Coconut, curry leaves, and black pepper dominate — famous for Appam with stew, Malabar parotta, Karimeen Pollichathu (pearl spot fish in banana leaf), and the 24-dish vegetarian Onam Sadhya."
+    },
+    "Tamil Nadu": {
+      "laws": [
+        "Major temples (e.g. Madurai Meenakshi, Brihadisvara) enforce traditional dress codes (dhotis/sarees/salwars; shorts and sleeveless tops prohibited).",
+        "Mobile phones and cameras are banned inside several major temple sanctums."
+      ],
+      "culture": "One of the world's oldest continuous living civilizations, characterized by majestic Dravidian stone gopurams, Carnatic classical music, Bharatanatyam dance, and ancient Sangam literature.",
+      "food": "Birthplace of South Indian staples like crispy Dosas, soft Idlis, Sambhar, Chettinad spicy pepper chicken, and traditional filter coffee served in stainless steel dabarah sets."
+    },
+    "Maharashtra": {
+      "laws": [
+        "Establishments in Mumbai and Pune follow municipal closing hours; late-night music permits are required past 1:30 AM.",
+        "Technically, liquor consumption permits exist on paper, though rarely checked for short-term tourists in licensed venues."
+      ],
+      "culture": "Rich Maratha empire legacy founded by Chhatrapati Shivaji Maharaj, monumental cave architecture (Ajanta & Ellora), energetic Ganesh Chaturthi street festivals, and Bollywood cinema.",
+      "food": "Famous street foods include Vada Pav, Misal Pav, Pav Bhaji, Bhelpuri, alongside coastal Malvani seafood and fiery Kolhapuri rassa curries."
+    },
+    "West Bengal": {
+      "laws": [
+        "Sundarbans National Park (mangrove tiger reserve) requires forest department permits and mandatory licensed local boat guides."
+      ],
+      "culture": "Renowned intellectual, literary, and artistic heritage — the legacy of Rabindranath Tagore, Satyajit Ray, Victoria Memorial, and UNESCO-inscribed Durga Puja festivities.",
+      "food": "Celebrated for mustard-gravy fish (Ilish, Bhetki Paturi), Kosha Mangsho (slow-cooked mutton), Kolkata kathi rolls, and world-famous milk sweets like Rasgulla, Sandesh, and Mishti Doi."
+    },
+    "Karnataka": {
+      "laws": [
+        "Alcohol sale timings in Bengaluru and other cities are regulated (typically up to 11:00 PM on weekdays, 1:00 AM on weekends).",
+        "Night traffic is banned on highway stretches passing through Bandipur and Nagarhole National Parks to protect wildlife."
+      ],
+      "culture": "Home to the glorious Vijayanagara heritage in Hampi, Hoysala temple carvings in Belur/Halebidu, Mysore Dasara royal processions, and Yakshagana folk theatre.",
+      "food": "Signature dishes include Mysore Masala Dosa, Bisi Bele Bath, Udupi vegetarian cuisine, Coorg Pandi curry, and Davanagere Benne Dosa."
+    },
+    "Punjab": {
+      "laws": [
+        "Border tourism (Attari-Wagah Border retreat ceremony) requires security screening; backpacks and large bags are prohibited inside the spectator stadium."
+      ],
+      "culture": "Vibrant culture centered around Sikh spiritual traditions (Golden Temple in Amritsar), Bhangra and Giddha folk dances, and legendary Punjabi warmth and hospitality.",
+      "food": "World-famous hearty cuisine including Sarson da Saag with Makki di Roti, Butter Chicken, Amritsari Kulcha with Chole, Dal Makhani, and creamy sweet Lassi."
+    },
+    "Gujarat": {
+      "laws": [
+        "Gujarat is a dry state with full alcohol prohibition. Foreign and out-of-state domestic tourists can obtain temporary visitor liquor permits online or at approved hotel permit desks."
+      ],
+      "culture": "Famed for the 9-night Garba/Dandiya festival during Navratri, Rann of Kutch white desert festival, intricate textile handicrafts (Patola, Bandhani), and Jain architectural marvels.",
+      "food": "Predominantly vegetarian cuisine balancing sweet, salty, and spicy notes — Dhokla, Khandvi, Thepla, Undhiyu, and the lavish Gujarati Thali."
+    }
+  }
+}

@@ -61,6 +61,9 @@ YM.api = (() => {
 
     getOfflinePackage: (slugs) => request("/monuments/offline-package", { method: "POST", body: { slugs } }),
 
+    askMonumentQuestion: (slug, question) =>
+      request(`/monuments/${encodeURIComponent(slug)}/ask`, { method: "POST", body: { question } }),
+
     addHeritageArchiveEntry: (slug, { title, narratorName, audioUrl, transcript, language }) =>
       request(`/monuments/${encodeURIComponent(slug)}/heritage-archive`, {
         method: "POST",
@@ -104,6 +107,13 @@ YM.api = (() => {
     // ── Festivals — festivalRoutes.js ──────────────────────────────────
     getActiveFestivals: ({ state } = {}) => request("/festivals/active", { query: { state } }),
     getUpcomingFestivals: ({ state, days } = {}) => request("/festivals/upcoming", { query: { state, days } }),
+
+    // ── Laws & Culture — lawRoutes.js ──────────────────────────────────
+    getLaws: ({ state } = {}) => request("/laws", { query: { state } }),
+
+    // ── Routes & Itinerary — routeRoutes.js ────────────────────────────
+    optimizeRoute: ({ startLocation, waypoints } = {}) =>
+      request("/routes/optimize", { method: "POST", body: { startLocation, waypoints } }),
 
     // ── Auth — authRoutes.js ───────────────────────────────────────────
     register: ({ name, email, password, preferredLanguage }) =>

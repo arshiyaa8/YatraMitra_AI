@@ -7,6 +7,40 @@
     <title>Account — YatraMitra</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
+    <!-- Leaflet CSS for Itinerary Route Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .timeline-step {
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        .timeline-step:last-child {
+            padding-bottom: 0;
+        }
+        .leg-badge {
+            font-size: 0.78rem;
+            background: var(--ivory-dim);
+            color: var(--ink-soft);
+            border: 1px solid var(--line);
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            display: inline-block;
+            margin-top: 0.2rem;
+            margin-bottom: 0.4rem;
+        }
+        .trip-chip-remove {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 0.35rem;
+            padding: 0 0.2rem;
+        }
+        .trip-chip-remove:hover {
+            color: var(--danger-dark);
+        }
+    </style>
 </head>
 
 <body>
@@ -36,35 +70,115 @@
                 <p class="form-status" id="profile-status"></p>
             </article>
 
-            <article class="panel">
-                <h2>Accessibility &amp; health profile</h2>
-                <p class="widget-sub">Strictly opt-in. Stored encrypted, used only to tailor recommendations — never shown to other users. You can clear it anytime.</p>
+            <article class="panel" id="health-profile-panel" style="background: linear-gradient(180deg, #fbfbfa 0%, #fff 100%); border-left: 4px solid var(--teal);">
+                <h2 style="display:flex; align-items:center; gap:0.5rem; color:var(--teal-dark);">
+                    ♿ Accessibility, Health &amp; Dietary Preferences
+                </h2>
+                <p class="widget-sub" style="margin-bottom:0.75rem;">
+                    🔒 <strong>Strictly Opt-in &amp; AES-256 Encrypted.</strong> In compliance with the DPDP Act 2023, this data is used exclusively to personalize monument accessibility tags, heat slot warnings, and food recommendations.
+                </p>
 
-                <label for="health-allergies">Allergies (comma-separated)</label>
-                <input type="text" id="health-allergies" placeholder="e.g. peanuts, shellfish" />
-                <label for="health-conditions">Conditions (comma-separated)</label>
-                <input type="text" id="health-conditions" placeholder="e.g. asthma" />
-                <label for="health-mobility">Mobility needs (comma-separated)</label>
-                <input type="text" id="health-mobility" placeholder="e.g. wheelchair access" />
-                <label for="health-notes">Notes</label>
-                <textarea id="health-notes"></textarea>
+                <!-- 1. Mobility Needs -->
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-weight:600; color:var(--ink); display:block; margin-bottom:0.4rem;">♿ Mobility &amp; Physical Access</label>
+                    <div class="chip-list" id="health-mobility-chips">
+                        <button type="button" class="chip chip-toggle" data-val="wheelchair_accessible">♿ Wheelchair Accessible Paths</button>
+                        <button type="button" class="chip chip-toggle" data-val="step_free_entry">🚶 Step-Free / Ramp Entry</button>
+                        <button type="button" class="chip chip-toggle" data-val="elevators">🛗 Elevator / Lift Access</button>
+                        <button type="button" class="chip chip-toggle" data-val="electric_carts">🦽 Electric Cart Assistance</button>
+                        <button type="button" class="chip chip-toggle" data-val="braille_signage">🦯 Braille &amp; Tactile Guides</button>
+                        <button type="button" class="chip chip-toggle" data-val="seating_benches">👴 Regular Rest Seating</button>
+                    </div>
+                </div>
 
-                <div style="display:flex; gap:0.6rem; margin-top:0.8rem; flex-wrap:wrap;">
-                    <button id="health-save-btn" class="btn btn--primary">Save (opt in)</button>
-                    <button id="health-clear-btn" class="btn btn--ghost">Clear profile</button>
+                <!-- 2. Health & Climate Sensitivities -->
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-weight:600; color:var(--ink); display:block; margin-bottom:0.4rem;">☀️ Climate &amp; Physical Exertion</label>
+                    <div class="chip-list" id="health-condition-chips">
+                        <button type="button" class="chip chip-toggle" data-val="heat_sensitivity">☀️ Heat &amp; Sun Sensitivity (Avoid 12-4 PM)</button>
+                        <button type="button" class="chip chip-toggle" data-val="asthma_respiratory">🫁 Asthma / Respiratory (Avoid dust/steep climbs)</button>
+                        <button type="button" class="chip chip-toggle" data-val="cardiac_low_exertion">❤️ Cardiac / Low Exertion (Flat shaded trails)</button>
+                    </div>
+                </div>
+
+                <!-- 3. Dietary Restrictions & Food Allergies -->
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-weight:600; color:var(--ink); display:block; margin-bottom:0.4rem;">🍲 Food Allergies &amp; Dietary Requirements</label>
+                    <div class="chip-list" id="health-allergy-chips">
+                        <button type="button" class="chip chip-toggle" data-val="peanut_treenut">🥜 Peanut &amp; Tree Nut Allergy</button>
+                        <button type="button" class="chip chip-toggle" data-val="gluten_celiac">🌾 Gluten-Free / Celiac</button>
+                        <button type="button" class="chip chip-toggle" data-val="dairy_lactose">🥛 Dairy / Lactose Intolerance</button>
+                        <button type="button" class="chip chip-toggle" data-val="seafood">🦐 Seafood Allergy</button>
+                        <button type="button" class="chip chip-toggle" data-val="jain_strict_veg">🌱 Strict Vegetarian / Jain</button>
+                    </div>
+                </div>
+
+                <!-- 4. Notes -->
+                <label for="health-notes" style="font-weight:600;">Additional Special Requests or Notes</label>
+                <textarea id="health-notes" placeholder="e.g. Traveling with an elderly family member, prefer shaded paths…" style="min-height:65px;"></textarea>
+
+                <div style="display:flex; gap:0.6rem; margin-top:0.8rem; flex-wrap:wrap; align-items:center;">
+                    <button id="health-save-btn" class="btn btn--primary">Save Preferences (Opt in)</button>
+                    <button id="health-clear-btn" class="btn btn--ghost">Clear All</button>
                 </div>
                 <p class="form-status" id="health-status"></p>
 
+                <!-- Live Recommendation Flags Preview -->
                 <div id="recommendation-flags" style="margin-top:0.8rem;"></div>
             </article>
 
-            <article class="panel">
-                <h2>My trip</h2>
-                <p class="widget-sub">Saved on this device only — the backend doesn't yet have an endpoint to sync saved destinations across devices.</p>
-                <ul id="trip-list" class="chip-list"></ul>
+            <!-- My Trip & Smart Route Optimizer -->
+            <article class="panel" id="trip-planner-panel" style="background: linear-gradient(180deg, #fdfcf9 0%, #fff 100%); border-left: 4px solid var(--gold);">
+                <h2 style="display:flex; align-items:center; gap:0.5rem; color:var(--maroon-dark);">
+                    🗺️ My Trip &amp; Smart Route Optimizer
+                </h2>
+                <p class="widget-sub" style="margin-bottom:0.75rem;">
+                    Add destinations to your trip, then click <strong>Optimize My Route</strong> to calculate the shortest driving sequence, distance, and transit time.
+                </p>
+
+                <!-- Circuit Presets -->
+                <div style="margin-bottom:0.85rem;">
+                    <span style="font-size:0.8rem; font-weight:600; color:var(--ink-soft); display:block; margin-bottom:0.35rem;">Or try a popular heritage circuit preset:</span>
+                    <div class="chip-list" id="circuit-presets">
+                        <button type="button" class="chip chip-toggle" data-circuit="agra">🏰 Agra Heritage Circuit</button>
+                        <button type="button" class="chip chip-toggle" data-circuit="delhi">🕌 Delhi Heritage Trail</button>
+                        <button type="button" class="chip chip-toggle" data-circuit="karnataka">🏛️ Karnataka UNESCO Trail</button>
+                    </div>
+                </div>
+
+                <!-- Trip Destinations List -->
+                <label style="font-weight:600;">Destinations in this trip</label>
+                <div id="trip-destinations-list" style="margin-bottom: 0.9rem; min-height: 2.2rem;"></div>
+
+                <div style="display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+                    <button id="optimize-route-btn" class="btn btn--primary">🚀 Optimize My Route</button>
+                    <button id="clear-trip-btn" class="btn btn--ghost btn--sm">Clear All</button>
+                </div>
+                <p class="form-status" id="route-status"></p>
+
+                <!-- Route Results & Stats -->
+                <div id="route-results" hidden style="margin-top:1.25rem; border-top:1px solid var(--line); padding-top:1rem;">
+                    <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+                        <div style="background:var(--ivory-dim); padding:0.6rem 1rem; border-radius:var(--radius-sm); border:1px solid var(--line); flex:1; min-width:140px;">
+                            <span style="font-size:0.75rem; color:var(--ink-soft); text-transform:uppercase; font-weight:600; display:block;">Total Distance</span>
+                            <strong id="route-total-distance" style="font-size:1.25rem; color:var(--maroon-dark);">0 km</strong>
+                        </div>
+                        <div style="background:var(--ivory-dim); padding:0.6rem 1rem; border-radius:var(--radius-sm); border:1px solid var(--line); flex:1; min-width:140px;">
+                            <span style="font-size:0.75rem; color:var(--ink-soft); text-transform:uppercase; font-weight:600; display:block;">Est. Travel Time</span>
+                            <strong id="route-total-time" style="font-size:1.25rem; color:var(--teal-dark);">0 mins</strong>
+                        </div>
+                    </div>
+
+                    <!-- Step-by-Step Timeline -->
+                    <h3 style="font-size:1rem; margin-bottom:0.5rem; color:var(--ink);">Optimal Visiting Order</h3>
+                    <ol id="route-timeline" style="padding-left:1.25rem; margin-bottom:1.25rem; line-height:1.6;"></ol>
+
+                    <!-- Route Map Container -->
+                    <div id="itinerary-map" style="height: 360px; width: 100%; border-radius: var(--radius-md); border: 1px solid var(--line); box-shadow: var(--shadow-card);" role="region" aria-label="Optimized travel route map"></div>
+                </div>
             </article>
 
-            <button id="logout-btn" class="btn btn--ghost btn--block">Log out</button>
+            <button id="logout-btn" class="btn btn--ghost btn--block" style="margin-top:1rem;">Log out</button>
         </div>
 
         <div id="auth-forms" class="auth-tabs">
@@ -103,6 +217,8 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
+    <!-- Leaflet JS for Itinerary Map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/account.js"></script>
 </body>
 

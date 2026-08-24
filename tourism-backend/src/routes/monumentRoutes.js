@@ -10,6 +10,7 @@ router.get("/", optionalAuth, ctrl.listMonuments);
 router.get("/nearby", optionalAuth, ctrl.getNearby);
 router.post("/offline-package", ctrl.getOfflinePackage);
 router.get("/:slug", optionalAuth, ctrl.getMonument);
+router.post("/:slug/ask", optionalAuth, [body("question").notEmpty().withMessage("Question is required")], validate, ctrl.askMonumentQuestion);
 
 router.post(
   "/",

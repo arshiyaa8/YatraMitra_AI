@@ -7,6 +7,54 @@
     <title>Explore Monuments — YatraMitra</title>
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
+    <!-- Leaflet CSS for Interactive OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .leaflet-popup-content-wrapper {
+            border-radius: var(--radius-md);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            font-family: inherit;
+        }
+        .leaflet-popup-content {
+            margin: 0;
+            line-height: 1.4;
+        }
+        .map-popup-card {
+            padding: 0.85rem 1rem 1rem;
+            min-width: 200px;
+            max-width: 260px;
+        }
+        .map-popup-arch {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+            padding: 0.4rem 0.8rem;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .map-popup-card h4 {
+            margin: 0 0 0.25rem;
+            font-size: 1rem;
+            color: var(--maroon-dark);
+        }
+        .map-popup-card p {
+            margin: 0 0 0.5rem;
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+        .map-popup-link {
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--maroon);
+            text-decoration: none;
+        }
+        .map-popup-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -52,8 +100,22 @@
             <p class="field-hint" id="near-me-status"></p>
         </section>
 
+        <!-- View Controls & Results Bar -->
         <section aria-live="polite">
-            <div id="results-status" class="results-status"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">
+                <div id="results-status" class="results-status" style="margin:0;"></div>
+                <div class="view-switch" role="group" aria-label="View mode" style="display:flex; gap:0.4rem;">
+                    <button type="button" id="view-cards-btn" class="chip-toggle chip-toggle--active">🗂️ Cards</button>
+                    <button type="button" id="view-map-btn" class="chip-toggle">🗺️ Interactive Map</button>
+                </div>
+            </div>
+
+            <!-- Map View Container (Toggled via view-map-btn) -->
+            <div id="map-view-container" hidden style="margin-bottom: 2rem;">
+                <div id="explore-map" style="height: 520px; width: 100%; border-radius: var(--radius-md); border: 1px solid var(--line); box-shadow: var(--shadow-card);" role="region" aria-label="Interactive map of Indian heritage monuments"></div>
+            </div>
+
+            <!-- Cards Grid Container (Default view) -->
             <div id="destination-grid" class="card-grid"></div>
             <div class="pagination" id="pagination"></div>
         </section>
@@ -64,6 +126,8 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/explore.js"></script>
 </body>
 

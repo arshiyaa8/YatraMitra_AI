@@ -92,6 +92,8 @@ async function showLoggedIn() {
   renderAccountSummary(user);
   await loadProfileForm();
   renderTripList();
+  setupRoutePlanner();
+  setupHealthChips();
 
   document.getElementById("profile-save-btn").addEventListener("click", saveProfile);
   document.getElementById("health-save-btn").addEventListener("click", saveHealthProfile);
@@ -183,38 +185,85 @@ async function saveProfile() {
 }
 
 // ── Health / accessibility profile (opt-in, encrypted at rest) ─────────────
+function setupHealthChips() {
+  const containerIds = ["health-mobility-chips", "health-condition-chips", "health-allergy-chips"];
+  containerIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("click", (e) => {
+      const btn = e.target.closest("button.chip");
+      if (btn) {
+        btn.classList.toggle("chip-toggle--active");
+      }
+    });
+  });
+}
+
 async function loadHealthProfile() {
   try {
     const res = await YM.api.getHealthProfile();
     if (res.optedIn && res.data) {
-      document.getElementById("health-allergies").value = (res.data.allergies || []).join(", ");
-      document.getElementById("health-conditions").value = (res.data.conditions || []).join(", ");
-      document.getElementById("health-mobility").value = (res.data.mobilityNeeds || []).join(", ");
-      document.getElementById("health-notes").value = res.data.notes || "";
+      const { allergies = [], conditions = [], mobilityNeeds = [], notes = "" } = res.data;
+
+      // Set active chips for mobility
+      document.querySelectorAll("#health-mobility-chips button.chip").forEach((btn) => {
+        const val = btn.getAttribute("data-val");
+        if (mobilityNeeds.includes(val)) {
+          btn.classList.add("chip-toggle--active");
+        } else {
+          btn.classList.remove("chip-toggle--active");
+        }
+      });
+
+      // Set active chips for conditions
+      document.querySelectorAll("#health-condition-chips button.chip").forEach((btn) => {
+        const val = btn.getAttribute("data-val");
+        if (conditions.includes(val)) {
+          btn.classList.add("chip-toggle--active");
+        } else {
+          btn.classList.remove("chip-toggle--active");
+        }
+      });
+
+      // Set active chips for allergies
+      document.querySelectorAll("#health-allergy-chips button.chip").forEach((btn) => {
+        const val = btn.getAttribute("data-val");
+        if (allergies.includes(val)) {
+          btn.classList.add("chip-toggle--active");
+        } else {
+          btn.classList.remove("chip-toggle--active");
+        }
+      });
+
+      document.getElementById("health-notes").value = notes;
     }
   } catch (err) {
     console.error("Couldn't load health profile:", err);
   }
 }
 
-function splitCsv(value) {
-  return value
-    .split(",")
-    .map((v) => v.trim())
-    .filter(Boolean);
-}
-
 async function saveHealthProfile() {
   const status = document.getElementById("health-status");
-  status.textContent = "Saving…";
+  status.textContent = "Saving preferences…";
+
+  const getSelectedVals = (containerId) =>
+    Array.from(document.querySelectorAll(`#${containerId} button.chip-toggle--active`)).map((b) =>
+      b.getAttribute("data-val")
+    );
+
+  const mobilityNeeds = getSelectedVals("health-mobility-chips");
+  const conditions = getSelectedVals("health-condition-chips");
+  const allergies = getSelectedVals("health-allergy-chips");
+  const notes = document.getElementById("health-notes").value.trim();
+
   try {
     await YM.api.setHealthProfile({
-      allergies: splitCsv(document.getElementById("health-allergies").value),
-      conditions: splitCsv(document.getElementById("health-conditions").value),
-      mobilityNeeds: splitCsv(document.getElementById("health-mobility").value),
-      notes: document.getElementById("health-notes").value.trim(),
+      mobilityNeeds,
+      conditions,
+      allergies,
+      notes,
     });
-    status.textContent = "Saved — encrypted and opted in.";
+    status.textContent = "Saved — AES-256 encrypted under DPDP Act 2023.";
     loadRecommendationFlags();
   } catch (err) {
     status.textContent = `Couldn't save: ${err.message}`;
@@ -223,14 +272,14 @@ async function saveHealthProfile() {
 
 async function clearHealthProfile() {
   const status = document.getElementById("health-status");
-  status.textContent = "Clearing…";
+  status.textContent = "Clearing preferences…";
   try {
     await YM.api.clearHealthProfile();
-    document.getElementById("health-allergies").value = "";
-    document.getElementById("health-conditions").value = "";
-    document.getElementById("health-mobility").value = "";
+    document
+      .querySelectorAll("#health-profile-panel button.chip-toggle--active")
+      .forEach((b) => b.classList.remove("chip-toggle--active"));
     document.getElementById("health-notes").value = "";
-    status.textContent = "Health profile cleared.";
+    status.textContent = "Preferences cleared.";
     loadRecommendationFlags();
   } catch (err) {
     status.textContent = `Couldn't clear: ${err.message}`;
@@ -246,27 +295,195 @@ async function loadRecommendationFlags() {
       host.innerHTML = "";
       return;
     }
+    const flagLabels = {
+      prefer_wheelchair_accessible_sites: "♿ Prioritizing Wheelchair & Step-Free Sites",
+      avoid_high_heat_high_exertion_slots: "☀️ High-Heat Afternoon Warnings Active",
+      filter_food_recommendations_by_allergy: "🍲 Food Allergy Safety Filtering Active",
+    };
     host.innerHTML = `
-      <p class="widget-sub">This is shaping your recommendations:</p>
-      <ul class="chip-list">${flags.map((f) => `<li class="chip">${YM.util.escapeHtml(f.replaceAll("_", " "))}</li>`).join("")}</ul>
+      <p class="widget-sub" style="font-weight:600; color:var(--teal-dark); margin-bottom:0.4rem;">Active Personalization Flags:</p>
+      <ul class="chip-list">${flags
+        .map((f) => `<li class="chip" style="background:var(--teal-dim); color:var(--teal-dark); border-color:var(--teal);">${YM.util.escapeHtml(flagLabels[f] || f.replaceAll("_", " "))}</li>`)
+        .join("")}</ul>
     `;
   } catch {
     host.innerHTML = "";
   }
 }
 
-// ── My trip (local list — see app.js) ───────────────────────────────────
+// ── My trip & Route Optimizer ──────────────────────────────────────────
+let itineraryMap = null;
+let itineraryLayerGroup = null;
+
 function renderTripList() {
-  const host = document.getElementById("trip-list");
+  const host = document.getElementById("trip-destinations-list");
+  if (!host) return;
+
   const slugs = YM.trip.get();
   if (!slugs.length) {
-    host.innerHTML = `<li class="widget-sub">No sites added yet — add some from a monument page.</li>`;
+    host.innerHTML = `<p class="widget-sub" style="font-style:italic;">No destinations added yet. Choose a preset circuit above or add sites from the Explore page.</p>`;
     return;
   }
-  host.innerHTML = slugs
+
+  host.innerHTML = `<ul class="chip-list">` + slugs
     .map(
       (slug) =>
-        `<li><a class="chip" href="monument.html?slug=${encodeURIComponent(slug)}">${YM.util.escapeHtml(slug.replaceAll("-", " "))}</a></li>`
+        `<li class="chip" style="display:inline-flex; align-items:center;">
+          <a href="monument.html?slug=${encodeURIComponent(slug)}" style="color:inherit; text-decoration:none;">${YM.util.escapeHtml(slug.replaceAll("-", " "))}</a>
+          <button type="button" class="trip-chip-remove" data-slug="${YM.util.escapeHtml(slug)}" title="Remove from trip">&times;</button>
+        </li>`
     )
-    .join("");
+    .join("") + `</ul>`;
+
+  // Attach individual remove handlers
+  host.querySelectorAll(".trip-chip-remove").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const slug = btn.getAttribute("data-slug");
+      YM.trip.toggle(slug);
+      renderTripList();
+    });
+  });
+}
+
+function setupRoutePlanner() {
+  const presetContainer = document.getElementById("circuit-presets");
+  const optimizeBtn = document.getElementById("optimize-route-btn");
+  const clearBtn = document.getElementById("clear-trip-btn");
+  const statusEl = document.getElementById("route-status");
+  const resultsContainer = document.getElementById("route-results");
+
+  // Preset Circuits
+  if (presetContainer) {
+    presetContainer.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-circuit]");
+      if (!btn) return;
+      const circuit = btn.getAttribute("data-circuit");
+
+      const circuits = {
+        agra: ["taj-mahal", "agra-fort", "fatehpur-sikri"],
+        delhi: ["qutub-minar", "red-fort", "humayuns-tomb"],
+        karnataka: ["hampi-ruins", "pattadakal", "badami-caves"],
+      };
+
+      const selected = circuits[circuit] || [];
+      selected.forEach((slug) => {
+        if (!YM.trip.has(slug)) YM.trip.toggle(slug);
+      });
+      renderTripList();
+      statusEl.textContent = `Loaded ${btn.textContent.trim()} preset!`;
+    });
+  }
+
+  // Clear All
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      localStorage.setItem("ym_trip", JSON.stringify([]));
+      renderTripList();
+      if (resultsContainer) resultsContainer.hidden = true;
+      statusEl.textContent = "Trip list cleared.";
+    });
+  }
+
+  // Optimize Route Button
+  if (optimizeBtn) {
+    optimizeBtn.addEventListener("click", async () => {
+      const slugs = YM.trip.get();
+      if (slugs.length < 2) {
+        statusEl.textContent = "Please add at least 2 destinations to plan an itinerary.";
+        return;
+      }
+
+      statusEl.textContent = "Calculating optimal route and travel times…";
+      optimizeBtn.disabled = true;
+
+      try {
+        const res = await YM.api.optimizeRoute({ waypoints: slugs });
+        statusEl.textContent = "";
+        resultsContainer.hidden = false;
+
+        // Stats
+        document.getElementById("route-total-distance").textContent = `${res.totalDistanceKm} km`;
+        document.getElementById("route-total-time").textContent = res.formattedDuration;
+
+        // Step-by-Step Timeline
+        const timelineEl = document.getElementById("route-timeline");
+        timelineEl.innerHTML = res.route
+          .map((stop, idx) => {
+            const leg = res.legs[idx]; // leg leading to the next stop
+            return `
+              <li class="timeline-step">
+                <strong>${stop.step}. ${YM.util.escapeHtml(stop.name)}</strong>
+                <span style="color:var(--ink-soft); font-size:0.85rem;"> · ${YM.util.escapeHtml(stop.state || "")}</span>
+                ${
+                  leg
+                    ? `<div><span class="leg-badge">🚗 Drive ${leg.distanceKm} km (~${leg.formattedDuration}) to ${YM.util.escapeHtml(leg.to)}</span></div>`
+                    : ""
+                }
+              </li>
+            `;
+          })
+          .join("");
+
+        // Render Leaflet Itinerary Map
+        renderItineraryMap(res.route);
+      } catch (err) {
+        statusEl.textContent = `Route optimization failed: ${err.message}`;
+      } finally {
+        optimizeBtn.disabled = false;
+      }
+    });
+  }
+}
+
+function renderItineraryMap(routeStops) {
+  const mapEl = document.getElementById("itinerary-map");
+  if (!mapEl || typeof L === "undefined") return;
+
+  if (!itineraryMap) {
+    itineraryMap = L.map("itinerary-map").setView([20.5937, 78.9629], 5);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 18,
+    }).addTo(itineraryMap);
+    itineraryLayerGroup = L.featureGroup().addTo(itineraryMap);
+  }
+
+  itineraryLayerGroup.clearLayers();
+
+  const latLngs = [];
+
+  routeStops.forEach((stop) => {
+    if (typeof stop.lat === "number" && typeof stop.lng === "number") {
+      latLngs.push([stop.lat, stop.lng]);
+
+      const marker = L.marker([stop.lat, stop.lng]);
+      marker.bindPopup(`
+        <div style="padding:0.4rem 0.2rem; min-width:140px;">
+          <strong style="color:var(--maroon); font-size:0.95rem;">Stop ${stop.step}: ${YM.util.escapeHtml(stop.name)}</strong>
+          <p style="margin:0.2rem 0 0.4rem; font-size:0.82rem; color:var(--ink-soft);">${YM.util.escapeHtml(stop.state || "")}</p>
+          ${stop.slug && stop.slug !== "start" ? `<a href="monument.html?slug=${encodeURIComponent(stop.slug)}" style="color:var(--maroon); font-weight:600; font-size:0.85rem;">View Guide &rarr;</a>` : ""}
+        </div>
+      `);
+      itineraryLayerGroup.addLayer(marker);
+    }
+  });
+
+  // Draw connecting route polyline
+  if (latLngs.length > 1) {
+    const polyline = L.polyline(latLngs, {
+      color: "#800000", // YatraMitra Heritage Maroon
+      weight: 4,
+      opacity: 0.85,
+      dashArray: "6, 8",
+    });
+    itineraryLayerGroup.addLayer(polyline);
+  }
+
+  setTimeout(() => {
+    itineraryMap.invalidateSize();
+    if (latLngs.length > 0) {
+      itineraryMap.fitBounds(itineraryLayerGroup.getBounds(), { padding: [40, 40], maxZoom: 14 });
+    }
+  }, 100);
 }
