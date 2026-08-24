@@ -1,13 +1,40 @@
 """
 main.py -- Central menu hub for the ym-tourism-ml project.
-Run this to access all features from one place (stands in for website
-buttons until the frontend is connected).
+Runs interactive text options alongside the new Sarvam + Groq Multilingual Voice Assistant.
 """
+
+import os
 import recommend
 import laws
 import culture
 import food
 import translate
+from voice_assistant import run_voice_pipeline
+
+
+def voice_assistant_menu():
+    print("\n--- VOICE ASSISTANT SETUP ---")
+    audio_path = input("Enter path to your recorded WAV file (e.g., sample.wav): ").strip()
+    
+    if not os.path.exists(audio_path):
+        print(f"❌ Error: File '{audio_path}' not found!")
+        return
+        
+    print("\nSupported Sarvam Languages: hi-IN (Hindi), ta-IN (Tamil), te-IN (Telugu), bn-IN (Bengali), mr-IN (Marathi), en-IN (English)")
+    lang_code = input("Enter language code [default: hi-IN]: ").strip() or "hi-IN"
+    location = input("Enter target location/city [default: Delhi]: ").strip() or "Delhi"
+    
+    try:
+        print("\nProcessing voice assistant pipeline...")
+        response_text, audio_output = run_voice_pipeline(
+            input_audio_path=audio_path,
+            user_lang=lang_code,
+            location=location
+        )
+        print(f"\n🤖 Assistant Response Text: {response_text}")
+        print(f"🔊 Response Audio Saved To: {audio_output}")
+    except Exception as e:
+        print(f"\n❌ Voice Assistant Error: {e}")
 
 
 def main_menu():
@@ -19,10 +46,11 @@ def main_menu():
         print("2. India laws (national + statewise)")
         print("3. Indian culture (general + statewise)")
         print("4. Indian food (general + statewise)")
-        print("5. Translate text")
-        print("6. Exit")
+        print("5. Translate text (Sarvam API)")
+        print("6. Voice Travel Assistant (Groq + Sarvam)")
+        print("7. Exit")
 
-        choice = input("\nEnter your choice (1-6): ").strip()
+        choice = input("\nEnter your choice (1-7): ").strip()
 
         if choice == "1":
             recommend.search_and_view()
@@ -46,6 +74,8 @@ def main_menu():
             except Exception as e:
                 print(f"\nTranslation failed: {e}")
         elif choice == "6":
+            voice_assistant_menu()
+        elif choice == "7":
             print("Goodbye!")
             break
         else:

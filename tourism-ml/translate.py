@@ -5,7 +5,7 @@ from sarvamai import SarvamAI
 # Set it before running, e.g. in PowerShell:
 #   $env:SARVAM_API_KEY="your_actual_key_here"
 #   python translate.py
-SARVAM_API_KEY = os.environ.get("SARVAM_API_KEY")
+SARVAM_API_KEY = os.environ.get("sk_epzcovi1_ZbxCQcW6mhwuCbpRM598jncl")
 
 if not SARVAM_API_KEY:
     raise ValueError(

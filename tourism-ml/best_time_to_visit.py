@@ -3,7 +3,7 @@ import json
 import os
 import argparse
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 try:
     from crowd_predictor import CrowdPredictorEngine
