@@ -55,7 +55,8 @@ function setupLoginForm() {
         password: document.getElementById("login-password").value,
       });
       YM.auth.save(res.token, res.user);
-      window.location.href = "explore.html";
+      YM.renderHeader("account");
+      showLoggedIn();
     } catch (err) {
       status.textContent = err.message;
     }
@@ -76,7 +77,8 @@ function setupRegisterForm() {
         preferredLanguage: YM.lang.get(),
       });
       YM.auth.save(res.token, res.user);
-      window.location.href = "explore.html";
+      YM.renderHeader("account");
+      showLoggedIn();
     } catch (err) {
       status.textContent = err.message;
     }

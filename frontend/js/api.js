@@ -132,5 +132,9 @@ YM.api = (() => {
       request("/health-profile", { method: "PUT", auth: true, body: { allergies, conditions, mobilityNeeds, notes } }),
     clearHealthProfile: () => request("/health-profile", { method: "DELETE", auth: true }),
     getRecommendationFlags: () => request("/health-profile/recommendation-flags", { auth: true }),
+
+    // ── AI Voice Assistant — aiAssistantRoutes.js ────────────────────
+    askAssistant: (message, language) =>
+      request("/assistant/chat", { method: "POST", body: { message, language } }),
   };
 })();

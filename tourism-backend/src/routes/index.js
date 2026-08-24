@@ -11,6 +11,7 @@ router.use("/health-profile", require("./healthRoutes"));
 router.use("/festivals", require("./festivalRoutes"));
 router.use("/laws", require("./lawRoutes"));
 router.use("/routes", require("./routeRoutes"));
+router.use("/assistant", require("./aiAssistantRoutes"));
 
 router.get("/", (req, res) => {
   res.json({

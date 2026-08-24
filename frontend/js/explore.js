@@ -19,6 +19,25 @@ const state = {
 let accessibilityFlagged = false;
 let exploreMap = null;
 let markerGroup = null;
+let userLocation = null; // { lat, lng, accuracy }
+let userMarker = null;
+let userAccuracyCircle = null;
+let currentLoadedMonuments = [];
+let activeRoutePolyline = null;
+
+function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c * 10) / 10;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!YM.nationality.require()) return;
@@ -90,7 +109,236 @@ function initExploreMap() {
   }).addTo(exploreMap);
 
   markerGroup = L.featureGroup().addTo(exploreMap);
+
+  const container = document.getElementById("map-view-container");
+  if (container) {
+    // Floating "🧭 Route to Closest Monument" button
+    if (!document.getElementById("map-closest-btn")) {
+      const closestBtn = document.createElement("button");
+      closestBtn.id = "map-closest-btn";
+      closestBtn.className = "map-closest-btn";
+      closestBtn.type = "button";
+      closestBtn.innerHTML = `🧭 Route to Closest Site`;
+      closestBtn.title = "Find and draw route to nearest heritage destination";
+      closestBtn.addEventListener("click", routeToClosestMonument);
+      container.appendChild(closestBtn);
+    }
+
+    // Floating "📍 Locate Me" button
+    if (!document.getElementById("map-locate-btn")) {
+      const locateBtn = document.createElement("button");
+      locateBtn.id = "map-locate-btn";
+      locateBtn.className = "map-locate-btn";
+      locateBtn.type = "button";
+      locateBtn.innerHTML = `📍 My Location`;
+      locateBtn.title = "Center map on my current GPS location";
+      locateBtn.addEventListener("click", () => {
+        locateUserOnMap(true);
+      });
+      container.appendChild(locateBtn);
+    }
+  }
+
+  // Attempt initial background location detection
+  locateUserOnMap(false);
 }
+
+function locateUserOnMap(flyTo = true, callback = null) {
+  if (!navigator.geolocation) {
+    if (callback) callback(null);
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      userLocation = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy,
+      };
+
+      if (exploreMap) {
+        if (userMarker) exploreMap.removeLayer(userMarker);
+        if (userAccuracyCircle) exploreMap.removeLayer(userAccuracyCircle);
+
+        // Custom pulsing blue GPS dot
+        const userIcon = L.divIcon({
+          className: "user-location-marker",
+          html: `<div class="user-location-pulse"></div><div class="user-location-dot"></div>`,
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        });
+
+        userMarker = L.marker([userLocation.lat, userLocation.lng], {
+          icon: userIcon,
+          zIndexOffset: 1000,
+        }).addTo(exploreMap);
+
+        userMarker.bindPopup(`
+          <div style="padding:0.4rem 0.2rem; min-width:140px; text-align:center;">
+            <strong style="color:#007aff; font-size:0.95rem;">📍 You are here</strong>
+            <p style="margin:0.25rem 0 0; font-size:0.8rem; color:var(--ink-soft);">GPS Accuracy ~${Math.round(userLocation.accuracy)}m</p>
+          </div>
+        `);
+
+        userAccuracyCircle = L.circle([userLocation.lat, userLocation.lng], {
+          radius: Math.max(userLocation.accuracy, 60),
+          color: "#007aff",
+          fillColor: "#007aff",
+          fillOpacity: 0.1,
+          weight: 1,
+        }).addTo(exploreMap);
+
+        if (flyTo) {
+          exploreMap.flyTo([userLocation.lat, userLocation.lng], 12, { duration: 1.5 });
+          userMarker.openPopup();
+        }
+      }
+
+      // Re-render markers and grid cards to display updated distance badges
+      if (currentLoadedMonuments.length > 0) {
+        renderMapMarkers(currentLoadedMonuments);
+        const grid = document.getElementById("destination-grid");
+        if (grid) renderGrid(grid, currentLoadedMonuments);
+      }
+
+      if (callback) callback(userLocation);
+    },
+    (err) => {
+      console.warn("Geolocation warning:", err.message);
+      if (callback) callback(null);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+}
+
+function routeToClosestMonument() {
+  if (!userLocation) {
+    locateUserOnMap(true, (loc) => {
+      if (!loc) {
+        alert("Please enable location permissions in your browser to find the closest monument.");
+        return;
+      }
+      routeToClosestMonument();
+    });
+    return;
+  }
+
+  const validItems = currentLoadedMonuments.filter(
+    (m) => m.location?.coordinates && m.location.coordinates.length >= 2
+  );
+
+  if (validItems.length === 0) {
+    alert("No monuments available on map to calculate route.");
+    return;
+  }
+
+  let closest = null;
+  let minDist = Infinity;
+
+  validItems.forEach((m) => {
+    const [lng, lat] = m.location.coordinates;
+    const dist = calculateDistanceKm(userLocation.lat, userLocation.lng, lat, lng);
+    if (dist < minDist) {
+      minDist = dist;
+      closest = m;
+    }
+  });
+
+  if (closest) {
+    drawRouteToMonument(closest, true);
+  }
+}
+
+function drawRouteToMonument(m, isClosest = false) {
+  if (!userLocation) {
+    locateUserOnMap(true, (loc) => {
+      if (loc) drawRouteToMonument(m, isClosest);
+    });
+    return;
+  }
+
+  if (!m.location?.coordinates || m.location.coordinates.length < 2) return;
+  const [destLng, destLat] = m.location.coordinates;
+  const dist = calculateDistanceKm(userLocation.lat, userLocation.lng, destLat, destLng);
+  const driveMins = Math.max(1, Math.round((dist / 35) * 60));
+  const driveTimeText = driveMins >= 60 ? `${Math.floor(driveMins / 60)} hr ${driveMins % 60} mins` : `${driveMins} mins`;
+  const walkMins = Math.max(1, Math.round((dist / 4.5) * 60));
+
+  // Remove existing polyline
+  if (activeRoutePolyline && exploreMap) {
+    exploreMap.removeLayer(activeRoutePolyline);
+  }
+
+  // Draw connecting dashed route line
+  activeRoutePolyline = L.polyline(
+    [
+      [userLocation.lat, userLocation.lng],
+      [destLat, destLng],
+    ],
+    {
+      color: "#800000", // Heritage Maroon
+      weight: 5,
+      opacity: 0.9,
+      dashArray: "8, 8",
+    }
+  ).addTo(exploreMap);
+
+  exploreMap.fitBounds(activeRoutePolyline.getBounds(), { padding: [60, 60], maxZoom: 15 });
+
+  // Floating route information card HUD
+  const container = document.getElementById("map-view-container");
+  let panel = document.getElementById("map-route-panel");
+  if (!panel && container) {
+    panel = document.createElement("div");
+    panel.id = "map-route-panel";
+    panel.className = "map-route-panel";
+    container.appendChild(panel);
+  }
+
+  if (panel) {
+    panel.hidden = false;
+    panel.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.35rem;">
+        <div>
+          <span style="font-size:0.75rem; color:var(--maroon); font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">${isClosest ? "⭐ Nearest Heritage Site" : "🧭 Selected Destination Route"}</span>
+          <h4 style="margin:0.15rem 0; font-size:1.05rem; color:var(--maroon-dark);">${YM.util.escapeHtml(m.name)}</h4>
+          <p style="margin:0; font-size:0.8rem; color:var(--ink-soft);">${YM.util.escapeHtml(m.state)}</p>
+        </div>
+        <button type="button" id="close-route-btn" style="background:none; border:none; font-size:1.25rem; cursor:pointer; color:var(--ink-soft); line-height:1; padding:0.1rem 0.3rem;" title="Clear Route">&times;</button>
+      </div>
+      <div style="display:flex; gap:0.5rem; margin:0.4rem 0 0.75rem; font-size:0.85rem; font-weight:600; flex-wrap:wrap; align-items:center;">
+        <span style="color:#007aff;">🚗 ${dist} km</span>
+        <span style="color:var(--ink-soft);">·</span>
+        <span style="color:var(--teal-dark);">⏱️ ~${driveTimeText} drive</span>
+        ${dist < 5 ? `<span style="color:var(--ink-soft);">·</span><span style="color:var(--ink-soft);">🚶 ~${walkMins} mins walk</span>` : ""}
+      </div>
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <a href="https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${destLat},${destLng}&travelmode=driving" target="_blank" rel="noopener" class="btn btn--sm btn--primary" style="font-size:0.8rem; flex:1; text-align:center; text-decoration:none; padding:0.4rem 0.6rem;">🧭 Open GPS Navigation &rarr;</a>
+        <a href="monument.html?slug=${encodeURIComponent(m.slug)}" class="btn btn--sm btn--ghost" style="font-size:0.8rem; padding:0.4rem 0.6rem;" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View Guide</a>
+      </div>
+    `;
+
+    document.getElementById("close-route-btn")?.addEventListener("click", clearActiveRoute);
+  }
+}
+
+function clearActiveRoute() {
+  if (activeRoutePolyline && exploreMap) {
+    exploreMap.removeLayer(activeRoutePolyline);
+    activeRoutePolyline = null;
+  }
+  const panel = document.getElementById("map-route-panel");
+  if (panel) panel.hidden = true;
+}
+
+// Expose global route trigger for popup buttons
+window.YM_routeTo = function (slug) {
+  const m = currentLoadedMonuments.find((item) => item.slug === slug);
+  if (m) {
+    drawRouteToMonument(m, false);
+  }
+};
 
 function setupViewSwitcher() {
   const cardsBtn = document.getElementById("view-cards-btn");
@@ -144,6 +392,12 @@ function renderMapMarkers(items) {
     const fee = m.entryFee && (nationality === "indian" ? m.entryFee.indian : m.entryFee.foreigner);
     const feeLabel = fee === 0 ? "Free entry" : fee ? `${m.entryFee.currency || "INR"} ${fee}` : "";
 
+    let distText = "";
+    if (userLocation) {
+      const dist = calculateDistanceKm(userLocation.lat, userLocation.lng, lat, lng);
+      distText = `<div style="font-size:0.8rem; color:#0066cc; font-weight:600; margin-bottom:0.35rem;">🚗 ${dist} km from your location</div>`;
+    }
+
     const marker = L.marker([lat, lng]);
     marker.bindPopup(`
       <div class="map-popup-card">
@@ -151,15 +405,19 @@ function renderMapMarkers(items) {
         <div style="padding: 0.6rem 0.2rem 0;">
           <h4>${YM.util.escapeHtml(m.name)}</h4>
           <p>${YM.util.escapeHtml(m.state)}${m.district ? ` · ${YM.util.escapeHtml(m.district)}` : ""}</p>
+          ${distText}
           ${feeLabel ? `<div style="font-size:0.78rem; color:var(--maroon); font-weight:600; margin-bottom:0.4rem;">${YM.util.escapeHtml(feeLabel)}</div>` : ""}
-          <a class="map-popup-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View Full Guide &rarr;</a>
+          <div style="display:flex; flex-direction:column; gap:0.35rem; margin-top:0.4rem;">
+            <button type="button" class="btn btn--sm btn--primary" style="font-size:0.78rem; padding:0.35rem 0.6rem; width:100%; text-align:center;" onclick="window.YM_routeTo('${m.slug}')">🧭 Route from My Location</button>
+            <a class="map-popup-link" href="monument.html?slug=${encodeURIComponent(m.slug)}" onclick="sessionStorage.setItem('ym_selected_monument', '${YM.util.escapeHtml(m.slug)}')">View Full Guide &rarr;</a>
+          </div>
         </div>
       </div>
     `);
     markerGroup.addLayer(marker);
   });
 
-  if (validItems.length > 0 && state.viewMode === "map") {
+  if (validItems.length > 0 && state.viewMode === "map" && !activeRoutePolyline) {
     exploreMap.fitBounds(markerGroup.getBounds(), { padding: [40, 40], maxZoom: 13 });
   }
 }
@@ -195,6 +453,7 @@ async function loadMonuments() {
     });
 
     const items = res.data || [];
+    currentLoadedMonuments = items;
     items.forEach((m) => state.knownStates.add(m.state));
     populateStateFilter();
 
@@ -231,13 +490,14 @@ async function loadNearby() {
         state.nearbyMode = true;
         const grid = document.getElementById("destination-grid");
         const items = res.data || [];
+        currentLoadedMonuments = items;
 
         renderGrid(grid, items);
         renderMapMarkers(items);
 
         // Center map directly on user's current GPS position
         if (exploreMap) {
-          exploreMap.setView([pos.coords.latitude, pos.coords.longitude], 9);
+          locateUserOnMap(true);
         }
 
         document.getElementById("results-status").textContent = `${res.count} site${res.count === 1 ? "" : "s"} within 50km`;
@@ -271,6 +531,13 @@ function monumentCard(m) {
   const isAccessible = (m.accessibility?.tags || []).includes("wheelchair_accessible");
   const imgUrl = m.images && m.images.length > 0 ? m.images[0] : null;
 
+  let distanceBadge = "";
+  if (userLocation && m.location?.coordinates && m.location.coordinates.length >= 2) {
+    const [mLng, mLat] = m.location.coordinates;
+    const dist = calculateDistanceKm(userLocation.lat, userLocation.lng, mLat, mLng);
+    distanceBadge = `<span class="badge badge--distance">🚗 ${dist} km away</span>`;
+  }
+
   return `
     <article class="card" style="overflow:hidden; display:flex; flex-direction:column;">
       <div class="card-arch" style="${imgUrl ? `background-image: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%), url('${imgUrl}'); background-size: cover; background-position: center; min-height: 140px; position:relative;` : ""}" aria-hidden="true">
@@ -280,7 +547,8 @@ function monumentCard(m) {
         <h3>${YM.util.escapeHtml(m.name)}</h3>
         <p class="card-meta">${YM.util.escapeHtml(m.state)}${m.district ? `, ${YM.util.escapeHtml(m.district)}` : ""}</p>
         <p class="card-desc">${YM.util.escapeHtml(m.shortDescription || "")}</p>
-        <div class="card-footer" style="margin-top:auto; padding-top:0.6rem;">
+        <div class="card-footer" style="margin-top:auto; padding-top:0.6rem; display:flex; flex-wrap:wrap; gap:0.35rem;">
+          ${distanceBadge}
           ${feeLabel ? `<span class="badge badge--fee">${YM.util.escapeHtml(feeLabel)}</span>` : ""}
           ${m.isUnderexplored ? `<span class="badge badge--underexplored">Underexplored gem</span>` : ""}
           ${accessibilityFlagged && isAccessible ? `<span class="badge badge--accessible">Matches your accessibility needs</span>` : ""}

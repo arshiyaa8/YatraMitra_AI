@@ -131,6 +131,7 @@ YM.trip = {
 
 // ── Shared header + mobile bottom nav ─────────────────────────────────
 const NAV_ITEMS = [
+  { href: "index.html", label: "AI Assistant", key: "assistant", icon: "sparkle" },
   { href: "explore.html", label: "Explore", key: "explore", icon: "compass" },
   { href: "festivals.html", label: "Festivals", key: "festivals", icon: "sparkle" },
   { href: "alerts.html", label: "Alerts", key: "alerts", icon: "shield" },
@@ -154,10 +155,26 @@ YM.renderHeader = function renderHeader(activePage) {
   if (host) {
     const user = YM.auth.getUser();
     const natLabel = YM.nationality.label();
+    const currentLang = YM.lang.get();
+
+    const LANG_OPTIONS = [
+      { code: "en", name: "🌐 English" },
+      { code: "hi", name: "🇮🇳 हिन्दी (Hindi)" },
+      { code: "ta", name: "🇮🇳 தமிழ் (Tamil)" },
+      { code: "te", name: "🇮🇳 తెలుగు (Telugu)" },
+      { code: "bn", name: "🇮🇳 বাংলা (Bengali)" },
+      { code: "mr", name: "🇮🇳 मराठी (Marathi)" },
+      { code: "gu", name: "🇮🇳 ગુજરાતી (Gujarati)" },
+      { code: "kn", name: "🇮🇳 ಕನ್ನಡ (Kannada)" },
+      { code: "ml", name: "🇮🇳 മലയാളം (Malayalam)" },
+      { code: "pa", name: "🇮🇳 ਪੰਜਾਬੀ (Punjabi)" },
+      { code: "or", name: "🇮🇳 ଓଡ଼ିଆ (Odia)" },
+      { code: "as", name: "🇮🇳 অসমীয়া (Assamese)" },
+    ];
 
     host.innerHTML = `
       <div class="header-inner">
-        <a href="explore.html" class="brand">
+        <a href="index.html" class="brand">
           <span class="brand-mark" aria-hidden="true"></span>
           YatraMitra
         </a>
@@ -167,7 +184,14 @@ YM.renderHeader = function renderHeader(activePage) {
               `<a href="${item.href}" class="nav-link${activePage === item.key ? " nav-link--active" : ""}">${item.label}</a>`
           ).join("")}
         </nav>
-        <div class="header-right">
+        <div class="header-right" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <div class="header-lang-wrapper">
+            <select id="ym-global-lang-select" class="header-lang-select" aria-label="Select language" style="background: #ffffff; color: var(--ink); border: 1.5px solid var(--gold); border-radius: var(--radius-sm); padding: 0.35rem 0.65rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.08); outline: none;">
+              ${LANG_OPTIONS.map(
+                (opt) => `<option value="${opt.code}" style="color:#222; font-weight:500;" ${opt.code === currentLang ? "selected" : ""}>${opt.name}</option>`
+              ).join("")}
+            </select>
+          </div>
           ${
             natLabel
               ? `<button class="badge badge--nationality badge--clickable" id="ym-nationality-badge" type="button" title="Click to change">${natLabel} · Change</button>`
@@ -182,6 +206,15 @@ YM.renderHeader = function renderHeader(activePage) {
         </div>
       </div>
     `;
+
+    const langSelect = document.getElementById("ym-global-lang-select");
+    if (langSelect) {
+      langSelect.addEventListener("change", (e) => {
+        const newLang = e.target.value;
+        YM.lang.set(newLang);
+        window.dispatchEvent(new CustomEvent("ym-lang-changed", { detail: { lang: newLang } }));
+      });
+    }
 
     const nationalityBadge = document.getElementById("ym-nationality-badge");
     if (nationalityBadge) {

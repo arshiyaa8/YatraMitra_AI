@@ -4,57 +4,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>YatraMitra — AI Tourism Assistant</title>
+  <title>YatraMitra — AI Voice Heritage Assistant</title>
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
-<body class="gate-body">
+<body>
+  <header id="ym-header" class="site-header"></header>
 
-  <main class="gate">
-    <div class="gate-card">
-      <span class="brand-mark brand-mark--lg" aria-hidden="true"></span>
-      <h1 class="gate-title">YatraMitra</h1>
-      <p class="gate-sub">Your AI-powered guide to India's heritage — safety alerts, live crowd levels, and translated
-        monument guides in one place.</p>
+  <div id="alert-banner-host"></div>
+  <div id="festival-banner-host"></div>
 
-      <h2 class="gate-question">Which best describes you?</h2>
-      <p class="gate-hint">This changes what entry fees and language defaults we show you — nothing else is locked.</p>
+  <main class="page assistant-page" style="max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem 3rem;">
+    <!-- Assistant Hero Header -->
+    <section class="assistant-hero">
+      <div class="assistant-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      </div>
+      <h1 style="font-family: var(--font-display); font-size: 2rem; color: var(--maroon-dark); margin: 0 0 0.4rem;">
+        Namaste, I am YatraMitra AI
+      </h1>
+      <p style="color: var(--ink-soft); font-size: 0.95rem; margin: 0 auto; max-width: 580px;">
+        Your multilingual voice-enabled heritage travel companion. Ask me anything about crowd predictions, best visiting hours, hidden gems, travel laws, or regional cuisines.
+      </p>
 
-      <div class="gate-options" role="group" aria-label="Visitor type">
-        <button class="gate-option" data-nationality="indian" type="button">
-          <span class="gate-option-title">Indian visitor</span>
-          <span class="gate-option-desc">Indian-resident entry fees, Indian language options first</span>
+      <!-- Central Voice Orb Trigger -->
+      <div class="voice-orb-container">
+        <button id="voice-orb-btn" class="voice-orb" type="button" aria-label="Tap to speak" title="Tap to start voice recognition">
+          <svg viewBox="0 0 24 24" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="23" />
+            <line x1="8" y1="23" x2="16" y2="23" />
+          </svg>
         </button>
-        <button class="gate-option" data-nationality="foreigner" type="button">
-          <span class="gate-option-title">Foreign visitor</span>
-          <span class="gate-option-desc">Foreign-national entry fees, English-first interface</span>
-        </button>
+        <span id="voice-status-text" class="voice-status-text">Tap microphone to speak or type below</span>
       </div>
 
-      <p class="gate-footnote">You can change this later from your account page.</p>
-    </div>
+      <!-- Quick Action Topics -->
+      <div class="quick-topics" role="group" aria-label="Quick topic prompts">
+        <button type="button" class="quick-chip" data-prompt="How crowded is Taj Mahal today?">👥 Taj Mahal Crowd Today</button>
+        <button type="button" class="quick-chip" data-prompt="When is the best time to visit Hampi?">🕒 Best Time to Visit Hampi</button>
+        <button type="button" class="quick-chip" data-prompt="Show me unexplored hidden gems in India">💎 Underexplored Gems</button>
+        <button type="button" class="quick-chip" data-prompt="What are the drone and camera laws at monuments?">📜 Drone & Camera Rules</button>
+        <button type="button" class="quick-chip" data-prompt="What food is famous near Red Fort Delhi?">🍲 Famous Food in Delhi</button>
+        <button type="button" class="quick-chip" data-prompt="Recommend historical places for wheelchair users">♿ Accessible Heritage Sites</button>
+      </div>
+    </section>
+
+    <!-- Chat & Response Stream -->
+    <section id="chat-stream" class="chat-stream" aria-live="polite">
+      <!-- Default Welcome Message -->
+      <div class="chat-msg chat-msg--assistant">
+        <div class="chat-bubble">
+          <p>🙏 <strong>Welcome to YatraMitra!</strong></p>
+          <p>I am connected directly to our machine learning engines for <strong>Live Crowd Estimations</strong>, <strong>Optimal Visit Times</strong>, <strong>Hidden Gem Scoring</strong>, and <strong>Indian Heritage & Law Databases</strong>.</p>
+          <p>Tap the microphone above or type any question below to begin!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sticky Bottom Chat Bar -->
+    <form id="chat-form" class="assistant-input-card" role="search">
+      <button type="button" id="mic-input-btn" class="mic-input-btn" title="Tap to speak" aria-label="Voice input">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      </button>
+      <input type="text" id="chat-input" placeholder="Ask about crowd levels, best visiting hours, hidden gems…" autocomplete="off" />
+      <button type="submit" class="btn btn--primary" id="send-chat-btn" style="padding: 0.5rem 1.1rem; border-radius: 999px;">Ask AI &rarr;</button>
+    </form>
   </main>
+
+  <div id="ym-bottom-nav"></div>
 
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
-  <script>
-    document.querySelectorAll(".gate-option").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const value = btn.getAttribute("data-nationality");
-        YM.nationality.set(value);
-        // Sensible language default per nationality; user can still change it anywhere.
-        YM.lang.set(value === "indian" ? "hi" : "en");
-        window.location.href = "explore.html";
-      });
-    });
-
-    // If someone already made a choice and lands back on index.html, skip the gate.
-    if (YM.nationality.get()) {
-      window.location.href = "explore.html";
-    }
-  </script>
+  <script src="js/home-assistant.js"></script>
 </body>
 
 </html>

@@ -77,8 +77,19 @@ async function setupLanguageSwitcher() {
   }
 
   select.addEventListener("change", async (e) => {
-    YM.lang.set(e.target.value);
-    await loadMonument(e.target.value);
+    const chosen = e.target.value;
+    YM.lang.set(chosen);
+    const globalSelect = document.getElementById("ym-global-lang-select");
+    if (globalSelect) globalSelect.value = chosen;
+    await loadMonument(chosen);
+  });
+
+  window.addEventListener("ym-lang-changed", async (e) => {
+    const newLang = e.detail?.lang || YM.lang.get();
+    if (select && select.value !== newLang) {
+      select.value = newLang;
+    }
+    await loadMonument(newLang);
   });
 }
 
