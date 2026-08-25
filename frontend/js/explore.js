@@ -178,9 +178,21 @@ function applyLanguageToUI() {
 }
 
 // ── Leaflet OpenStreetMap Initialization ─────────────────────────
-function initExploreMap() {
+function initExploreMap(retryCount = 0) {
   const mapEl = document.getElementById("explore-map");
-  if (!mapEl || typeof L === "undefined") return;
+  if (!mapEl) return;
+
+  if (typeof L === "undefined") {
+    if (retryCount < 10) {
+      setTimeout(() => initExploreMap(retryCount + 1), 200);
+    }
+    return;
+  }
+
+  if (exploreMap) {
+    exploreMap.invalidateSize();
+    return;
+  }
 
   // Center on geographic center of India
   exploreMap = L.map("explore-map", {
@@ -189,7 +201,8 @@ function initExploreMap() {
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 18,
+    maxZoom: 19,
+    subdomains: ["a", "b", "c"],
   }).addTo(exploreMap);
 
   markerGroup = L.featureGroup().addTo(exploreMap);
@@ -225,6 +238,11 @@ function initExploreMap() {
 
   // Attempt initial background location detection
   locateUserOnMap(false);
+
+  // If monuments were already loaded, render their pins now
+  if (currentLoadedMonuments.length > 0) {
+    renderMapMarkers(currentLoadedMonuments);
+  }
 }
 
 function locateUserOnMap(flyTo = true, callback = null) {
@@ -450,13 +468,19 @@ function setupViewSwitcher() {
     paginationContainer.hidden = true;
     mapContainer.hidden = false;
 
+    if (!exploreMap) {
+      initExploreMap();
+    }
+
     if (exploreMap) {
+      setTimeout(() => exploreMap.invalidateSize(), 50);
       setTimeout(() => {
         exploreMap.invalidateSize();
         if (markerGroup && markerGroup.getLayers().length > 0) {
           exploreMap.fitBounds(markerGroup.getBounds(), { padding: [40, 40], maxZoom: 13 });
         }
-      }, 100);
+      }, 200);
+      setTimeout(() => exploreMap.invalidateSize(), 500);
     }
   });
 
@@ -474,10 +498,13 @@ function setupViewSwitcher() {
 
 
 function renderMapMarkers(items) {
+  if (!exploreMap) {
+    initExploreMap();
+  }
   if (!exploreMap || !markerGroup) return;
 
   markerGroup.clearLayers();
-  const validItems = items.filter(
+  const validItems = (items || []).filter(
     (m) => m.location?.coordinates && m.location.coordinates.length >= 2
   );
 

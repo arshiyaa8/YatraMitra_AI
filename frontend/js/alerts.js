@@ -32,9 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ── 1. SafePath Map Initialization ─────────────────────────────────────────
-function initSafePathMap() {
+function initSafePathMap(retryCount = 0) {
   const mapEl = document.getElementById("safepath-map");
-  if (!mapEl || typeof L === "undefined") return;
+  if (!mapEl) return;
+
+  if (typeof L === "undefined") {
+    if (retryCount < 10) {
+      setTimeout(() => initSafePathMap(retryCount + 1), 200);
+    }
+    return;
+  }
+
+  if (_safeMap) {
+    _safeMap.invalidateSize();
+    return;
+  }
 
   _safeMap = L.map("safepath-map", {
     center: [_currentUserCoords.lat, _currentUserCoords.lng],
@@ -44,10 +56,14 @@ function initSafePathMap() {
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
+    subdomains: ["a", "b", "c"],
     attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
   }).addTo(_safeMap);
 
   _safeZoneMarkersGroup = L.layerGroup().addTo(_safeMap);
+
+  setTimeout(() => _safeMap && _safeMap.invalidateSize(), 100);
+  setTimeout(() => _safeMap && _safeMap.invalidateSize(), 350);
 }
 
 // ── 2. Location Tracking & Safety Isolation Scanning ───────────────────────

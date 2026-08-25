@@ -255,11 +255,18 @@ async function renderMonument(m, translation, lang) {
   renderMonumentMap(m);
 }
 
-function renderMonumentMap(m) {
+function renderMonumentMap(m, retryCount = 0) {
   const mapEl = document.getElementById("monument-mini-map");
   const directionsBtn = document.getElementById("m-directions-btn");
   const panel = document.getElementById("m-location-panel");
-  if (!mapEl || typeof L === "undefined") return;
+  if (!mapEl) return;
+
+  if (typeof L === "undefined") {
+    if (retryCount < 10) {
+      setTimeout(() => renderMonumentMap(m, retryCount + 1), 200);
+    }
+    return;
+  }
 
   const coords = m.location?.coordinates;
   if (!coords || coords.length < 2) {
@@ -285,18 +292,24 @@ function renderMonumentMap(m) {
       const map = L.map("monument-mini-map", {
         center: [lat, lng],
         zoom: 14,
-        zoomControl: false,
+        zoomControl: true,
         attributionControl: false,
       });
       window._monumentMiniMap = map;
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
+        subdomains: ["a", "b", "c"],
       }).addTo(map);
 
       const marker = L.marker([lat, lng]).addTo(map);
-      marker.bindPopup(`<strong>${YM.util.escapeHtml(m.name)}</strong><br/>${YM.util.escapeHtml(m.state)}`).openPopup();
-      
+      marker.bindPopup(`<strong>${YM.util.escapeHtml(m.name)}</strong><br/>${YM.util.escapeHtml(m.state || "")}`).openPopup();
+
+      // Multi-tick layout settling to ensure tiles never render blank or grey
+      setTimeout(() => map.invalidateSize(), 50);
+      setTimeout(() => map.invalidateSize(), 250);
+      setTimeout(() => map.invalidateSize(), 600);
+
       window.addEventListener("resize", () => {
         if (window._monumentMiniMap) window._monumentMiniMap.invalidateSize();
       });
@@ -306,7 +319,7 @@ function renderMonumentMap(m) {
     } catch (err) {
       console.warn("Could not init monument map:", err);
     }
-  }, 100);
+  }, 50);
 }
 
 function togglePanel(panelId, hasContent) {
