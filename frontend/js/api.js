@@ -110,6 +110,17 @@ YM.api = (() => {
     checkInGps: (slug, { lat, lng }) =>
       request(`/crowd/${encodeURIComponent(slug)}/checkin`, { method: "POST", body: { lat, lng } }),
 
+    // ── SafePath Safe Zone Navigator — safeZoneRoutes.js ───────────────
+    evaluateLocationSafety: ({ lat, lng, time } = {}) =>
+      request("/safe-zones/evaluate", { method: "POST", auth: true, body: { lat, lng, time } }),
+
+    getNearbySafeZones: ({ lat, lng, radiusKm, category } = {}) =>
+      request("/safe-zones/nearby", { query: { lat, lng, radiusKm, category } }),
+
+    getSafeRoute: ({ startLat, startLng, destLat, destLng, safeZoneId } = {}) =>
+      request("/safe-zones/route", { method: "POST", body: { startLat, startLng, destLat, destLng, safeZoneId } }),
+
+    getAllSafeZones: () => request("/safe-zones/all"),
 
     // ── Festivals — festivalRoutes.js ──────────────────────────────────
     getActiveFestivals: ({ state } = {}) => request("/festivals/active", { query: { state } }),

@@ -86,6 +86,10 @@ const start = async () => {
     .then((r) => console.log(`SACHET alerts primed: ${r.fetched || 0} active alerts loaded`))
     .catch((e) => console.warn("Initial SACHET alert sync failed (will retry on interval):", e.message));
 
+  // Prime SafePath verified emergency safe havens
+  const safeZoneService = require("./src/services/safeZoneService");
+  safeZoneService.ensureSeedSafeZones().catch((e) => console.warn("SafePath safe zone seeding skipped:", e.message));
+
   setInterval(() => {
     sachetService.refreshAlerts().catch((e) => console.warn("Periodic SACHET sync failed:", e.message));
   }, 15 * 60 * 1000);

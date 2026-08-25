@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Safety Alerts — YatraMitra</title>
+    <title>SafePath Navigator &amp; Safety Alerts — YatraMitra</title>
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#1a2238" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -13,34 +13,258 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/styles.css" />
+    <!-- Leaflet CSS for SafePath Interactive Navigator Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .safepath-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .sos-banner {
+            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
+            color: #fff;
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 16px rgba(183, 28, 28, 0.25);
+        }
+
+        .sos-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .sos-btn {
+            background: #ffffff;
+            color: #b71c1c;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0.55rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            text-decoration: none;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: transform 0.15s ease;
+        }
+
+        .sos-btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #7f0000;
+        }
+
+        .safepath-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 860px) {
+            .safepath-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .safepath-radar-card {
+            background: #ffffff;
+            border: 1.5px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .safepath-status-banner {
+            border-radius: var(--radius-sm);
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .safepath-status--safe {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border: 1px solid #c8e6c9;
+        }
+
+        .safepath-status--caution {
+            background: #fff8e1;
+            color: #e65100;
+            border: 1px solid #ffe082;
+        }
+
+        .safepath-status--isolated {
+            background: #ffebee;
+            color: #b71c1c;
+            border: 1.5px solid #ffcdd2;
+        }
+
+        .safezone-chip-row {
+            display: flex;
+            gap: 0.4rem;
+            overflow-x: auto;
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .route-step-item {
+            display: flex;
+            gap: 0.6rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--line);
+            font-size: 0.82rem;
+        }
+
+        .route-step-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 
 <body>
     <header id="ym-header" class="site-header"></header>
 
-    <main class="page">
-        <section class="page-hero">
-            <h1>Safety alerts</h1>
-            <p>Official disaster alerts sourced from SACHET (NDMA). For emergencies, follow local authorities and call emergency services.</p>
-            <div class="filter-row">
-                <input type="text" id="alert-area-filter" placeholder="Filter by area or state…" />
-                <select id="alert-type-filter" aria-label="Filter by type">
-                    <option value="">All types</option>
-                    <option value="flood">Flood</option>
-                    <option value="cyclone">Cyclone</option>
-                    <option value="landslide">Landslide</option>
-                    <option value="forest_fire">Forest fire</option>
-                    <option value="earthquake">Earthquake</option>
-                    <option value="other">Other</option>
-                </select>
+    <main class="page safepath-container">
+        <!-- 1-Tap SOS Emergency Dispatcher -->
+        <section class="sos-banner">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                    <h2 style="margin:0 0 0.2rem; font-size:1.25rem; color:#fff; display:flex; align-items:center; gap:0.4rem;">
+                        <span>🚨</span> 1-Tap Emergency SOS Dispatcher
+                    </h2>
+                    <p style="margin:0; font-size:0.82rem; opacity:0.95;">Direct emergency helplines &amp; instant GPS location broadcasting for tourists in distress.</p>
+                </div>
+                <button id="btn-copy-distress-sms" type="button" class="btn btn--sm" style="background:#fff; color:#b71c1c; font-weight:700; border:none;">
+                    📋 Copy Emergency GPS SMS
+                </button>
+            </div>
+            <div class="sos-buttons-grid">
+                <a href="tel:112" class="sos-btn"><span>📞</span> 112 National</a>
+                <a href="tel:100" class="sos-btn"><span>👮</span> 100 Police</a>
+                <a href="tel:108" class="sos-btn"><span>🚑</span> 108 Medical</a>
+                <a href="tel:1363" class="sos-btn"><span>🗺️</span> 1363 Tourist</a>
+                <a href="tel:1091" class="sos-btn"><span>👩</span> 1091 Women</a>
+            </div>
+            <p id="distress-copy-status" style="margin:0.5rem 0 0; font-size:0.78rem; text-align:right; font-weight:600; color:#ffebee;"></p>
+        </section>
+
+        <!-- SafePath Safe Zone Navigator Section -->
+        <section class="safepath-grid">
+            <!-- Left: Interactive Safe Zone Map & Route Navigation -->
+            <div class="safepath-radar-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                        <h1 style="margin:0 0 0.2rem; font-size:1.35rem; color:var(--maroon-dark); display:flex; align-items:center; gap:0.4rem;">
+                            <span>🛡️</span> SafePath — Safe Zone Navigator
+                        </h1>
+                        <p style="margin:0; font-size:0.82rem; color:var(--ink-light);">Monitors isolated areas, night risks, and routes you to 24/7 verified police, hospitals, and havens.</p>
+                    </div>
+                    <div style="display:flex; gap:0.4rem;">
+                        <button id="btn-locate-safepath" type="button" class="btn btn--primary btn--sm" style="font-size:0.8rem;">
+                            📍 Scan My Location
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Safety Radar Banner -->
+                <div id="safepath-status-box" class="safepath-status-banner safepath-status--safe">
+                    <div>
+                        <strong id="safepath-status-title" style="font-size:0.95rem; display:block;">Scanning your location…</strong>
+                        <span id="safepath-status-desc" style="font-size:0.8rem; display:block; margin-top:0.2rem;">Click 'Scan My Location' or choose a destination preset to evaluate surroundings.</span>
+                    </div>
+                    <div style="text-align:right; min-width:80px;">
+                        <span id="safepath-risk-score" style="font-weight:800; font-size:1.3rem;">--%</span>
+                        <span style="font-size:0.7rem; display:block; opacity:0.85;">Isolation Risk</span>
+                    </div>
+                </div>
+
+                <!-- Safe Haven Category Filter Chips & City Quick Jump -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.4rem;">
+                    <div class="safezone-chip-row" style="margin-bottom:0;">
+                        <button type="button" class="chip chip--sm safe-filter-chip chip--active" data-cat="all">All Safe Havens</button>
+                        <button type="button" class="chip chip--sm safe-filter-chip" data-cat="police">👮 Police Stations</button>
+                        <button type="button" class="chip chip--sm safe-filter-chip" data-cat="hospital">🏥 24/7 Hospitals</button>
+                        <button type="button" class="chip chip--sm safe-filter-chip" data-cat="hotel">🏨 Safe Hotels</button>
+                        <button type="button" class="chip chip--sm safe-filter-chip" data-cat="transit">🚉 Transit Hubs</button>
+                    </div>
+                    <div style="display:flex; gap:0.25rem; align-items:center;">
+                        <span style="font-size:0.72rem; color:var(--ink-light);">Preset:</span>
+                        <button type="button" class="chip chip--sm city-preset-chip" data-lat="27.1735" data-lng="78.0465">Agra</button>
+                        <button type="button" class="chip chip--sm city-preset-chip" data-lat="28.6289" data-lng="77.2155">Delhi</button>
+                        <button type="button" class="chip chip--sm city-preset-chip" data-lat="26.9242" data-lng="75.8267">Jaipur</button>
+                        <button type="button" class="chip chip--sm city-preset-chip" data-lat="25.3075" data-lng="83.0105">Varanasi</button>
+                    </div>
+                </div>
+
+                <!-- Leaflet SafePath Map Container -->
+                <div id="safepath-map" style="height: 380px; width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--line); z-index: 1;"></div>
+
+                <!-- Active Turn-by-Turn Safe Route Directions Drawer -->
+                <div id="safepath-route-directions" hidden style="margin-top:0.85rem; background:#faf8f5; border:1.5px solid var(--gold); border-radius:var(--radius-sm); padding:0.85rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                        <strong style="color:var(--maroon-dark); font-size:0.9rem; display:flex; align-items:center; gap:0.3rem;">
+                            <span>🚶</span> Safe Refuge Navigation (<span id="route-dest-name">Safe Haven</span>)
+                        </strong>
+                        <button id="btn-close-route" type="button" style="background:none; border:none; font-size:0.9rem; cursor:pointer;">✕</button>
+                    </div>
+                    <div style="display:flex; gap:1rem; font-size:0.82rem; font-weight:700; color:var(--ink); margin-bottom:0.5rem;">
+                        <span>Distance: <span id="route-total-dist">--</span></span>
+                        <span>Walk Time: <span id="route-total-time">--</span></span>
+                    </div>
+                    <div id="route-steps-container" style="max-height: 140px; overflow-y:auto; padding-right:0.3rem;"></div>
+                </div>
+            </div>
+
+            <!-- Right: Nearest Safe Haven Recommendations & Emergency POIs -->
+            <div class="safepath-radar-card" style="display:flex; flex-direction:column;">
+                <h2 style="margin:0 0 0.5rem; font-size:1.05rem; color:var(--ink);">Nearest Safe Havens</h2>
+                <p style="font-size:0.78rem; color:var(--ink-light); margin-bottom:0.75rem;">Verified 24/7 safe zones nearest to your current coordinates:</p>
+
+                <div id="nearby-safezones-list" style="flex:1; overflow-y:auto; max-height:480px; display:flex; flex-direction:column; gap:0.5rem;">
+                    <p style="font-size:0.82rem; color:var(--ink-light);">Acquiring GPS location to find safe havens…</p>
+                </div>
             </div>
         </section>
 
-        <section id="alerts-list"></section>
+        <!-- National Disaster & Weather Warnings Section (NDMA SACHET) -->
+        <section style="border-top:1.5px solid var(--line); padding-top:1.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                    <h2 style="margin:0 0 0.2rem; font-size:1.25rem; color:var(--ink);">National Disaster Alerts</h2>
+                    <p style="margin:0; font-size:0.82rem; color:var(--ink-light);">Official disaster alerts sourced from NDMA SACHET network.</p>
+                </div>
+                <div class="filter-row" style="margin:0;">
+                    <input type="text" id="alert-area-filter" placeholder="Filter by state or area…" style="font-size:0.82rem; padding:0.4rem 0.6rem;" />
+                    <select id="alert-type-filter" aria-label="Filter by type" style="font-size:0.82rem; padding:0.4rem 0.6rem;">
+                        <option value="">All disaster types</option>
+                        <option value="flood">Flood</option>
+                        <option value="cyclone">Cyclone</option>
+                        <option value="landslide">Landslide</option>
+                        <option value="forest_fire">Forest fire</option>
+                        <option value="earthquake">Earthquake</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <section id="alerts-list"></section>
+        </section>
     </main>
 
     <div id="ym-bottom-nav"></div>
 
+    <!-- Leaflet JS & App Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>

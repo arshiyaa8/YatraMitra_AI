@@ -12,6 +12,7 @@ router.use("/festivals", require("./festivalRoutes"));
 router.use("/laws", require("./lawRoutes"));
 router.use("/routes", require("./routeRoutes"));
 router.use("/assistant", require("./aiAssistantRoutes"));
+router.use("/safe-zones", require("./safeZoneRoutes"));
 
 router.get("/", (req, res) => {
   res.json({
@@ -29,6 +30,7 @@ router.get("/", (req, res) => {
       "/api/laws",
       "/api/routes",
       "/api/assistant",
+      "/api/safe-zones",
     ],
   });
 });
