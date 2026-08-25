@@ -1,41 +1,75 @@
-/* base.css — reset + design tokens
-   Palette carries over from the project's existing heritage branding
-   (maroon/gold/teal), so the app, docs, and report stay one identity. */
+/* base.css — Minimal AI Interface + Glassmorphism Tokens
+   Clean, high-contrast, generous negative space, refined typography,
+   minimalist fine-line iconography, and emerald green interactive accents. */
 
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap");
 
 :root {
-  --maroon: #7a1f2b;
-  --maroon-dark: #591620;
-  --gold: #c89b3c;
-  --gold-light: #e8d3a0;
-  --teal: #1f5f5b;
-  --teal-dark: #164543;
-  --ivory: #fbf6ee;
-  --ivory-dim: #f3ead9;
-  --ink: #2b211c;
-  --ink-soft: #6b5d52;
-  --line: #e4d8c5;
-  --danger: #a12f2f;
-  --danger-bg: #fbeaea;
-  --info-bg: #eaf3f2;
-  --success: #1f5f3f;
-  --success-bg: #eaf3ec;
+  /* ── Minimal Neutral Backgrounds & Inks ─────────────────────────── */
+  --bg-main: #ffffff;
+  --bg-subtle: #f9fafb;
+  --bg-canvas: #fafafa;
+  --ink: #111827;              /* Deep Neutral Charcoal */
+  --ink-soft: #6b7280;         /* Refined Mid Gray (Subtitles/Metadata) */
+  --ink-muted: #9ca3af;        /* Subtle Tertiary Text */
+  --line: #e5e7eb;             /* Minimal Fine Border */
+  --line-light: #f3f4f6;
 
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  /* ── Interactive Emerald Accents (Used strictly on action/glow) ── */
+  --accent-green: #059669;     /* Signature Active Emerald */
+  --accent-green-hover: #047857;
+  --accent-mint: #10b981;      /* Bright Action Glow */
+  --accent-glow: rgba(5, 150, 105, 0.16);
+  --accent-teal: #0d9488;
+  --gold: #d97706;
+  --gold-light: #fef3c7;
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 22px;
-  --shadow-card: 0 2px 10px rgba(43, 33, 28, 0.08);
-  --shadow-raised: 0 8px 28px rgba(43, 33, 28, 0.16);
+  /* ── Backward-compatible Aliases (Preserves all component hooks) ── */
+  --primary: #111827;
+  --primary-dark: #111827;
+  --maroon: #059669;
+  --maroon-dark: #111827;
+  --teal: #0d9488;
+  --teal-dark: #0f766e;
+  --ivory: #ffffff;
+  --ivory-dim: #f9fafb;
 
-  /* Mobile is the primary target: a comfortable 44px+ tap target everywhere,
-     and a bottom-nav height other layout math (page padding) depends on. */
+  /* ── Status & Notification Tints ────────────────────────────────── */
+  --danger: #e11d48;
+  --danger-bg: rgba(225, 29, 72, 0.08);
+  --info-bg: rgba(13, 148, 136, 0.08);
+  --success: #059669;
+  --success-bg: rgba(16, 185, 129, 0.1);
+
+  /* ── Glassmorphism & Surface Tokens ─────────────────────────────── */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg-card: rgba(255, 255, 255, 0.92);
+  --glass-bg-subtle: rgba(249, 250, 251, 0.75);
+  --glass-border: rgba(229, 231, 235, 0.85);
+  --glass-border-focus: rgba(5, 150, 105, 0.4);
+  --glass-blur: blur(20px) saturate(180%);
+
+  /* ── Typography Tokens ─────────────────────────────────────────── */
+  --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* ── Geometry & Elevation ──────────────────────────────────────── */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-raised: 0 12px 36px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-input: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --shadow-input-focus: 0 10px 35px rgba(5, 150, 105, 0.12), 0 0 0 2px rgba(5, 150, 105, 0.3);
+
+  /* ── Mobile Layout Constants ───────────────────────────────────── */
   --tap-min: 44px;
-  --bottom-nav-h: 60px;
-  --header-h: 56px;
+  --bottom-nav-h: 64px;
+  --header-h: 60px;
 }
 
 * {
@@ -53,36 +87,48 @@ body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--ink);
-  background: var(--ivory);
-  line-height: 1.55;
-  font-size: 16px;
+  background: var(--bg-main);
+  line-height: 1.6;
+  font-size: 15.5px;
   min-height: 100vh;
   min-height: 100dvh;
-  /* Room for the fixed mobile bottom nav; overridden per-page where absent. */
   padding-bottom: calc(var(--bottom-nav-h) + 16px + env(safe-area-inset-bottom, 0px));
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 0.4em;
-  color: var(--maroon-dark);
+  color: var(--ink);
   line-height: 1.25;
+  letter-spacing: -0.025em;
   word-break: break-word;
 }
 
-h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); font-weight: 700; }
-h2 { font-size: 1.15rem; }
-h3 { font-size: 1.02rem; }
+h1 { font-size: clamp(1.75rem, 5.5vw, 2.6rem); font-weight: 800; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 600; }
 
 p { margin: 0 0 1em; }
 
-a { color: var(--teal); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a {
+  color: var(--accent-green);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--accent-green-hover);
+  text-decoration: none;
+}
 
-button, input, select, textarea { font-family: inherit; font-size: 1rem; }
+button, input, select, textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
 
 ul { margin: 0; padding: 0; list-style: none; }
 
@@ -90,15 +136,17 @@ img { max-width: 100%; display: block; }
 
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.9em;
-  background: var(--ivory-dim);
-  padding: 0.1em 0.35em;
-  border-radius: 4px;
+  font-size: 0.88em;
+  background: var(--bg-subtle);
+  color: var(--ink);
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  border: 1px solid var(--line);
 }
 
-/* Visible keyboard focus everywhere — accessibility floor, not optional */
+/* Visible keyboard focus everywhere — accessibility floor */
 :focus-visible {
-  outline: 3px solid var(--gold);
+  outline: 2px solid var(--accent-green);
   outline-offset: 2px;
 }
 

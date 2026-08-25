@@ -39,8 +39,11 @@ function applyLanguageToAssistantUI() {
   if (heroSubtitle) heroSubtitle.textContent = YM.t("assistant_subtitle", "Your multilingual voice-enabled heritage travel companion. Ask me anything about crowd predictions, best visiting hours, hidden gems, travel laws, or regional cuisines.");
   if (statusText && !isRecording) statusText.textContent = YM.t("voice_tap_prompt", "Tap microphone to speak or type below");
   if (voiceLabel) voiceLabel.textContent = YM.t("ai_voice_label", "🎙️ AI Voice:");
-  if (chatInput) chatInput.placeholder = YM.t("chat_placeholder", "Ask about crowd levels, best visiting hours, hidden gems…");
-  if (chatSubmitBtn) chatSubmitBtn.textContent = YM.t("ask_ai_btn", "Ask AI →");
+  if (chatInput) chatInput.placeholder = YM.t("chat_placeholder", "Ask anything about crowd, timings, hidden gems…");
+  if (chatSubmitBtn) {
+    chatSubmitBtn.setAttribute("title", YM.t("ask_ai_btn", "Ask AI"));
+    chatSubmitBtn.setAttribute("aria-label", YM.t("ask_ai_btn", "Ask AI"));
+  }
 
   const chipMap = [
     "chip_crowd",
@@ -288,13 +291,25 @@ function speakText(text) {
 function setupChatForm() {
   const form = document.getElementById("chat-form");
   const input = document.getElementById("chat-input");
+  const sendBtn = document.getElementById("send-chat-btn");
+
+  if (input && sendBtn) {
+    input.addEventListener("input", () => {
+      if (input.value.trim().length > 0) {
+        sendBtn.classList.add("send-chat-btn--active");
+      } else {
+        sendBtn.classList.remove("send-chat-btn--active");
+      }
+    });
+  }
 
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const msg = input.value.trim();
+      const msg = input ? input.value.trim() : "";
       if (!msg) return;
-      input.value = "";
+      if (input) input.value = "";
+      if (sendBtn) sendBtn.classList.remove("send-chat-btn--active");
       handleSendMessage(msg);
     });
   }

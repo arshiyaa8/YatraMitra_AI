@@ -384,7 +384,7 @@ YM.renderHeader = function renderHeader(activePage) {
         </nav>
         <div class="header-right">
           <div class="header-lang-wrapper">
-            <select id="ym-global-lang-select" class="header-lang-select" aria-label="Select language" style="background: #ffffff; color: var(--ink); border: 1.5px solid var(--gold); border-radius: var(--radius-sm); padding: 0.25rem 0.5rem; height: 32px; font-size: 0.82rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.06); outline: none;">
+            <select id="ym-global-lang-select" class="header-lang-select" aria-label="Select language" style="background: rgba(255,255,255,0.92); color: var(--primary-dark); border: 1.5px solid var(--accent-mint); border-radius: var(--radius-sm); padding: 0.2rem 0.5rem; height: 34px; font-size: 0.82rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(5,150,105,0.08); outline: none;">
               ${LANG_GROUPS.map(
                 (grp) => `
                   <optgroup label="${grp.group}">
