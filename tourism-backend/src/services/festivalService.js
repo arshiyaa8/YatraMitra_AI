@@ -5,6 +5,7 @@
  * based on verified annual festival schedules.
  */
 
+const mongoose = require("mongoose");
 const Festival = require("../models/Festival");
 
 /**
@@ -17,13 +18,9 @@ const Festival = require("../models/Festival");
  * @returns {Promise<Array>} List of active festival documents
  */
 async function getActiveFestivals({ date = new Date(), state } = {}) {
-  const query = {
-    date: { $lte: date },
-    $or: [{ endDate: { $gte: date } }, { endDate: null, date: date } , { endDate: { $exists: false } }],
-  };
-
-  // Mongo can't cleanly express "date OR endDate covers today" in one $or above when endDate is absent,
-  // so do a light post-filter instead of a fragile query.
+  if (mongoose.connection?.readyState !== 1) {
+    return [];
+  }
   const candidates = await Festival.find({}).lean();
   const target = new Date(date.toDateString());
 

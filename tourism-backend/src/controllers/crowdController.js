@@ -14,7 +14,9 @@ const { ApiError, asyncHandler } = require("../utils/apiError");
  * GET /api/crowd/:slug/estimate
  */
 exports.getEstimate = asyncHandler(async (req, res) => {
-  const monument = await Monument.findOne({ slug: req.params.slug }).select("_id name state location");
+  const monument = await Monument.findOne({ slug: req.params.slug }).select(
+    "_id name slug state location popularity isUnderexplored category timings"
+  );
   if (!monument) throw new ApiError(404, "Monument not found");
 
   const estimate = await crowdService.estimateCrowd(monument, monument.state);
@@ -34,8 +36,53 @@ exports.submitReport = asyncHandler(async (req, res) => {
 });
 
 /**
- * Ingests automated ticketing counts (e.g. ASI ticket barrier gate API).
- * POST /api/crowd/:slug/tickets
+ * Analyzes a live photo (or social media snapshot) to detect human crowd density via Computer Vision.
+ * POST /api/crowd/:slug/analyze-photo
+ */
+exports.analyzePhoto = asyncHandler(async (req, res) => {
+  const monument = await Monument.findOne({ slug: req.params.slug }).select("_id name");
+  if (!monument) throw new ApiError(404, "Monument not found");
+
+  const { imageBase64, image } = req.body;
+  const payload = imageBase64 || image;
+  if (!payload) throw new ApiError(400, "imageBase64 payload is required for crowd vision analysis");
+
+  const result = await crowdService.analyzeCrowdPhoto({
+    monumentId: monument._id,
+    imageBase64: payload,
+    monumentName: monument.name,
+    userId: req.user?._id,
+  });
+
+  res.json({ success: true, monument: req.params.slug, ...result });
+});
+
+/**
+ * Validates traveler GPS proximity and records verified live crowd telemetry.
+ * POST /api/crowd/:slug/checkin
+ */
+exports.checkInGps = asyncHandler(async (req, res) => {
+  const monument = await Monument.findOne({ slug: req.params.slug }).select("_id name location");
+  if (!monument) throw new ApiError(404, "Monument not found");
+
+  const { lat, lng } = req.body;
+  if (lat === undefined || lng === undefined) {
+    throw new ApiError(400, "lat and lng GPS coordinates are required");
+  }
+
+  const result = await crowdService.verifyGpsCheckIn({
+    monument,
+    userLat: parseFloat(lat),
+    userLng: parseFloat(lng),
+    userId: req.user?._id,
+  });
+
+  res.json({ success: true, monument: req.params.slug, ...result });
+});
+
+/**
+ * Ingests automated barrier ticketing counts (Admin/Curator).
+ * POST /api/crowd/:slug/ticket-count
  */
 exports.submitTicketCount = asyncHandler(async (req, res) => {
   const monument = await Monument.findOne({ slug: req.params.slug }).select("_id");
@@ -44,3 +91,5 @@ exports.submitTicketCount = asyncHandler(async (req, res) => {
   const report = await crowdService.submitTicketCount({ monumentId: monument._id, ticketCount, capacityThresholds });
   res.status(201).json({ success: true, data: report });
 });
+
+

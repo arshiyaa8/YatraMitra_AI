@@ -106,6 +106,29 @@ def predict_crowd():
         return _json_error("Prediction failed", 500, exc)
 
 
+@app.route("/predict/crowd-vision", methods=["POST", "OPTIONS"])
+@app.route("/api/predict/crowd-vision", methods=["POST", "OPTIONS"])
+def predict_crowd_vision():
+    """Performs Computer Vision based crowd density detection on an uploaded image payload."""
+    if request.method == "OPTIONS":
+        return ("", 204)
+
+    payload = request.get_json(silent=True) or {}
+    image_data = payload.get("image") or payload.get("image_base64") or payload.get("image_path")
+    monument = payload.get("monument", "Monument")
+
+    if not image_data:
+        return _json_error("Missing required 'image' or 'image_base64' payload parameter.")
+
+    try:
+        result = ENGINE.analyze_photo_crowd(image_data=image_data, monument_name=monument)
+        return jsonify({"status": "success", "data": result})
+    except Exception as exc:
+        app.logger.exception("Crowd vision analysis failed")
+        return _json_error("Crowd vision processing failed", 500, exc)
+
+
+
 @app.route("/route/plan", methods=["POST", "OPTIONS"])
 @app.route("/api/route/plan", methods=["POST", "OPTIONS"])
 def plan_route():

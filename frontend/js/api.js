@@ -104,6 +104,13 @@ YM.api = (() => {
     submitCrowdReport: (slug, level) =>
       request(`/crowd/${encodeURIComponent(slug)}/report`, { method: "POST", auth: true, body: { level } }),
 
+    analyzeCrowdPhoto: (slug, imageBase64) =>
+      request(`/crowd/${encodeURIComponent(slug)}/analyze-photo`, { method: "POST", body: { imageBase64 } }),
+
+    checkInGps: (slug, { lat, lng }) =>
+      request(`/crowd/${encodeURIComponent(slug)}/checkin`, { method: "POST", body: { lat, lng } }),
+
+
     // ── Festivals — festivalRoutes.js ──────────────────────────────────
     getActiveFestivals: ({ state } = {}) => request("/festivals/active", { query: { state } }),
     getUpcomingFestivals: ({ state, days } = {}) => request("/festivals/upcoming", { query: { state, days } }),

@@ -169,29 +169,103 @@
                         </dl>
                     </article>
 
-                    <article class="panel panel--compact">
-                        <h2>Right now</h2>
-                        <div id="crowd-widget" class="widget-block">
-                            <p class="widget-label">Crowd level</p>
-                            <p id="crowd-level" class="widget-value">Checking…</p>
-                            <p id="crowd-confidence" class="widget-sub"></p>
-                            <p id="crowd-basis" class="widget-note"></p>
+                    <article class="panel panel--compact" id="crowd-radar-panel">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                            <h2 style="margin:0; display:flex; align-items:center; gap:0.4rem; font-size:1.05rem;">
+                                <span class="pulse-radar-dot"></span> Live Crowd Radar
+                            </h2>
+                            <span id="crowd-live-tag" class="badge-live">REAL-TIME</span>
+                        </div>
 
-                            <div id="crowd-report-block" hidden>
-                                <label for="crowd-report-select">Report what you see</label>
-                                <div class="inline-form">
-                                    <select id="crowd-report-select" aria-label="Observed crowd level" title="Observed crowd level">
-                                        <option value="low">Low</option>
-                                        <option value="moderate">Moderate</option>
-                                        <option value="high">High</option>
-                                        <option value="very_high">Very high</option>
+                        <div id="crowd-widget" class="widget-block">
+                            <!-- Main Status Badge & Capacity -->
+                            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:0.4rem;">
+                                <div>
+                                    <p class="widget-label" style="margin-bottom:0.2rem;">Current Rush</p>
+                                    <span id="crowd-level-badge" class="crowd-badge crowd-badge--moderate">Checking…</span>
+                                </div>
+                                <div style="text-align:right;">
+                                    <span id="crowd-percentage" style="font-weight:700; font-size:1.15rem; color:var(--ink);">--%</span>
+                                    <span style="font-size:0.75rem; color:var(--ink-light); display:block;">Capacity</span>
+                                </div>
+                            </div>
+
+                            <!-- Animated Gauge Bar -->
+                            <div class="crowd-meter-track" style="margin-bottom:0.6rem;">
+                                <div id="crowd-meter-fill" class="crowd-meter-fill" style="width: 0%;"></div>
+                            </div>
+
+                            <!-- Wait Time & Recommendation -->
+                            <div class="crowd-info-box" style="background:#f4f6fa; border-radius:var(--radius-sm); padding:0.6rem 0.75rem; margin-bottom:0.75rem; border-left:3px solid var(--gold);">
+                                <div style="display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; font-weight:600; color:var(--ink); margin-bottom:0.2rem;">
+                                    <span>⏱️</span> <span id="crowd-wait-time">Est. wait: Calculating…</span>
+                                </div>
+                                <p id="crowd-recommendation" style="font-size:0.78rem; color:var(--ink-light); margin:0; line-height:1.35;"></p>
+                            </div>
+
+                            <!-- 24-Hour Rush Hours Curve -->
+                            <div style="margin-bottom:0.8rem;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                                    <span style="font-size:0.78rem; font-weight:600; color:var(--ink);">Hourly Footfall Curve</span>
+                                    <span style="font-size:0.72rem; color:var(--gold); font-weight:600;">6 AM – 8 PM</span>
+                                </div>
+                                <div id="crowd-hourly-chart" class="crowd-hourly-chart" role="img" aria-label="24 hour crowd density forecast"></div>
+                            </div>
+
+                            <!-- Real-time Social Media & Sensor Signals -->
+                            <div id="crowd-social-signals" style="font-size:0.75rem; color:var(--ink-light); background:#fff; border:1px dashed var(--line); border-radius:var(--radius-sm); padding:0.5rem; margin-bottom:0.8rem;">
+                                <span>📡 Scanning social geotags &amp; live weather signals…</span>
+                            </div>
+
+                            <!-- Real-Time Crowd Tools (AI Photo Scanner & GPS Check-In) -->
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem; margin-bottom:0.75rem;">
+                                <button id="btn-open-vision-scanner" type="button" class="btn btn--ghost btn--sm" style="font-size:0.76rem; padding:0.4rem; border-color:var(--gold); color:var(--maroon-dark);">
+                                    📷 Scan Live Photo
+                                </button>
+                                <button id="btn-gps-checkin" type="button" class="btn btn--ghost btn--sm" style="font-size:0.76rem; padding:0.4rem; border-color:var(--blue); color:var(--blue);">
+                                    📍 Live GPS Check-in
+                                </button>
+                            </div>
+
+                            <!-- Live Photo AI Vision Scanner Modal / Inline Section -->
+                            <div id="vision-scanner-block" hidden style="background:#faf8f5; border:1.5px solid var(--gold); border-radius:var(--radius-sm); padding:0.75rem; margin-bottom:0.75rem;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                                    <strong style="font-size:0.82rem; color:var(--maroon-dark);">📷 AI Live Crowd Photo Scanner</strong>
+                                    <button id="btn-close-vision" type="button" class="btn-icon-close" style="background:none; border:none; font-size:0.9rem; cursor:pointer;">✕</button>
+                                </div>
+                                <p style="font-size:0.74rem; color:var(--ink-light); margin-bottom:0.5rem;">Upload a live photo or social media screenshot to detect real-time crowd density using Computer Vision:</p>
+                                
+                                <input type="file" id="vision-file-input" accept="image/*" style="font-size:0.75rem; width:100%; margin-bottom:0.5rem;" />
+                                
+                                <div style="display:flex; gap:0.3rem; margin-bottom:0.5rem; flex-wrap:wrap;">
+                                    <span style="font-size:0.7rem; color:var(--ink-light); align-self:center;">Try Sample:</span>
+                                    <button type="button" class="chip chip--sm sample-vision-chip" data-preset="empty">Quiet Morning</button>
+                                    <button type="button" class="chip chip--sm sample-vision-chip" data-preset="busy">Busy Queue</button>
+                                    <button type="button" class="chip chip--sm sample-vision-chip" data-preset="packed">Festival Rush</button>
+                                </div>
+
+                                <button id="btn-run-vision" type="button" class="btn btn--primary btn--sm btn--block">Analyze Crowd Density</button>
+                                <div id="vision-scan-result" style="margin-top:0.5rem; font-size:0.78rem;"></div>
+                            </div>
+
+                            <p id="crowd-gps-status" class="widget-sub" style="margin:0 0 0.5rem 0; font-size:0.75rem; color:var(--blue);"></p>
+
+                            <!-- User Manual Report -->
+                            <div id="crowd-report-block" hidden style="border-top:1px solid var(--line); padding-top:0.6rem;">
+                                <label for="crowd-report-select" style="font-size:0.75rem; font-weight:600;">Contribute Live Observation:</label>
+                                <div class="inline-form" style="margin-top:0.2rem;">
+                                    <select id="crowd-report-select" aria-label="Observed crowd level" title="Observed crowd level" style="font-size:0.8rem;">
+                                        <option value="low">Low (Quiet)</option>
+                                        <option value="moderate">Moderate (Normal)</option>
+                                        <option value="high">High (Busy)</option>
+                                        <option value="very_high">Very high (Rush)</option>
                                     </select>
                                     <button id="crowd-report-btn" class="btn btn--sm btn--primary">Submit</button>
                                 </div>
                                 <p id="crowd-report-status" class="widget-sub"></p>
                             </div>
                             <p id="crowd-login-hint" class="widget-sub" hidden>
-                                <a href="account.html">Log in</a> to report current crowd levels.
+                                <a href="account.html">Log in</a> to submit live crowd reports.
                             </p>
                         </div>
                     </article>

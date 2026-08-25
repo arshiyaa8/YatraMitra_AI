@@ -19,6 +19,12 @@ router.get("/:slug/estimate", ctrl.getEstimate);
 // POST /api/crowd/:slug/report — Submits a live visitor crowd observation
 router.post("/:slug/report", protect, [body("level").notEmpty()], validate, ctrl.submitReport);
 
+// POST /api/crowd/:slug/analyze-photo — Runs AI Computer Vision crowd detection on uploaded photo
+router.post("/:slug/analyze-photo", ctrl.analyzePhoto);
+
+// POST /api/crowd/:slug/checkin — Verifies phone GPS proximity to log live telemetry
+router.post("/:slug/checkin", ctrl.checkInGps);
+
 // POST /api/crowd/:slug/ticket-count — Ingests automated barrier ticketing counts (Admin/Curator)
 router.post(
   "/:slug/ticket-count",
@@ -30,3 +36,4 @@ router.post(
 );
 
 module.exports = router;
+

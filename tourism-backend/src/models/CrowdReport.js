@@ -11,10 +11,15 @@ const { CROWD_LEVELS } = require("../config/constants");
 const CrowdReportSchema = new mongoose.Schema(
   {
     monument: { type: mongoose.Schema.Types.ObjectId, ref: "Monument", required: true, index: true },
-    source: { type: String, enum: ["user_report", "eticket_count"], required: true },
+    source: {
+      type: String,
+      enum: ["user_report", "eticket_count", "cv_photo_analysis", "gps_proximity_checkin"],
+      required: true,
+    },
     reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Populated for verified user reports
     level: { type: String, enum: CROWD_LEVELS, required: true },
     ticketCount: { type: Number }, // Populated when source is eticket_count
+    metadata: { type: mongoose.Schema.Types.Mixed }, // Vision details or GPS coordinates
     timestamp: { type: Date, default: Date.now, index: true },
   },
   { timestamps: true }
