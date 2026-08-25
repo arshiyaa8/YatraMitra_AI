@@ -23,10 +23,13 @@ const sachetService = require("./src/services/sachetService");
 const app = express();
 
 // ── Security & Core Middleware ────────────────────────────────────
-// Disable cross-origin resource policy restriction so static images load seamlessly
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-}));
+// Disable cross-origin resource policy & CSP restriction so map tiles & assets load seamlessly
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
+  })
+);
 
 app.use(
   cors({

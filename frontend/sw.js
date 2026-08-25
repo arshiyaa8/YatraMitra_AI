@@ -20,9 +20,11 @@ const PRECACHE_ASSETS = [
   "account.html",
   "css/base.css",
   "css/styles.css",
+  "css/leaflet.css",
   "js/config.js",
   "js/api.js",
   "js/app.js",
+  "js/leaflet.js",
   "js/home-assistant.js",
   "js/explore.js",
   "js/monument.js",
@@ -34,8 +36,6 @@ const PRECACHE_ASSETS = [
   "icons/icon.svg",
   "icons/icon-192.png",
   "icons/icon-512.png",
-  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
-  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
 ];
 
 // 1. Service Worker Installation
